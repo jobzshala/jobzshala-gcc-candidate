@@ -1,26 +1,88 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #071022;
+  --foreground: #f3f4f2;
+
+  /* Jobzshala brand tokens (from Figma) */
+  --jz-blue-950: #001423;
+  --jz-blue-900: #002235;
+  --jz-blue-800: #003d5b;
+  --jz-blue-700: #005c87;
+  --jz-blue-600: #007cb3;
+  --jz-blue-500: #009bdf;
+  --jz-blue-400: #00b2ff;
+  --jz-blue-200: #9dd6ff;
+
+  --jz-yellow-500: #f9b900;
+  --jz-yellow-400: #ffc600;
+  --jz-yellow-300: #ffd67f;
+  --jz-yellow-200: #ffe2b1;
+  --jz-yellow-100: #fff3df;
+
+  --jz-bg-primary: #071022;
+  --jz-grey-900: #020407;
+  --jz-grey-800: #070b13;
+  --jz-grey-500: #0d141f;
+  --jz-grey-400: #2c3b52;
+
+  --jz-white-50: #f9f9f8;
+  --jz-white-100: #f3f4f2;
+  --jz-white-200: #eaebe8;
+  --jz-white-400: #d6d8d4;
+  --jz-white-600: #a0a19e;
+  --jz-white-800: #4d4e4d;
+
+  --jz-border-default: #1e375a;
+  --jz-green-500: #00af00;
+  --jz-red-600: #d90000;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-fraunces);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-jz-blue-950: var(--jz-blue-950);
+  --color-jz-blue-900: var(--jz-blue-900);
+  --color-jz-blue-800: var(--jz-blue-800);
+  --color-jz-blue-700: var(--jz-blue-700);
+  --color-jz-blue-600: var(--jz-blue-600);
+  --color-jz-blue-500: var(--jz-blue-500);
+  --color-jz-blue-400: var(--jz-blue-400);
+  --color-jz-blue-200: var(--jz-blue-200);
+
+  --color-jz-yellow-500: var(--jz-yellow-500);
+  --color-jz-yellow-400: var(--jz-yellow-400);
+  --color-jz-yellow-300: var(--jz-yellow-300);
+  --color-jz-yellow-200: var(--jz-yellow-200);
+  --color-jz-yellow-100: var(--jz-yellow-100);
+
+  --color-jz-bg-primary: var(--jz-bg-primary);
+  --color-jz-grey-900: var(--jz-grey-900);
+  --color-jz-grey-800: var(--jz-grey-800);
+  --color-jz-grey-500: var(--jz-grey-500);
+  --color-jz-grey-400: var(--jz-grey-400);
+
+  --color-jz-white-50: var(--jz-white-50);
+  --color-jz-white-100: var(--jz-white-100);
+  --color-jz-white-200: var(--jz-white-200);
+  --color-jz-white-400: var(--jz-white-400);
+  --color-jz-white-600: var(--jz-white-600);
+  --color-jz-white-800: var(--jz-white-800);
+
+  --color-jz-border: var(--jz-border-default);
+  --color-jz-green-500: var(--jz-green-500);
+  --color-jz-red-600: var(--jz-red-600);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+}
+
+html[dir="rtl"] body {
+  font-family: "Segoe UI", Tahoma, var(--font-inter), Arial, sans-serif;
 }
