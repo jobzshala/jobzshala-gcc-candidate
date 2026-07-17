@@ -3,8 +3,8 @@
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Logo from "@/components/ui/Logo";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import FormInput from "@/components/ui/FormInput";
 import FormSelect from "@/components/ui/FormSelect";
 import Checkbox from "@/components/ui/Checkbox";
