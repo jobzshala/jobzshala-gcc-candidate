@@ -3,8 +3,8 @@
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Logo from "@/components/ui/Logo";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import FormInput from "@/components/ui/FormInput";
 import { forgotPassword } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
@@ -42,7 +42,10 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="flex flex-1 flex-col bg-jz-blue-950">
-      <Header />
+      <header className="flex items-center justify-between px-6 py-4 md:px-12">
+        <Logo />
+        <LanguageSwitcher />
+      </header>
       <main className="flex flex-1 items-center justify-center px-4 py-16">
         <div className="w-full max-w-md rounded-2xl border border-jz-border bg-jz-blue-900/40 p-8">
           {sent ? (
@@ -92,7 +95,6 @@ export default function ForgotPasswordPage() {
           )}
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

@@ -185,7 +185,10 @@ export default function RegisterPage() {
 
   return (
     <div className="flex flex-1 flex-col bg-jz-blue-950">
-      <Header />
+      <header className="flex items-center justify-between px-6 py-4 md:px-12">
+        <Logo />
+        <LanguageSwitcher />
+      </header>
       <main className="flex-1">
         <div className="mx-auto grid max-w-[1200px] gap-8 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:items-stretch lg:gap-10 lg:px-10 lg:py-20">
           <div className="relative flex flex-col justify-center overflow-hidden rounded-2xl border border-jz-border bg-gradient-to-br from-jz-blue-900 to-jz-blue-950 p-8 lg:p-12">
@@ -435,7 +438,6 @@ export default function RegisterPage() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

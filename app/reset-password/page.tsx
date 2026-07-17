@@ -4,8 +4,8 @@ import { FormEvent, Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Logo from "@/components/ui/Logo";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import FormInput from "@/components/ui/FormInput";
 import { resetPassword } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
@@ -124,13 +124,15 @@ function ResetPasswordForm() {
 export default function ResetPasswordPage() {
   return (
     <div className="flex flex-1 flex-col bg-jz-blue-950">
-      <Header />
+      <header className="flex items-center justify-between px-6 py-4 md:px-12">
+        <Logo />
+        <LanguageSwitcher />
+      </header>
       <main className="flex flex-1 items-center justify-center px-4 py-16">
         <Suspense fallback={null}>
           <ResetPasswordForm />
         </Suspense>
       </main>
-      <Footer />
     </div>
   );
 }
