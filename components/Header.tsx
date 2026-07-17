@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import Button from "./ui/Button";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -39,8 +40,13 @@ export default function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
+          <Link href="/login" className="rounded-xl px-4 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
+            {t("nav.login")}
+          </Link>
           <LanguageSwitcher />
-          <Button variant="primary">{t("nav.cta")}</Button>
+          <Button variant="primary" href="/employer/login">
+            {t("nav.cta")}
+          </Button>
         </div>
 
         <button
@@ -64,9 +70,12 @@ export default function Header() {
               </a>
             ))}
           </nav>
+          <Link href="/login" className="rounded px-3 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
+            {t("nav.login")}
+          </Link>
           <div className="mt-4 flex items-center gap-3">
             <LanguageSwitcher />
-            <Button variant="primary" className="flex-1">
+            <Button variant="primary" href="/employer/login" className="flex-1">
               {t("nav.cta")}
             </Button>
           </div>

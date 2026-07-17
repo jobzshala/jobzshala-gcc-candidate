@@ -1,65 +1,194 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { FormEvent, useState } from "react";
+import Link from "next/link";
+import { useTranslation } from "react-i18next";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import FormInput from "@/components/ui/FormInput";
+import Checkbox from "@/components/ui/Checkbox";
+import RoleToggle from "@/components/ui/RoleToggle";
+import { GoogleIcon, ShieldCheckIcon, WhatsAppIcon } from "@/components/ui/icons";
+import { login } from "@/lib/api/auth";
+import { saveSession } from "@/lib/auth/session";
+import { ApiError } from "@/lib/api/client";
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MOBILE_PATTERN = /^[0-9]{10}$/;
+
+export default function LoginPage() {
+  const { t } = useTranslation();
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
+  const [keepSignedIn, setKeepSignedIn] = useState(true);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [socialNotice, setSocialNotice] = useState("");
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setFieldErrors({});
+
+    const errors: Record<string, string> = {};
+    if (!EMAIL_PATTERN.test(identifier) && !MOBILE_PATTERN.test(identifier)) {
+      errors.identifier = t("login.errors.identifier");
+    }
+    if (!password) {
+      errors.password = t("login.errors.password");
+    }
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const result = await login({ identifier, password });
+      saveSession(result, keepSignedIn);
+      window.location.href = "/";
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setFieldErrors(err.fieldErrors ?? {});
+        setError(err.message);
+      } else {
+        setError(t("login.errors.generic"));
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleSocialClick = (provider: string) => {
+    setSocialNotice(t("login.socialComingSoon", { provider }));
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className="flex flex-1 flex-col bg-jz-blue-950">
+      <Header />
+      <main className="flex-1">
+        <div className="mx-auto grid max-w-[1200px] gap-8 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:items-stretch lg:gap-10 lg:px-10 lg:py-20">
+          <div className="relative flex flex-col justify-center overflow-hidden rounded-2xl border border-jz-border bg-gradient-to-br from-jz-blue-900 to-jz-blue-950 p-8 lg:p-12">
+            <p className="text-xs font-semibold tracking-widest text-jz-yellow-400 uppercase">Jobzshala</p>
+            <h1 className="mt-3 font-serif text-3xl font-semibold leading-tight text-jz-white-50 lg:text-4xl">
+              {t("login.brandHeading")}
+            </h1>
+            <p className="mt-4 text-jz-white-200">{t("login.brandSubheading")}</p>
+            <p className="mt-2 text-sm text-jz-white-400">{t("login.brandSupportLine")}</p>
+            <div className="mt-8 flex items-center gap-2 text-sm text-jz-white-400">
+              <ShieldCheckIcon className="size-6" />
+              {t("login.securityNote")}
+            </div>
+          </div>
+
+          <div className="w-full rounded-2xl border border-jz-border bg-jz-blue-900/40 p-8">
+            <RoleToggle
+              candidateLabel={t("login.roleCandidate")}
+              employerLabel={t("login.roleEmployer")}
+              employerHref="/employer/login"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+            <h2 className="mt-6 font-serif text-2xl font-semibold text-jz-white-50">{t("login.title")}</h2>
+            <p className="mt-2 text-sm text-jz-white-400">{t("login.subtitle")}</p>
+
+            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+              {error && (
+                <div className="rounded-lg border border-jz-red-600/40 bg-jz-red-600/10 px-3.5 py-2.5 text-sm text-jz-white-100">
+                  {error}
+                </div>
+              )}
+
+              <FormInput
+                label={t("login.identifierLabel")}
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
+                placeholder={t("login.identifierPlaceholder")}
+                error={fieldErrors.identifier}
+              />
+
+              <FormInput
+                label={t("login.passwordLabel")}
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder={t("login.passwordPlaceholder")}
+                error={fieldErrors.password}
+              />
+
+              <div className="flex items-center justify-between">
+                <Checkbox
+                  label={t("login.keepSignedIn")}
+                  checked={keepSignedIn}
+                  onChange={(e) => setKeepSignedIn(e.target.checked)}
+                />
+                <Link href="/forgot-password" className="text-sm text-jz-yellow-400 hover:underline">
+                  {t("login.forgotPassword")}
+                </Link>
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-blue-800 transition-opacity hover:opacity-90 disabled:opacity-60"
+              >
+                {submitting ? t("login.submitting") : t("login.submit")}
+              </button>
+            </form>
+
+            <div className="mt-6 flex items-center gap-3">
+              <div className="h-px flex-1 bg-jz-border" />
+              <span className="text-xs text-jz-white-600">{t("login.divider")}</span>
+              <div className="h-px flex-1 bg-jz-border" />
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <button
+                type="button"
+                onClick={() => handleSocialClick("Google")}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-jz-white-600 px-4 py-2.5 text-sm text-jz-white-100 transition-opacity hover:opacity-90"
+              >
+                <GoogleIcon className="size-4.5" />
+                {t("login.continueWithGoogle")}
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSocialClick("WhatsApp")}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-jz-white-600 px-4 py-2.5 text-sm text-jz-white-100 transition-opacity hover:opacity-90"
+              >
+                <WhatsAppIcon className="size-4.5" />
+                {t("login.continueWithWhatsApp")}
+              </button>
+            </div>
+            {socialNotice && <p className="mt-3 text-center text-xs text-jz-white-600">{socialNotice}</p>}
+
+            <p className="mt-6 text-center text-sm text-jz-white-400">
+              {t("login.noAccount")}{" "}
+              <Link href="/register" className="text-jz-yellow-400 hover:underline">
+                {t("login.registerLink")}
+              </Link>
+            </p>
+          </div>
+        </div>
+
+        <div className="border-t border-jz-border">
+          <div className="mx-auto flex max-w-[1200px] flex-col items-center gap-2 px-4 py-6 text-center sm:px-6 lg:px-10">
+            <p className="text-sm text-jz-white-400">{t("login.footerTagline")}</p>
+            <p className="text-xs text-jz-white-600">{t("login.footerBadges")}</p>
+            <p className="text-xs text-jz-white-600">
+              {t("login.needHelp")}{" "}
+              <a href="#" className="text-jz-yellow-400 hover:underline">
+                {t("login.contactSupport")}
+              </a>{" "}
+              ·{" "}
+              <a href="#" className="text-jz-yellow-400 hover:underline">
+                {t("login.talkToRecruiter")}
+              </a>
+            </p>
+          </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
