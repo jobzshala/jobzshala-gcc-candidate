@@ -105,6 +105,10 @@
   --color-jz-ink-on-accent: var(--jz-ink-on-accent);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
