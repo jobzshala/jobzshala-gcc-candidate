@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import Logo from "@/components/ui/Logo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import ThemeToggle from "@/components/ThemeToggle";
 import FormInput from "@/components/ui/FormInput";
 import { forgotPassword } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
@@ -44,7 +45,10 @@ export default function ForgotPasswordPage() {
     <div className="flex flex-1 flex-col bg-jz-blue-950">
       <header className="flex items-center justify-between px-6 py-4 md:px-12">
         <Logo />
-        <LanguageSwitcher />
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <LanguageSwitcher />
+        </div>
       </header>
       <main className="flex flex-1 items-center justify-center px-4 py-16">
         <div className="w-full max-w-md rounded-2xl border border-jz-border bg-jz-blue-900/40 p-8">
@@ -80,7 +84,7 @@ export default function ForgotPasswordPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-blue-800 transition-opacity hover:opacity-90 disabled:opacity-60"
+                  className="w-full rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90 disabled:opacity-60"
                 >
                   {submitting ? t("forgotPassword.submitting") : t("forgotPassword.submit")}
                 </button>

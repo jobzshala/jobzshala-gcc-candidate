@@ -1,6 +1,6 @@
 import type { CandidateSummary } from "../api/auth";
 
-const STORAGE_KEY = "jobzshala-candidate-session";
+export const STORAGE_KEY = "jobzshala-candidate-session";
 
 export interface CandidateSession {
   accessToken: string;
@@ -15,14 +15,11 @@ export function saveSession(session: CandidateSession, persist: boolean = true) 
   store.setItem(STORAGE_KEY, JSON.stringify(session));
 }
 
-export function getSession(): CandidateSession | null {
-  const raw = window.localStorage.getItem(STORAGE_KEY) ?? window.sessionStorage.getItem(STORAGE_KEY);
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as CandidateSession;
-  } catch {
-    return null;
-  }
+// Which store the current session lives in — so a token refresh can re-save
+// into the same place ("keep me signed in" vs. this-tab-only) instead of
+// silently changing that choice.
+export function isSessionPersisted(): boolean {
+  return window.localStorage.getItem(STORAGE_KEY) !== null;
 }
 
 export function clearSession() {

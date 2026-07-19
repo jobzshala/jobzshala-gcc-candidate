@@ -36,6 +36,33 @@
   --jz-border-default: #1e375a;
   --jz-green-500: #00af00;
   --jz-red-600: #d90000;
+
+  /* Fixed regardless of theme — dark text/icon color laid on top of the
+     yellow gradient CTA (buttons, active role-toggle tab, checked checkbox
+     icon). Never redefined under [data-theme="light"]; do not repoint this
+     to jz-blue-800, which IS theme-aware. */
+  --jz-ink-on-accent: #003d5b;
+}
+
+:root[data-theme="light"] {
+  --background: #f7f9fc;
+  --foreground: #16212c;
+
+  --jz-blue-950: #ffffff;
+  --jz-blue-900: #eef1f6;
+  --jz-blue-800: #dde6f0;
+
+  --jz-bg-primary: #eef1f6;
+  --jz-grey-400: #d8dee6;
+
+  --jz-white-50: #0b1728;
+  --jz-white-100: #1c2b3d;
+  --jz-white-200: #35465c;
+  --jz-white-400: #55677d;
+  --jz-white-600: #8a97a8;
+  --jz-white-800: #c7d0da;
+
+  --jz-border-default: #dde3ea;
 }
 
 @theme inline {
@@ -75,12 +102,14 @@
   --color-jz-border: var(--jz-border-default);
   --color-jz-green-500: var(--jz-green-500);
   --color-jz-red-600: var(--jz-red-600);
+  --color-jz-ink-on-accent: var(--jz-ink-on-accent);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 html[dir="rtl"] body {

@@ -7,7 +7,7 @@ type RoleToggleProps = {
 export default function RoleToggle({ candidateLabel, employerLabel, employerHref }: RoleToggleProps) {
   return (
     <div className="grid grid-cols-2 gap-1 rounded-xl border border-jz-border bg-jz-blue-900 p-1">
-      <span className="rounded-lg bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-3 py-2 text-center text-sm font-semibold text-jz-blue-800">
+      <span className="rounded-lg bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-3 py-2 text-center text-sm font-semibold text-jz-ink-on-accent">
         {candidateLabel}
       </span>
       <a

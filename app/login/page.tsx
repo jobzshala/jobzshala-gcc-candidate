@@ -5,12 +5,16 @@ import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import Logo from "@/components/ui/Logo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import ThemeToggle from "@/components/ThemeToggle";
 import FormInput from "@/components/ui/FormInput";
 import Checkbox from "@/components/ui/Checkbox";
 import RoleToggle from "@/components/ui/RoleToggle";
 import { GoogleIcon, ShieldCheckIcon, WhatsAppIcon } from "@/components/ui/icons";
 import { login } from "@/lib/api/auth";
 import { saveSession } from "@/lib/auth/session";
+import { setPersistMode } from "@/lib/store/dualStorage";
+import { setSession } from "@/lib/store/authSlice";
+import { useAppDispatch } from "@/lib/store/hooks";
 import { ApiError } from "@/lib/api/client";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -18,6 +22,7 @@ const MOBILE_PATTERN = /^[0-9]{10}$/;
 
 export default function LoginPage() {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [keepSignedIn, setKeepSignedIn] = useState(true);
@@ -46,8 +51,14 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       const result = await login({ identifier, password });
+      // Raw storage write for the pre-hydration blocking redirect script on
+      // the landing page (see components/RedirectIfAuthenticated.tsx), and
+      // the Redux dispatch for everything rendered in-app (see
+      // app/dashboard/layout.tsx) — kept in sync at every session mutation.
       saveSession(result, keepSignedIn);
-      window.location.href = "/";
+      setPersistMode(keepSignedIn);
+      dispatch(setSession(result));
+      window.location.href = "/dashboard/profile";
     } catch (err) {
       if (err instanceof ApiError) {
         setFieldErrors(err.fieldErrors ?? {});
@@ -68,7 +79,10 @@ export default function LoginPage() {
     <div className="flex flex-1 flex-col bg-jz-blue-950">
       <header className="flex items-center justify-between px-6 py-4 md:px-12">
         <Logo />
-        <LanguageSwitcher />
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <LanguageSwitcher />
+        </div>
       </header>
       <main className="flex-1">
         <div className="mx-auto grid max-w-[1200px] gap-8 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:items-stretch lg:gap-10 lg:px-10 lg:py-20">
@@ -89,7 +103,7 @@ export default function LoginPage() {
             <RoleToggle
               candidateLabel={t("login.roleCandidate")}
               employerLabel={t("login.roleEmployer")}
-              employerHref="/employer/login"
+              employerHref="/hire/login"
             />
 
             <h2 className="mt-6 font-serif text-2xl font-semibold text-jz-white-50">{t("login.title")}</h2>
@@ -133,7 +147,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-blue-800 transition-opacity hover:opacity-90 disabled:opacity-60"
+                className="w-full rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90 disabled:opacity-60"
               >
                 {submitting ? t("login.submitting") : t("login.submit")}
               </button>

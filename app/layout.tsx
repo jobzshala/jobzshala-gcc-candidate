@@ -1,7 +1,22 @@
 import type { Metadata } from "next";
 import { Inter, Fraunces } from "next/font/google";
 import LanguageProvider from "@/lib/i18n/LanguageProvider";
+import ThemeProvider from "@/lib/theme/ThemeProvider";
+import StoreProvider from "@/lib/store/StoreProvider";
 import "./globals.css";
+
+const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem('jobzshala-candidate-theme');if(t!=='light'&&t!=='dark'){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`;
+
+// Redirects an already-authenticated visitor away from the public landing
+// page before it ever paints. This has to live here, in the root layout's
+// <head>, not on the page itself (see components/RedirectIfAuthenticated.tsx
+// history) — a <script> rendered via dangerouslySetInnerHTML inside page
+// content gets inserted through React/RSC's client-side patching, where
+// browsers never execute injected <script> tags; only a script that's part
+// of the very first HTML the browser's own parser sees (the root <head>,
+// same as THEME_INIT_SCRIPT above) reliably runs before paint. Self-scoped
+// to "/" via a runtime pathname check since this fires on every route.
+const REDIRECT_IF_AUTHED_SCRIPT = `(function(){try{if(location.pathname==='/'&&(localStorage.getItem('jobzshala-candidate-session')||sessionStorage.getItem('jobzshala-candidate-session'))){location.replace('/dashboard/profile');}}catch(e){}})();`;
 
 const inter = Inter({
   variable: "--font-inter",
@@ -28,8 +43,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${fraunces.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[#071022]">
-        <LanguageProvider>{children}</LanguageProvider>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: REDIRECT_IF_AUTHED_SCRIPT }} />
+      </head>
+      <body className="min-h-full flex flex-col bg-background">
+        <ThemeProvider>
+          <LanguageProvider>
+            <StoreProvider>{children}</StoreProvider>
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

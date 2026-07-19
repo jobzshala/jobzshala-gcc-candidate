@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useTranslation } from "react-i18next";
-import Button from "./ui/Button";
+import HeaderCta from "./ui/HeaderCta";
 import LanguageSwitcher from "./LanguageSwitcher";
+import ThemeToggle from "./ThemeToggle";
 import Logo from "./ui/Logo";
 import { ChevronDownIcon, CloseIcon, MenuIcon } from "./ui/icons";
 
@@ -27,7 +27,7 @@ export default function Header() {
           <p className="hidden text-[10px] text-jz-white-100 sm:block">{t("nav.tagline")}</p>
         </div>
 
-        <nav className="hidden items-center gap-1 lg:flex">
+        <nav className="hidden items-center gap-1 xl:flex">
           <button type="button" className="flex items-center gap-1 rounded-xl bg-jz-blue-900 px-4 py-2 text-sm text-jz-white-200">
             {t("nav.forEmployers")}
             <ChevronDownIcon className="size-5" />
@@ -39,19 +39,15 @@ export default function Header() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 lg:flex">
-          <Link href="/login" className="rounded-xl px-4 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
-            {t("nav.login")}
-          </Link>
+        <div className="hidden items-center gap-3 xl:flex">
+          <ThemeToggle />
           <LanguageSwitcher />
-          <Button variant="primary" href="/employer/login">
-            {t("nav.cta")}
-          </Button>
+          <HeaderCta />
         </div>
 
         <button
           type="button"
-          className="text-jz-white-100 lg:hidden"
+          className="text-jz-white-100 xl:hidden"
           onClick={() => setMobileOpen((o) => !o)}
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileOpen}
@@ -61,7 +57,7 @@ export default function Header() {
       </div>
 
       {mobileOpen ? (
-        <div className="border-t border-jz-border bg-jz-blue-900 px-4 py-4 lg:hidden">
+        <div className="border-t border-jz-border bg-jz-blue-900 px-4 py-4 xl:hidden">
           <nav className="flex flex-col gap-1">
             <span className="rounded px-3 py-2 text-sm text-jz-white-200">{t("nav.forEmployers")}</span>
             {navLinks.map((link) => (
@@ -70,15 +66,11 @@ export default function Header() {
               </a>
             ))}
           </nav>
-          <Link href="/login" className="rounded px-3 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
-            {t("nav.login")}
-          </Link>
           <div className="mt-4 flex items-center gap-3">
+            <ThemeToggle />
             <LanguageSwitcher />
-            <Button variant="primary" href="/employer/login" className="flex-1">
-              {t("nav.cta")}
-            </Button>
           </div>
+          <HeaderCta stacked className="mt-3" />
         </div>
       ) : null}
     </header>

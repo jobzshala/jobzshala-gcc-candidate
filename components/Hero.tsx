@@ -19,7 +19,7 @@ export default function Hero() {
             </h1>
             <p className="mt-6 max-w-xl text-jz-white-400">{t("hero.subtitle")}</p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <Button variant="primary" href="/employer/login">
+              <Button variant="primary" href="/hire/login">
                 {t("hero.primaryCta")}
               </Button>
               <Button variant="secondary" href="/register">

@@ -15,7 +15,7 @@ const base =
   "inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2 text-sm whitespace-nowrap transition-opacity hover:opacity-90";
 
 const variants: Record<ButtonVariant, string> = {
-  primary: "bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 text-jz-blue-800 font-semibold",
+  primary: "bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 text-jz-ink-on-accent font-semibold",
   secondary: "border border-jz-white-600 text-jz-white-100 font-normal",
 };
 

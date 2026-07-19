@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import Logo from "@/components/ui/Logo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import ThemeToggle from "@/components/ThemeToggle";
 import FormInput from "@/components/ui/FormInput";
 import FormSelect from "@/components/ui/FormSelect";
 import Checkbox from "@/components/ui/Checkbox";
@@ -187,7 +188,10 @@ export default function RegisterPage() {
     <div className="flex flex-1 flex-col bg-jz-blue-950">
       <header className="flex items-center justify-between px-6 py-4 md:px-12">
         <Logo />
-        <LanguageSwitcher />
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <LanguageSwitcher />
+        </div>
       </header>
       <main className="flex-1">
         <div className="mx-auto grid max-w-[1200px] gap-8 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:items-stretch lg:gap-10 lg:px-10 lg:py-20">
@@ -213,12 +217,12 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => setStep("form")}
-                    className="mt-6 w-full rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-blue-800 transition-opacity hover:opacity-90"
+                    className="mt-6 w-full rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
                   >
                     {t("register.roleCardButton")}
                   </button>
                 </div>
-                <a href="/employer/register" className="mt-6 text-sm text-jz-yellow-400 hover:underline">
+                <a href="/hire/register" className="mt-6 text-sm text-jz-yellow-400 hover:underline">
                   {t("register.roleEmployerHref")}
                 </a>
               </div>
@@ -312,7 +316,7 @@ export default function RegisterPage() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-blue-800 transition-opacity hover:opacity-90 disabled:opacity-60"
+                    className="w-full rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90 disabled:opacity-60"
                   >
                     {submitting ? t("register.submitting") : t("register.submit")}
                   </button>
@@ -386,7 +390,7 @@ export default function RegisterPage() {
                   <button
                     type="submit"
                     disabled={otpSubmitting}
-                    className="w-full rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-blue-800 transition-opacity hover:opacity-90 disabled:opacity-60"
+                    className="w-full rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90 disabled:opacity-60"
                   >
                     {otpSubmitting ? t("register.otpSubmitting") : t("register.otpSubmit")}
                   </button>
@@ -412,7 +416,7 @@ export default function RegisterPage() {
                 <p className="mt-2 text-xs text-jz-white-600">{t("register.doneNote")}</p>
                 <Link
                   href="/login"
-                  className="mt-6 inline-flex items-center justify-center rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-5 py-2.5 text-sm font-semibold text-jz-blue-800"
+                  className="mt-6 inline-flex items-center justify-center rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-5 py-2.5 text-sm font-semibold text-jz-ink-on-accent"
                 >
                   {t("register.goToLogin")}
                 </Link>

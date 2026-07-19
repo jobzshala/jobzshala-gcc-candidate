@@ -1,4 +1,4 @@
-import { apiFetch } from "./client";
+import { apiFetch, authFetch } from "./client";
 
 export interface LoginPayload {
   identifier: string;
@@ -58,6 +58,13 @@ export function forgotPassword(email: string): Promise<void> {
   return apiFetch<void>("/auth/forgot-password", {
     method: "POST",
     body: JSON.stringify({ email }),
+  });
+}
+
+export function logout(refreshToken: string): Promise<void> {
+  return authFetch<void>("/auth/logout", {
+    method: "POST",
+    body: JSON.stringify({ refreshToken }),
   });
 }
 

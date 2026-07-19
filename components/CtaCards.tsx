@@ -13,7 +13,7 @@ export default function CtaCards() {
         <div className="flex flex-col justify-center gap-4 rounded-2xl bg-jz-blue-800 p-8">
           <h3 className="font-serif text-2xl font-semibold text-jz-white-50">{t("cta.hire.title")}</h3>
           <p className="text-jz-white-200">{t("cta.hire.body")}</p>
-          <Button variant="primary" href="/employer/login" className="mt-2 self-start">
+          <Button variant="primary" href="/hire/login" className="mt-2 self-start">
             {t("cta.hire.button")}
           </Button>
         </div>
