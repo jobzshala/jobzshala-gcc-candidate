@@ -29,7 +29,6 @@ export default function ProfileSidebarNav() {
         const intersecting = entries.filter((entry) => entry.isIntersecting);
         if (intersecting.length === 0) return;
         const topMost = intersecting.reduce((a, b) => (a.boundingClientRect.top <= b.boundingClientRect.top ? a : b));
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setActive(topMost.target.id);
       },
       { rootMargin: "-100px 0px -70% 0px", threshold: 0 }

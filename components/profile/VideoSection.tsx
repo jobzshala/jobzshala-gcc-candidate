@@ -46,7 +46,7 @@ export default function VideoSection() {
   };
 
   return (
-    <section className="rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6">
+    <section id="video" className="scroll-mt-24 rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6">
       <h2 className="font-serif text-lg font-semibold text-jz-white-50">{t("profile.video.heading")}</h2>
 
       {loading ? null : (

@@ -49,7 +49,7 @@ export default function ResumeSection() {
   };
 
   return (
-    <section className="rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6">
+    <section id="resume" className="scroll-mt-24 rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6">
       <h2 className="font-serif text-lg font-semibold text-jz-white-50">{t("profile.resume.heading")}</h2>
 
       {loading ? null : (

@@ -5,10 +5,9 @@
     "solutions": "Solutions",
     "aboutUs": "About Us",
     "resources": "Resources",
-    "cta": "Request Workforce",
-    "ctaCandidate": "Access GCC Workforce Profile",
     "tagline": "Building Careers. Powering GCC",
-    "login": "Login"
+    "login": "Login",
+    "register": "Register"
   },
   "hero": {
     "title": "The AI-Native Workforce Infrastructure Platform for the GCC",

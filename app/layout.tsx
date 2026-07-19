@@ -42,7 +42,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${fraunces.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${inter.variable} ${fraunces.variable} h-full antialiased`}
+      // THEME_INIT_SCRIPT sets data-theme before hydration on purpose (to
+      // avoid a flash of the wrong theme) — the server render never has this
+      // attribute, since it doesn't know the visitor's stored preference.
+      // That's an intentional, expected mismatch on this one attribute, not
+      // a bug; suppressHydrationWarning tells React not to flag it.
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: REDIRECT_IF_AUTHED_SCRIPT }} />

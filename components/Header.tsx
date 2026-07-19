@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useTranslation } from "react-i18next";
-import HeaderCta from "./ui/HeaderCta";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "./ThemeToggle";
 import Logo from "./ui/Logo";
@@ -22,10 +22,10 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 border-b-2 border-jz-yellow-400 bg-jz-blue-900">
       <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-6 px-4 py-3 sm:px-6 lg:px-10">
-        <div className="flex flex-col gap-1">
+        <Link href="/" className="flex flex-col gap-1">
           <Logo />
           <p className="hidden text-[10px] text-jz-white-100 sm:block">{t("nav.tagline")}</p>
-        </div>
+        </Link>
 
         <nav className="hidden items-center gap-1 xl:flex">
           <button type="button" className="flex items-center gap-1 rounded-xl bg-jz-blue-900 px-4 py-2 text-sm text-jz-white-200">
@@ -42,7 +42,15 @@ export default function Header() {
         <div className="hidden items-center gap-3 xl:flex">
           <ThemeToggle />
           <LanguageSwitcher />
-          <HeaderCta />
+          <Link href="/login" className="rounded-xl px-4 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
+            {t("nav.login")}
+          </Link>
+          <Link
+            href="/register"
+            className="rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
+          >
+            {t("nav.register")}
+          </Link>
         </div>
 
         <button
@@ -70,7 +78,20 @@ export default function Header() {
             <ThemeToggle />
             <LanguageSwitcher />
           </div>
-          <HeaderCta stacked className="mt-3" />
+          <div className="mt-3 flex flex-col gap-2">
+            <Link
+              href="/login"
+              className="rounded-xl border border-jz-white-600 px-4 py-2.5 text-center text-sm text-jz-white-100 hover:opacity-90"
+            >
+              {t("nav.login")}
+            </Link>
+            <Link
+              href="/register"
+              className="rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-center text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
+            >
+              {t("nav.register")}
+            </Link>
+          </div>
         </div>
       ) : null}
     </header>

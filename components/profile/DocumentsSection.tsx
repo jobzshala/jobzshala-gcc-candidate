@@ -91,7 +91,7 @@ export default function DocumentsSection() {
   };
 
   return (
-    <section className="rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6">
+    <section id="documents" className="scroll-mt-24 rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6">
       <div className="flex items-center justify-between">
         <h2 className="font-serif text-lg font-semibold text-jz-white-50">{t("profile.documents.heading")}</h2>
         {!adding && (

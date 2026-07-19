@@ -150,7 +150,7 @@ export default function EducationSection() {
   };
 
   return (
-    <section className="rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6">
+    <section id="education" className="scroll-mt-24 rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6">
       <div className="flex items-center justify-between">
         <h2 className="font-serif text-lg font-semibold text-jz-white-50">{t("profile.education.heading")}</h2>
         {editingId === null && (
