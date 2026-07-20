@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import SectionHeading from "./ui/SectionHeading";
+import Button from "./ui/Button";
 import { SparkleIcon } from "./ui/icons";
 
 export default function WhyChooseUs() {
@@ -33,6 +34,10 @@ export default function WhyChooseUs() {
             <blockquote className="mt-8 border-l-2 border-jz-yellow-400 pl-5 font-serif text-xl italic text-jz-white-100 rtl:border-l-0 rtl:border-r-2 rtl:pl-0 rtl:pr-5">
               “{t("whyChooseUs.quote")}”
             </blockquote>
+
+            <Button variant="primary" href="/hire/login" className="mt-8">
+              {t("hero.primaryCta")}
+            </Button>
           </div>
 
           <div className="relative aspect-[608/527] w-full overflow-hidden rounded-2xl">

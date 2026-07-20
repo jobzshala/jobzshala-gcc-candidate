@@ -11,6 +11,8 @@
   },
   "hero": {
     "title": "The AI-Native Workforce Infrastructure Platform for the GCC",
+    "titleHighlight": "GCC",
+    "tagline": "AI-Native · Workforce Infrastructure · GCC Hiring",
     "subtitle": "Helping GCC employers source, verify, hire, deploy and manage trusted blue-collar workforce across the region — powered by AI, recruiter expertise and end-to-end workforce operations.",
     "primaryCta": "Request Workforce",
     "secondaryCta": "Create GCC Workforce Profile",
@@ -99,7 +101,9 @@
   },
   "abuDhabi": {
     "heading": "Built for Abu Dhabi. Built for the GCC.",
-    "body": "Abu Dhabi is building one of the world’s most innovation-driven economies. Jobzshala strengthens one of its most important growth enablers: trusted workforce infrastructure. Our ambition: help businesses hire faster, improve workforce productivity, and enable seamless workforce mobility across the GCC."
+    "headingHighlight": "GCC",
+    "body": "Abu Dhabi is building one of the world’s most innovation-driven economies. Jobzshala strengthens one of its most important growth enablers: trusted workforce infrastructure. Our ambition: help businesses hire faster, improve workforce productivity, and enable seamless workforce mobility across the GCC.",
+    "bodyHighlight": "trusted workforce infrastructure"
   },
   "vision": {
     "heading": "Our Vision",

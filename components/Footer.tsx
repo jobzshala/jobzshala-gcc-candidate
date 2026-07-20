@@ -1,9 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import Logo from "./ui/Logo";
 
 const COUNTRY_FLAGS = ["🇦🇪", "🇸🇦", "🇶🇦", "🇴🇲", "🇰🇼", "🇧🇭"];
+
+// Index-matched to footer.legal.links (Privacy Policy, Terms & Conditions, Refund Policy, Cookie Policy).
+const LEGAL_LINK_HREFS = ["/privacy-policy", "/terms-conditions", "/refund-policy", "/cookie-policy"];
 
 type LinkGroup = { title: string; links: string[] };
 
@@ -31,13 +35,22 @@ export default function Footer() {
               <div key={group.title}>
                 <h4 className="text-sm font-semibold text-jz-white-50">{group.title}</h4>
                 <ul className="mt-3 flex flex-col gap-2">
-                  {group.links.map((link) => (
-                    <li key={link}>
-                      <a href="#" className="text-sm text-jz-white-400 hover:text-jz-yellow-400">
-                        {link}
-                      </a>
-                    </li>
-                  ))}
+                  {group.links.map((link, i) => {
+                    const href = group === legal ? LEGAL_LINK_HREFS[i] : undefined;
+                    return (
+                      <li key={link}>
+                        {href ? (
+                          <Link href={href} className="text-sm text-jz-white-400 hover:text-jz-yellow-400">
+                            {link}
+                          </Link>
+                        ) : (
+                          <a href="#" className="text-sm text-jz-white-400 hover:text-jz-yellow-400">
+                            {link}
+                          </a>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             ))}

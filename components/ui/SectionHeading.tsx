@@ -18,7 +18,9 @@ export default function SectionHeading({ heading, highlight, subheading, align =
           </>
         ) : null}
       </h2>
-      {subheading ? <p className="mt-3 max-w-2xl text-jz-white-400 text-base">{subheading}</p> : null}
+      {subheading ? (
+        <p className={`mt-3 max-w-2xl text-jz-white-400 text-base ${align === "center" ? "mx-auto" : ""}`}>{subheading}</p>
+      ) : null}
     </div>
   );
 }

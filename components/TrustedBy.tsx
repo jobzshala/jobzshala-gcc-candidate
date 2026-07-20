@@ -35,11 +35,16 @@ export default function TrustedBy() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-wrap gap-x-12 gap-y-8 border-y border-jz-grey-400 py-8">
-          {stats.map((stat) => (
-            <div key={stat.label}>
-              <p className="font-serif text-4xl font-medium text-jz-white-100">{stat.value}</p>
-              <p className="mt-2 text-sm text-jz-white-600">{stat.label}</p>
+        <div className="mt-12 grid grid-cols-2 divide-y divide-jz-grey-400 overflow-hidden rounded-2xl border border-jz-grey-400 bg-gradient-to-r from-jz-bg-primary to-jz-blue-900 sm:grid-cols-3 sm:divide-y-0 md:grid-cols-5">
+          {stats.map((stat, i) => (
+            <div
+              key={stat.label}
+              className={`flex flex-col items-center justify-center gap-1 px-4 py-7 text-center ${
+                i !== 0 ? "sm:border-l sm:border-jz-grey-400" : ""
+              }`}
+            >
+              <p className="font-serif text-3xl font-semibold text-jz-white-50 sm:text-4xl">{stat.value}</p>
+              <p className="mt-1 text-xs text-jz-white-600">{stat.label}</p>
             </div>
           ))}
         </div>
