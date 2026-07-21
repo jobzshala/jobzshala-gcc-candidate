@@ -16,7 +16,7 @@ const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem('jobzshala
 // of the very first HTML the browser's own parser sees (the root <head>,
 // same as THEME_INIT_SCRIPT above) reliably runs before paint. Self-scoped
 // to "/" via a runtime pathname check since this fires on every route.
-const REDIRECT_IF_AUTHED_SCRIPT = `(function(){try{if(location.pathname==='/'&&(localStorage.getItem('jobzshala-candidate-session')||sessionStorage.getItem('jobzshala-candidate-session'))){location.replace('/dashboard/profile');}}catch(e){}})();`;
+const REDIRECT_IF_AUTHED_SCRIPT = `(function(){try{if(location.pathname==='/'){var raw=localStorage.getItem('jobzshala-candidate-session')||sessionStorage.getItem('jobzshala-candidate-session');if(raw){var target='/dashboard/profile';try{var s=JSON.parse(raw);if(s&&s.candidate&&s.candidate.must_change_password){target='/change-password';}}catch(e){}location.replace(target);}}}catch(e){}})();`;
 
 const inter = Inter({
   variable: "--font-inter",

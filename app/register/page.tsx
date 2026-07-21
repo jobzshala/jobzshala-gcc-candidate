@@ -12,6 +12,7 @@ import Checkbox from "@/components/ui/Checkbox";
 import { GoogleIcon, ShieldCheckIcon, WhatsAppIcon } from "@/components/ui/icons";
 import { registerCandidate, sendRegistrationOtp, verifyRegistrationOtp } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
+import { COUNTRY_DIAL_CODES, DEFAULT_COUNTRY_DIAL_CODE } from "@/lib/countryDialCodes";
 
 const MOBILE_PATTERN = /^[0-9]{10}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -33,10 +34,12 @@ export default function RegisterPage() {
     full_name: "",
     age: "",
     gender: "",
+    country_code: DEFAULT_COUNTRY_DIAL_CODE.dialCode,
     mobile_number: "",
     email: "",
   });
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [marketingConsent, setMarketingConsent] = useState(false);
   const [resumeName, setResumeName] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
@@ -53,6 +56,11 @@ export default function RegisterPage() {
     { value: "FEMALE", label: t("register.genderOptions.female") },
     { value: "OTHER", label: t("register.genderOptions.other") },
   ];
+
+  const countryCodeOptions = COUNTRY_DIAL_CODES.map((c) => ({
+    value: c.dialCode,
+    label: `${c.name} (${c.dialCode})`,
+  }));
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -93,6 +101,9 @@ export default function RegisterPage() {
     if (!form.gender) {
       errors.gender = t("register.errors.gender");
     }
+    if (!form.country_code) {
+      errors.country_code = t("register.errors.countryCode");
+    }
     if (!MOBILE_PATTERN.test(form.mobile_number)) {
       errors.mobile_number = t("register.errors.mobile");
     }
@@ -113,6 +124,7 @@ export default function RegisterPage() {
         full_name: form.full_name.trim(),
         age: ageNum,
         gender: form.gender as "MALE" | "FEMALE" | "OTHER",
+        country_code: form.country_code,
         mobile_number: form.mobile_number,
         email: form.email.trim(),
       });
@@ -129,10 +141,12 @@ export default function RegisterPage() {
     formData.set("full_name", form.full_name.trim());
     formData.set("age", form.age);
     formData.set("gender", form.gender);
+    formData.set("country_code", form.country_code);
     formData.set("mobile_number", form.mobile_number);
     formData.set("email", form.email.trim());
     formData.set("source", "WEBSITE");
     formData.set("otp_token", verifyToken);
+    formData.set("marketing_consent", String(marketingConsent));
     const file = fileInputRef.current?.files?.[0];
     if (file) {
       formData.set("resume", file);
@@ -171,6 +185,7 @@ export default function RegisterPage() {
         full_name: form.full_name.trim(),
         age: Number(form.age),
         gender: form.gender as "MALE" | "FEMALE" | "OTHER",
+        country_code: form.country_code,
         mobile_number: form.mobile_number,
         email: form.email.trim(),
       });
@@ -269,16 +284,32 @@ export default function RegisterPage() {
                     />
                   </div>
 
-                  <FormInput
-                    label={t("register.mobileLabel")}
-                    value={form.mobile_number}
-                    onChange={(e) =>
-                      setForm((prev) => ({ ...prev, mobile_number: e.target.value.replace(/\D/g, "").slice(0, 10) }))
-                    }
-                    placeholder={t("register.mobilePlaceholder")}
-                    inputMode="numeric"
-                    error={fieldErrors.mobile_number}
-                  />
+                  <div>
+                    <label className="mb-1.5 block text-sm text-jz-white-200">{t("register.mobileLabel")}</label>
+                    <div className="flex gap-2">
+                      <FormSelect
+                        value={form.country_code}
+                        onChange={(e) => setForm((prev) => ({ ...prev, country_code: e.target.value }))}
+                        options={countryCodeOptions}
+                        className={`w-32 shrink-0 ${fieldErrors.country_code ? "border-jz-red-600" : ""}`}
+                        aria-label={t("register.countryCodeLabel")}
+                      />
+                      <FormInput
+                        value={form.mobile_number}
+                        onChange={(e) =>
+                          setForm((prev) => ({ ...prev, mobile_number: e.target.value.replace(/\D/g, "").slice(0, 10) }))
+                        }
+                        placeholder={t("register.mobilePlaceholder")}
+                        inputMode="numeric"
+                        className={`flex-1 ${fieldErrors.mobile_number ? "border-jz-red-600" : ""}`}
+                      />
+                    </div>
+                    {(fieldErrors.country_code || fieldErrors.mobile_number) && (
+                      <p className="mt-1 text-xs text-jz-red-600">
+                        {fieldErrors.country_code || fieldErrors.mobile_number}
+                      </p>
+                    )}
+                  </div>
 
                   <FormInput
                     label={t("register.emailLabel")}
@@ -314,6 +345,12 @@ export default function RegisterPage() {
                     />
                     {fieldErrors.acceptedTerms && <p className="mt-1 text-xs text-jz-red-600">{fieldErrors.acceptedTerms}</p>}
                   </div>
+
+                  <Checkbox
+                    label={t("register.marketingConsent")}
+                    checked={marketingConsent}
+                    onChange={(e) => setMarketingConsent(e.target.checked)}
+                  />
 
                   <button
                     type="submit"

@@ -58,7 +58,11 @@ export default function LoginPage() {
       saveSession(result, keepSignedIn);
       setPersistMode(keepSignedIn);
       dispatch(setSession(result));
-      window.location.href = "/dashboard/profile";
+      // First login on the emailed temporary password: force a password
+      // change before anything else (dashboard/layout.tsx enforces it too).
+      window.location.href = result.candidate.must_change_password
+        ? "/change-password"
+        : "/dashboard/profile";
     } catch (err) {
       if (err instanceof ApiError) {
         setFieldErrors(err.fieldErrors ?? {});

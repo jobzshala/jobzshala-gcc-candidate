@@ -10,6 +10,9 @@ export interface CandidateSummary {
   full_name: string;
   mobile_number: string;
   email: string;
+  // True while the candidate is still on the emailed temporary password —
+  // the app forces them through /change-password before anything else.
+  must_change_password?: boolean;
 }
 
 export interface LoginResult {
@@ -36,6 +39,7 @@ export interface SendRegistrationOtpPayload {
   full_name: string;
   age: number;
   gender: "MALE" | "FEMALE" | "OTHER";
+  country_code: string;
   mobile_number: string;
   email: string;
 }
@@ -78,5 +82,19 @@ export function resetPassword({ token, password, confirmPassword }: ResetPasswor
   return apiFetch<void>(`/auth/reset-password?token=${encodeURIComponent(token)}`, {
     method: "POST",
     body: JSON.stringify({ password, confirmPassword }),
+  });
+}
+
+export interface ChangePasswordPayload {
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+// Returns a fresh session (old refresh tokens are revoked server-side).
+export function changePassword(payload: ChangePasswordPayload): Promise<LoginResult> {
+  return authFetch<LoginResult>("/auth/change-password", {
+    method: "POST",
+    body: JSON.stringify(payload),
   });
 }

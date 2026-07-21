@@ -23,8 +23,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   useEffect(() => {
     if (!session.accessToken) {
       window.location.href = "/login";
+    } else if (session.candidate?.must_change_password) {
+      // Still on the emailed temporary password — nothing in the dashboard
+      // is reachable until they set their own.
+      window.location.href = "/change-password";
     }
-  }, [session.accessToken]);
+  }, [session.accessToken, session.candidate?.must_change_password]);
 
   const handleLogout = async () => {
     if (session.refreshToken) {
@@ -39,8 +43,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     window.location.href = "/login";
   };
 
-  if (!session.accessToken || !session.candidate) {
-    // Genuinely logged out — the redirect effect above is already firing.
+  if (!session.accessToken || !session.candidate || session.candidate.must_change_password) {
+    // Logged out or still on the temporary password — the redirect effect
+    // above is already firing.
     return null;
   }
 
