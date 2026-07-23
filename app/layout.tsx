@@ -45,6 +45,10 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${fraunces.variable} h-full antialiased`}
+      // Tells Next.js the smooth scrolling set on `html` in globals.css is
+      // intentional, so it skips resetting it to `auto` during route
+      // transitions (and stops warning about it).
+      data-scroll-behavior="smooth"
       // THEME_INIT_SCRIPT sets data-theme before hydration on purpose (to
       // avoid a flash of the wrong theme) — the server render never has this
       // attribute, since it doesn't know the visitor's stored preference.

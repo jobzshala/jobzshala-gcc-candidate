@@ -3,6 +3,10 @@ import { forwardRef, SelectHTMLAttributes } from "react";
 export interface FormSelectOption {
   value: string;
   label: string;
+  // Falls back to `value` for the render key — set this explicitly when
+  // `value` isn't unique across options (e.g. multiple countries sharing
+  // the same dial code).
+  key?: string;
 }
 
 interface FormSelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, "children"> {
@@ -37,7 +41,7 @@ const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
             </option>
           )}
           {options.map((opt) => (
-            <option key={opt.value} value={opt.value} className="bg-jz-blue-900">
+            <option key={opt.key ?? opt.value} value={opt.value} className="bg-jz-blue-900">
               {opt.label}
             </option>
           ))}

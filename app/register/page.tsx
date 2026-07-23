@@ -58,6 +58,7 @@ export default function RegisterPage() {
   ];
 
   const countryCodeOptions = COUNTRY_DIAL_CODES.map((c) => ({
+    key: c.iso2,
     value: c.dialCode,
     label: `${c.name} (${c.dialCode})`,
   }));
@@ -203,7 +204,7 @@ export default function RegisterPage() {
     <div className="flex flex-1 flex-col bg-jz-blue-950">
       <header className="flex items-center justify-between px-6 py-4 md:px-12">
         <Link href="/">
-          <Logo />
+          <Logo priority />
         </Link>
         <div className="flex items-center gap-3">
           <ThemeToggle />
