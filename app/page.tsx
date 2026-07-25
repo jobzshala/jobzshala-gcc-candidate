@@ -15,6 +15,7 @@ import OurVision from "@/components/OurVision";
 import CtaCards from "@/components/CtaCards";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
+import HashScrollFix from "@/components/HashScrollFix";
 import { SITE_DESCRIPTION, serviceSchema } from "@/lib/seo";
 
 export const metadata = {
@@ -31,6 +32,7 @@ export default function Home() {
       {/* Describes the actual offering, so search and AI answer engines can
           state what Jobzshala does and where, rather than inferring it. */}
       <JsonLd schema={serviceSchema()} />
+      <HashScrollFix />
       <Header />
       <main className="flex-1">
         <Hero />

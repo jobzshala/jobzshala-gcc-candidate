@@ -13,7 +13,7 @@ const COUNTRY_CODES: GccCountryCode[] = ["AE", "SA", "QA", "OM", "KW", "BH"];
 const LEGAL_LINK_HREFS = ["/privacy-policy", "/terms-conditions", "/refund-policy", "/cookie-policy"];
 
 // Index-matched to footer.company.links (About Us, Contact Us, Blog, Careers, Success Stories, Pricing).
-const COMPANY_LINK_HREFS = [undefined, "/contact-us", "/blog", undefined, "/success-stories", "/pricing"];
+const COMPANY_LINK_HREFS = ["/about-us", "/contact-us", "/blog", undefined, "/success-stories", "/pricing"];
 
 type LinkGroup = { title: string; links: string[] };
 

@@ -69,6 +69,8 @@ export const PUBLIC_ROUTES: {
   priority: number;
 }[] = [
   { path: "/", label: "Home", group: "Platform", changeFrequency: "weekly", priority: 1 },
+  { path: "/about-us", label: "About Us", group: "Platform", changeFrequency: "monthly", priority: 0.7 },
+  { path: "/contact-us", label: "Contact Us", group: "Platform", changeFrequency: "monthly", priority: 0.6 },
   { path: "/pricing", label: "Pricing", group: "Platform", changeFrequency: "monthly", priority: 0.9 },
   { path: "/register", label: "Create a GCC Workforce Profile", group: "Platform", changeFrequency: "monthly", priority: 0.9 },
   { path: "/success-stories", label: "Success Stories", group: "Platform", changeFrequency: "weekly", priority: 0.8 },

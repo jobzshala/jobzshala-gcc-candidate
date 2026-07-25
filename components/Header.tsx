@@ -96,9 +96,9 @@ export default function Header() {
           <NavDropdown label={t("nav.forEmployers")} items={EMPLOYER_ITEMS} />
           <NavDropdown label={t("nav.forCandidates")} items={CANDIDATE_ITEMS} />
           <NavDropdown label={t("nav.solutions")} items={SOLUTIONS_ITEMS} />
-          <a href="#" className="rounded px-4 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
+          <Link href="/about-us" className="rounded px-4 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
             {t("nav.aboutUs")}
-          </a>
+          </Link>
           <NavDropdown label={t("nav.resources")} items={RESOURCES_ITEMS} />
         </nav>
 
@@ -163,9 +163,9 @@ export default function Header() {
             ))}
 
             <div className="flex flex-col gap-1 border-t border-jz-border pt-3">
-              <a href="#" className="rounded px-3 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
+              <Link href="/about-us" className="rounded px-3 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
                 {t("nav.aboutUs")}
-              </a>
+              </Link>
             </div>
           </nav>
           <div className="mt-4 flex items-center gap-3">
