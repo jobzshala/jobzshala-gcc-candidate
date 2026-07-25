@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 const SECTIONS = [
   { id: "personal-details", labelKey: "profile.personalDetails.heading" },
+  { id: "profile-summary", labelKey: "profile.summary.heading" },
   { id: "career-preference", labelKey: "profile.careerPreference.heading" },
   { id: "employment", labelKey: "profile.employment.heading" },
   { id: "education", labelKey: "profile.education.heading" },
@@ -47,7 +48,7 @@ export default function ProfileSidebarNav() {
               href={`#${section.id}`}
               className={`block border-l-2 py-2 pl-4 text-sm transition-colors ${
                 active === section.id
-                  ? "border-jz-yellow-400 font-medium text-jz-yellow-400"
+                  ? "border-[#8FD13F] font-medium text-[#8FD13F]"
                   : "border-transparent text-jz-white-400 hover:text-jz-white-100"
               }`}
             >

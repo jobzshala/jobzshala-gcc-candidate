@@ -12,7 +12,9 @@ export interface CandidateProfile {
   id: number;
   full_name: string;
   mobile_number: string;
+  is_mobile_verified: boolean;
   email: string | null;
+  is_email_verified: boolean;
   gender: Gender | null;
   age: number | null;
   date_of_birth: string | null;
@@ -20,16 +22,21 @@ export interface CandidateProfile {
   address_line_1: string | null;
   address_line_2: string | null;
   pincode: string | null;
+  summary: string | null;
+  ai_summary: string | null;
   city: LookupRef | null;
   region: LookupRef | null;
   current_country: LookupRef | null;
   preferred_country: LookupRef | null;
   job_title: LookupRef | null;
   job_functional_area: LookupRef | null;
+  job_industry: LookupRef | null;
+  job_department: LookupRef | null;
   // Prisma Decimal fields serialize to JSON as strings, not numbers.
   experience_years: number | string | null;
   current_salary: number | string | null;
   expected_salary: number | string | null;
+  has_gcc_experience: boolean | null;
   passport_status: string;
   kyc_status: string;
   status: string;
@@ -58,6 +65,7 @@ export interface UpdatePersonalDetailsPayload {
   address_line_1?: string | null;
   address_line_2?: string | null;
   pincode?: string | null;
+  summary?: string | null;
 }
 
 // The PUT response is the raw candidate_details row (no relation includes),
@@ -71,13 +79,29 @@ export function updatePersonalDetails(payload: UpdatePersonalDetailsPayload): Pr
   });
 }
 
+export function sendEmailVerificationOtp(): Promise<unknown> {
+  return authFetch<unknown>("/candidate/profile/verify-email/send-otp", {
+    method: "POST",
+  });
+}
+
+export function confirmEmailVerificationOtp(otp: string): Promise<unknown> {
+  return authFetch<unknown>("/candidate/profile/verify-email/confirm-otp", {
+    method: "POST",
+    body: JSON.stringify({ otp }),
+  });
+}
+
 export interface UpdateCareerPreferencePayload {
   job_title_id?: number | null;
   job_functional_area_id?: number | null;
+  job_industry_id?: number | null;
+  job_department_id?: number | null;
   preferred_country_id?: number | null;
   experience_years?: number | null;
   current_salary?: number | null;
   expected_salary?: number | null;
+  has_gcc_experience?: boolean | null;
 }
 
 // Same caveat as updatePersonalDetails above — re-fetch getProfile() after a
@@ -126,8 +150,17 @@ export function getJobTitles(params: { search?: string; jobFunctionalAreaId?: nu
   return authFetch<JobTitleOption[]>(`/candidate/masters/job-titles${qs ? `?${qs}` : ""}`);
 }
 
-export function getJobFunctionalAreas(): Promise<LookupRef[]> {
-  return authFetch<LookupRef[]>("/candidate/masters/job-functional-areas");
+export function getJobIndustries(): Promise<LookupRef[]> {
+  return authFetch<LookupRef[]>("/candidate/masters/job-industries");
+}
+
+export function getJobFunctionalAreas(jobIndustryId?: number): Promise<LookupRef[]> {
+  const query = jobIndustryId ? `?job_industry_id=${jobIndustryId}` : "";
+  return authFetch<LookupRef[]>(`/candidate/masters/job-functional-areas${query}`);
+}
+
+export function getJobDepartments(jobFunctionalAreaId: number): Promise<LookupRef[]> {
+  return authFetch<LookupRef[]>(`/candidate/masters/job-departments?job_functional_area_id=${jobFunctionalAreaId}`);
 }
 
 export function getLanguagesMaster(): Promise<LookupRef[]> {

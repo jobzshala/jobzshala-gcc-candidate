@@ -18,7 +18,7 @@ export default function IndustriesWePower() {
               key={industry}
               className="flex items-center gap-2 rounded-2xl border border-jz-grey-400 bg-jz-bg-primary px-4 py-2.5 text-sm text-jz-white-50"
             >
-              <span aria-hidden="true" className="size-1.5 rounded-full bg-jz-yellow-400" />
+              <span aria-hidden="true" className="size-1.5 rounded-full bg-jz-white-50" />
               {industry}
             </span>
           ))}

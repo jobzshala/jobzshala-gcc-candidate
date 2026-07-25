@@ -14,7 +14,7 @@ export default function SectionHeading({ heading, highlight, subheading, align =
         {highlight ? (
           <>
             {" "}
-            <span className="italic text-jz-yellow-400">{highlight}</span>
+            <span className="italic text-jz-blue-400">{highlight}</span>
           </>
         ) : null}
       </h2>

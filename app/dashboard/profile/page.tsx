@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
+import { UserIcon, SparkleIcon, TargetIcon } from "@/components/ui/icons";
 import FormInput from "@/components/ui/FormInput";
 import FormSelect from "@/components/ui/FormSelect";
+import FormTextarea from "@/components/ui/FormTextarea";
+import Checkbox from "@/components/ui/Checkbox";
 import ProfileTopBar from "@/components/profile/ProfileTopBar";
 import ProfileSidebarNav from "@/components/profile/ProfileSidebarNav";
 import EmploymentSection from "@/components/profile/EmploymentSection";
@@ -12,6 +15,7 @@ import LanguagesSection from "@/components/profile/LanguagesSection";
 import ResumeSection from "@/components/profile/ResumeSection";
 import VideoSection from "@/components/profile/VideoSection";
 import DocumentsSection from "@/components/profile/DocumentsSection";
+import { getProfileCompletion } from "@/lib/profileCompletion";
 import { ApiError } from "@/lib/api/client";
 import {
   getProfile,
@@ -20,8 +24,14 @@ import {
   getCountries,
   getRegions,
   getCities,
+  getJobIndustries,
   getJobFunctionalAreas,
+  getJobDepartments,
   getJobTitles,
+  getEmploymentHistory,
+  getEducationHistory,
+  getLanguages,
+  getDocuments,
   type CandidateProfile,
   type CountryOption,
   type RegionOption,
@@ -47,12 +57,15 @@ type PersonalForm = {
 };
 
 type CareerForm = {
+  job_industry_id: string;
   job_functional_area_id: string;
+  job_department_id: string;
   job_title_id: string;
   preferred_country_id: string;
   experience_years: string;
   current_salary: string;
   expected_salary: string;
+  has_gcc_experience: boolean;
 };
 
 const toDateInputValue = (value: string | null): string => (value ? value.slice(0, 10) : "");
@@ -75,12 +88,15 @@ const personalFormFromProfile = (profile: CandidateProfile): PersonalForm => ({
 });
 
 const careerFormFromProfile = (profile: CandidateProfile): CareerForm => ({
+  job_industry_id: profile.job_industry ? String(profile.job_industry.id) : "",
   job_functional_area_id: profile.job_functional_area ? String(profile.job_functional_area.id) : "",
+  job_department_id: profile.job_department ? String(profile.job_department.id) : "",
   job_title_id: profile.job_title ? String(profile.job_title.id) : "",
   preferred_country_id: profile.preferred_country ? String(profile.preferred_country.id) : "",
   experience_years: toDisplayValue(profile.experience_years),
   current_salary: toDisplayValue(profile.current_salary),
   expected_salary: toDisplayValue(profile.expected_salary),
+  has_gcc_experience: profile.has_gcc_experience ?? false,
 });
 
 function ViewField({ label, value }: { label: string; value: string | null }) {
@@ -99,9 +115,17 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<CandidateProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
+  const [completionCounts, setCompletionCounts] = useState({
+    employmentCount: 0,
+    educationCount: 0,
+    languagesCount: 0,
+    documentsCount: 0,
+  });
 
   const [countries, setCountries] = useState<CountryOption[]>([]);
+  const [jobIndustries, setJobIndustries] = useState<LookupRef[]>([]);
   const [jobFunctionalAreas, setJobFunctionalAreas] = useState<LookupRef[]>([]);
+  const [careerDepartments, setCareerDepartments] = useState<LookupRef[]>([]);
 
   const [editingPersonal, setEditingPersonal] = useState(false);
   const [personalForm, setPersonalForm] = useState<PersonalForm | null>(null);
@@ -110,6 +134,11 @@ export default function ProfilePage() {
   const [personalErrors, setPersonalErrors] = useState<Record<string, string>>({});
   const [personalSaveError, setPersonalSaveError] = useState("");
   const [savingPersonal, setSavingPersonal] = useState(false);
+
+  const [editingSummary, setEditingSummary] = useState(false);
+  const [summaryForm, setSummaryForm] = useState("");
+  const [summarySaveError, setSummarySaveError] = useState("");
+  const [savingSummary, setSavingSummary] = useState(false);
 
   const [editingCareer, setEditingCareer] = useState(false);
   const [careerForm, setCareerForm] = useState<CareerForm | null>(null);
@@ -122,7 +151,20 @@ export default function ProfilePage() {
     setLoading(true);
     setLoadError(false);
     try {
-      setProfile(await getProfile());
+      const [profileData, employment, education, languages, documents] = await Promise.all([
+        getProfile(),
+        getEmploymentHistory(),
+        getEducationHistory(),
+        getLanguages(),
+        getDocuments(),
+      ]);
+      setProfile(profileData);
+      setCompletionCounts({
+        employmentCount: employment.length,
+        educationCount: education.length,
+        languagesCount: languages.length,
+        documentsCount: documents.length,
+      });
     } catch {
       setLoadError(true);
     } finally {
@@ -147,6 +189,20 @@ export default function ProfilePage() {
   }, []);
 
   useEffect(() => {
+    // Sections only exist in the DOM once loading clears, so a same-navigation
+    // `#section-id` hash (e.g. from the dashboard overview's quick links)
+    // targets an element that doesn't exist yet when Next.js's router tries
+    // to scroll to it — it silently gives up instead of retrying. Do the
+    // scroll ourselves once the real content has painted.
+    if (loading || !profile || !window.location.hash) return;
+    const id = window.location.hash.slice(1);
+    const raf = requestAnimationFrame(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [loading, profile]);
+
+  useEffect(() => {
     if (!editingPersonal && !editingCareer) return;
     if (countries.length > 0) return;
     getCountries()
@@ -155,11 +211,33 @@ export default function ProfilePage() {
   }, [editingPersonal, editingCareer, countries.length]);
 
   useEffect(() => {
-    if (!editingCareer || jobFunctionalAreas.length > 0) return;
-    getJobFunctionalAreas()
+    if (!editingCareer || jobIndustries.length > 0) return;
+    getJobIndustries()
+      .then(setJobIndustries)
+      .catch(() => setJobIndustries([]));
+  }, [editingCareer, jobIndustries.length]);
+
+  useEffect(() => {
+    if (!editingCareer || !careerForm?.job_industry_id) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setJobFunctionalAreas([]);
+      return;
+    }
+    getJobFunctionalAreas(Number(careerForm.job_industry_id))
       .then(setJobFunctionalAreas)
       .catch(() => setJobFunctionalAreas([]));
-  }, [editingCareer, jobFunctionalAreas.length]);
+  }, [editingCareer, careerForm?.job_industry_id]);
+
+  useEffect(() => {
+    if (!editingCareer || !careerForm?.job_functional_area_id) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setCareerDepartments([]);
+      return;
+    }
+    getJobDepartments(Number(careerForm.job_functional_area_id))
+      .then(setCareerDepartments)
+      .catch(() => setCareerDepartments([]));
+  }, [editingCareer, careerForm?.job_functional_area_id]);
 
   useEffect(() => {
     if (!editingPersonal || !personalForm?.current_country_id) {
@@ -213,6 +291,28 @@ export default function ProfilePage() {
     setEditingCareer(true);
   };
 
+  const startEditSummary = () => {
+    if (!profile) return;
+    setSummaryForm(profile.summary ?? "");
+    setSummarySaveError("");
+    setEditingSummary(true);
+  };
+
+  const submitSummary = async (e: FormEvent) => {
+    e.preventDefault();
+    setSummarySaveError("");
+    setSavingSummary(true);
+    try {
+      await updatePersonalDetails({ summary: summaryForm.trim() || null });
+      await refreshProfile();
+      setEditingSummary(false);
+    } catch (err) {
+      setSummarySaveError(err instanceof ApiError ? err.message : t("profile.saveError"));
+    } finally {
+      setSavingSummary(false);
+    }
+  };
+
   const submitPersonal = async (e: FormEvent) => {
     e.preventDefault();
     if (!personalForm) return;
@@ -258,12 +358,15 @@ export default function ProfilePage() {
     setSavingCareer(true);
     try {
       await updateCareerPreference({
+        job_industry_id: careerForm.job_industry_id ? Number(careerForm.job_industry_id) : null,
         job_functional_area_id: careerForm.job_functional_area_id ? Number(careerForm.job_functional_area_id) : null,
+        job_department_id: careerForm.job_department_id ? Number(careerForm.job_department_id) : null,
         job_title_id: careerForm.job_title_id ? Number(careerForm.job_title_id) : null,
         preferred_country_id: careerForm.preferred_country_id ? Number(careerForm.preferred_country_id) : null,
         experience_years: careerForm.experience_years ? Number(careerForm.experience_years) : null,
         current_salary: careerForm.current_salary ? Number(careerForm.current_salary) : null,
         expected_salary: careerForm.expected_salary ? Number(careerForm.expected_salary) : null,
+        has_gcc_experience: careerForm.has_gcc_experience,
       });
       await refreshProfile();
       setEditingCareer(false);
@@ -282,7 +385,9 @@ export default function ProfilePage() {
   const countryOptions = countries.map((c) => ({ value: String(c.id), label: c.name }));
   const regionOptions = personalRegions.map((r) => ({ value: String(r.id), label: r.name }));
   const cityOptions = personalCities.map((c) => ({ value: String(c.id), label: c.name }));
+  const jobIndustryOptions = jobIndustries.map((i) => ({ value: String(i.id), label: i.name }));
   const jobFunctionalAreaOptions = jobFunctionalAreas.map((a) => ({ value: String(a.id), label: a.name }));
+  const jobDepartmentOptions = careerDepartments.map((d) => ({ value: String(d.id), label: d.name }));
   const jobTitleOptions = careerJobTitles.map((jt) => ({ value: String(jt.id), label: jt.name }));
 
   const genderOptions = [
@@ -290,6 +395,11 @@ export default function ProfilePage() {
     { value: "FEMALE", label: t("profile.personalDetails.genderOptions.female") },
     { value: "OTHER", label: t("profile.personalDetails.genderOptions.other") },
   ];
+
+  const completion = useMemo(
+    () => (profile ? getProfileCompletion({ profile, ...completionCounts }) : null),
+    [profile, completionCounts]
+  );
 
   const maritalStatusOptions = [
     { value: "SINGLE", label: t("profile.personalDetails.maritalStatusOptions.single") },
@@ -324,7 +434,7 @@ export default function ProfilePage() {
         </>
       ) : (
         <>
-          <ProfileTopBar profile={profile} />
+          <ProfileTopBar profile={profile} completionPercent={completion?.percent} />
 
           <div className="mt-6 flex items-start gap-6">
             <ProfileSidebarNav />
@@ -333,7 +443,12 @@ export default function ProfilePage() {
               {/* Personal Details */}
               <section id="personal-details" className="scroll-mt-24 rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6">
                 <div className="flex items-center justify-between">
-                  <h2 className="font-serif text-lg font-semibold text-jz-white-50">{t("profile.personalDetails.heading")}</h2>
+                  <div className="flex items-center gap-2.5">
+                    <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#4ADE80]/15 text-[#8FD13F]">
+                      <UserIcon className="size-4" />
+                    </span>
+                    <h2 className="font-serif text-lg font-semibold text-jz-white-50">{t("profile.personalDetails.heading")}</h2>
+                  </div>
                   {!editingPersonal && (
                     <button
                       type="button"
@@ -498,10 +613,84 @@ export default function ProfilePage() {
                 )}
               </section>
 
-              {/* Career Preference */}
+              {/* Profile Summary */}
+              <section id="profile-summary" className="scroll-mt-24 rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#4ADE80]/15 text-[#8FD13F]">
+                      <SparkleIcon className="size-4" />
+                    </span>
+                    <h2 className="font-serif text-lg font-semibold text-jz-white-50">{t("profile.summary.heading")}</h2>
+                  </div>
+                  {!editingSummary && (
+                    <button
+                      type="button"
+                      onClick={startEditSummary}
+                      className="rounded-xl border border-jz-white-600 px-3.5 py-1.5 text-sm text-jz-white-100 hover:opacity-90"
+                    >
+                      {t("profile.edit")}
+                    </button>
+                  )}
+                </div>
+
+                {profile.ai_summary && (
+                  <div className="mt-5 rounded-xl border border-jz-yellow-400/30 bg-jz-yellow-400/10 p-4">
+                    <p className="text-xs font-medium text-jz-yellow-400">{t("profile.summary.aiGeneratedLabel")}</p>
+                    <p className="mt-1.5 whitespace-pre-line text-sm text-jz-white-100">{profile.ai_summary}</p>
+                  </div>
+                )}
+
+                {editingSummary ? (
+                  <form onSubmit={submitSummary} className="mt-5 space-y-4">
+                    {summarySaveError && (
+                      <div className="rounded-lg border border-jz-red-600/40 bg-jz-red-600/10 px-3.5 py-2.5 text-sm text-jz-white-100">
+                        {summarySaveError}
+                      </div>
+                    )}
+                    <FormTextarea
+                      label={t("profile.summary.yourSummaryLabel")}
+                      placeholder={t("profile.summary.placeholder")}
+                      value={summaryForm}
+                      onChange={(e) => setSummaryForm(e.target.value)}
+                      maxLength={600}
+                      rows={5}
+                      hint={t("profile.summary.charCount", { count: summaryForm.length })}
+                    />
+                    <div className="flex items-center gap-3 pt-2">
+                      <button
+                        type="submit"
+                        disabled={savingSummary}
+                        className="rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90 disabled:opacity-60"
+                      >
+                        {savingSummary ? t("profile.saving") : t("profile.save")}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditingSummary(false)}
+                        disabled={savingSummary}
+                        className="rounded-xl border border-jz-white-600 px-4 py-2.5 text-sm text-jz-white-100 hover:opacity-90 disabled:opacity-60"
+                      >
+                        {t("profile.cancel")}
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="mt-5">
+                    <p className="text-xs text-jz-white-600">{t("profile.summary.yourSummaryLabel")}</p>
+                    <p className="mt-1 whitespace-pre-line text-sm text-jz-white-100">{profile.summary || t("profile.notProvided")}</p>
+                  </div>
+                )}
+              </section>
+
+              {/* Career Profile */}
               <section id="career-preference" className="scroll-mt-24 rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6">
                 <div className="flex items-center justify-between">
-                  <h2 className="font-serif text-lg font-semibold text-jz-white-50">{t("profile.careerPreference.heading")}</h2>
+                  <div className="flex items-center gap-2.5">
+                    <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#4ADE80]/15 text-[#8FD13F]">
+                      <TargetIcon className="size-4" />
+                    </span>
+                    <h2 className="font-serif text-lg font-semibold text-jz-white-50">{t("profile.careerPreference.heading")}</h2>
+                  </div>
                   {!editingCareer && (
                     <button
                       type="button"
@@ -523,14 +712,45 @@ export default function ProfilePage() {
 
                     <div className="grid gap-4 sm:grid-cols-2">
                       <FormSelect
+                        label={t("profile.careerPreference.jobIndustryLabel")}
+                        placeholder={t("profile.careerPreference.jobIndustryPlaceholder")}
+                        options={jobIndustryOptions}
+                        value={careerForm.job_industry_id}
+                        onChange={(e) =>
+                          setCareerForm({
+                            ...careerForm,
+                            job_industry_id: e.target.value,
+                            job_functional_area_id: "",
+                            job_department_id: "",
+                            job_title_id: "",
+                          })
+                        }
+                        error={careerErrors.job_industry_id}
+                      />
+                      <FormSelect
                         label={t("profile.careerPreference.jobFunctionalAreaLabel")}
                         placeholder={t("profile.careerPreference.jobFunctionalAreaPlaceholder")}
                         options={jobFunctionalAreaOptions}
                         value={careerForm.job_functional_area_id}
                         onChange={(e) =>
-                          setCareerForm({ ...careerForm, job_functional_area_id: e.target.value, job_title_id: "" })
+                          setCareerForm({
+                            ...careerForm,
+                            job_functional_area_id: e.target.value,
+                            job_department_id: "",
+                            job_title_id: "",
+                          })
                         }
+                        disabled={!careerForm.job_industry_id}
                         error={careerErrors.job_functional_area_id}
+                      />
+                      <FormSelect
+                        label={t("profile.careerPreference.jobDepartmentLabel")}
+                        placeholder={t("profile.careerPreference.jobDepartmentPlaceholder")}
+                        options={jobDepartmentOptions}
+                        value={careerForm.job_department_id}
+                        onChange={(e) => setCareerForm({ ...careerForm, job_department_id: e.target.value })}
+                        disabled={!careerForm.job_functional_area_id}
+                        error={careerErrors.job_department_id}
                       />
                       <FormSelect
                         label={t("profile.careerPreference.jobTitleLabel")}
@@ -577,6 +797,12 @@ export default function ProfilePage() {
                       />
                     </div>
 
+                    <Checkbox
+                      label={t("profile.careerPreference.hasGccExperienceLabel")}
+                      checked={careerForm.has_gcc_experience}
+                      onChange={(e) => setCareerForm({ ...careerForm, has_gcc_experience: e.target.checked })}
+                    />
+
                     <div className="flex items-center gap-3 pt-2">
                       <button
                         type="submit"
@@ -597,7 +823,9 @@ export default function ProfilePage() {
                   </form>
                 ) : (
                   <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                    <ViewField label={t("profile.careerPreference.jobIndustryLabel")} value={profile.job_industry?.name ?? null} />
                     <ViewField label={t("profile.careerPreference.jobFunctionalAreaLabel")} value={profile.job_functional_area?.name ?? null} />
+                    <ViewField label={t("profile.careerPreference.jobDepartmentLabel")} value={profile.job_department?.name ?? null} />
                     <ViewField label={t("profile.careerPreference.jobTitleLabel")} value={profile.job_title?.name ?? null} />
                     <ViewField label={t("profile.careerPreference.preferredCountryLabel")} value={profile.preferred_country?.name ?? null} />
                     <ViewField
@@ -611,6 +839,16 @@ export default function ProfilePage() {
                     <ViewField
                       label={t("profile.careerPreference.expectedSalaryLabel")}
                       value={toDisplayValue(profile.expected_salary) || null}
+                    />
+                    <ViewField
+                      label={t("profile.careerPreference.hasGccExperienceLabel")}
+                      value={
+                        profile.has_gcc_experience === null
+                          ? null
+                          : profile.has_gcc_experience
+                            ? t("profile.careerPreference.yes")
+                            : t("profile.careerPreference.no")
+                      }
                     />
                   </div>
                 )}

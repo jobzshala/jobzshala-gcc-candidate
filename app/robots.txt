@@ -1,0 +1,31 @@
+# Jobzshala — single robots.txt for the whole jobzshala.ae domain.
+# One nginx origin fans out to four apps (see
+# jobzshala-gcc-backend/nginx/nginx.prod.conf): candidate app on "/" (this
+# repo — so this is the file that actually gets served at /robots.txt),
+# employer app on "/hire", admin app on "/admin", backend API on "/api" and
+# "/api-docs". Rules below apply across all of them by path prefix.
+
+User-agent: *
+Allow: /
+Allow: /hire
+Disallow: /admin
+Disallow: /api/
+Disallow: /api-docs
+
+# AI answer-engine / LLM crawlers — explicitly welcomed (same access as
+# regular search bots) so job listings and company pages can be surfaced or
+# cited in AI-generated answers (ChatGPT, Perplexity, Google AI Overviews,
+# Claude, etc.).
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: OAI-SearchBot
+User-agent: ClaudeBot
+User-agent: anthropic-ai
+User-agent: PerplexityBot
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+Allow: /
+Allow: /hire
+Disallow: /admin
+Disallow: /api/
+Disallow: /api-docs

@@ -62,7 +62,7 @@ export default function LoginPage() {
       // change before anything else (dashboard/layout.tsx enforces it too).
       window.location.href = result.candidate.must_change_password
         ? "/change-password"
-        : "/dashboard/profile";
+        : "/dashboard";
     } catch (err) {
       if (err instanceof ApiError) {
         setFieldErrors(err.fieldErrors ?? {});

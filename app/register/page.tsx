@@ -9,10 +9,10 @@ import ThemeToggle from "@/components/ThemeToggle";
 import FormInput from "@/components/ui/FormInput";
 import FormSelect from "@/components/ui/FormSelect";
 import Checkbox from "@/components/ui/Checkbox";
-import { GoogleIcon, ShieldCheckIcon, WhatsAppIcon } from "@/components/ui/icons";
+import { CloseIcon, DocumentIcon, GoogleIcon, ShieldCheckIcon, TickIcon, UploadIcon, WhatsAppIcon } from "@/components/ui/icons";
 import { registerCandidate, sendRegistrationOtp, verifyRegistrationOtp } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
-import { COUNTRY_DIAL_CODES, DEFAULT_COUNTRY_DIAL_CODE } from "@/lib/countryDialCodes";
+import { COUNTRY_DIAL_CODES, DEFAULT_COUNTRY_DIAL_CODE, getFlagEmoji } from "@/lib/countryDialCodes";
 
 const MOBILE_PATTERN = /^[0-9]{10}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -22,6 +22,12 @@ const ALLOWED_RESUME_TYPES = [
   "application/msword",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ];
+
+const formatFileSize = (bytes: number): string => {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
 
 type Step = "select" | "form" | "otp" | "done";
 
@@ -41,6 +47,7 @@ export default function RegisterPage() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [marketingConsent, setMarketingConsent] = useState(false);
   const [resumeName, setResumeName] = useState("");
+  const [resumeSize, setResumeSize] = useState(0);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -60,7 +67,10 @@ export default function RegisterPage() {
   const countryCodeOptions = COUNTRY_DIAL_CODES.map((c) => ({
     key: c.iso2,
     value: c.dialCode,
-    label: `${c.name} (${c.dialCode})`,
+    // Flag + dial code only (no country name) — a native <select> shows this
+    // same text both closed and in the option list, so keeping it short is
+    // what lets the field stay narrow instead of clipping.
+    label: `${getFlagEmoji(c.iso2)} ${c.dialCode}`,
   }));
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -69,21 +79,32 @@ export default function RegisterPage() {
 
     if (!file) {
       setResumeName("");
+      setResumeSize(0);
       return;
     }
     if (!ALLOWED_RESUME_TYPES.includes(file.type)) {
       setFieldErrors((prev) => ({ ...prev, resume: t("register.errors.resumeUnsupported") }));
       e.target.value = "";
       setResumeName("");
+      setResumeSize(0);
       return;
     }
     if (file.size > MAX_RESUME_BYTES) {
       setFieldErrors((prev) => ({ ...prev, resume: t("register.errors.resumeTooLarge") }));
       e.target.value = "";
       setResumeName("");
+      setResumeSize(0);
       return;
     }
     setResumeName(file.name);
+    setResumeSize(file.size);
+  };
+
+  const handleRemoveResume = () => {
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    setResumeName("");
+    setResumeSize(0);
+    setFieldErrors((prev) => ({ ...prev, resume: "" }));
   };
 
   const handleFormSubmit = async (e: FormEvent) => {
@@ -219,6 +240,18 @@ export default function RegisterPage() {
               {t("register.brandHeading")}
             </h1>
             <p className="mt-4 text-jz-white-200">{t("register.brandSubheading")}</p>
+
+            {step === "form" && (
+              <ul className="mt-8 space-y-4">
+                {(t("register.brandFeatures", { returnObjects: true }) as string[]).map((feature) => (
+                  <li key={feature} className="flex items-start gap-3">
+                    <TickIcon className="mt-0.5 size-5 shrink-0" />
+                    <span className="text-sm text-jz-white-200">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+
             <div className="mt-8 flex items-center gap-2 text-sm text-jz-white-400">
               <ShieldCheckIcon className="size-6" />
               {t("register.brandTrustBadges")}
@@ -292,18 +325,20 @@ export default function RegisterPage() {
                         value={form.country_code}
                         onChange={(e) => setForm((prev) => ({ ...prev, country_code: e.target.value }))}
                         options={countryCodeOptions}
-                        className={`w-32 shrink-0 ${fieldErrors.country_code ? "border-jz-red-600" : ""}`}
+                        className={`!w-20 shrink-0 ${fieldErrors.country_code ? "border-jz-red-600" : ""}`}
                         aria-label={t("register.countryCodeLabel")}
                       />
-                      <FormInput
-                        value={form.mobile_number}
-                        onChange={(e) =>
-                          setForm((prev) => ({ ...prev, mobile_number: e.target.value.replace(/\D/g, "").slice(0, 10) }))
-                        }
-                        placeholder={t("register.mobilePlaceholder")}
-                        inputMode="numeric"
-                        className={`flex-1 ${fieldErrors.mobile_number ? "border-jz-red-600" : ""}`}
-                      />
+                      <div className="min-w-0 flex-1">
+                        <FormInput
+                          value={form.mobile_number}
+                          onChange={(e) =>
+                            setForm((prev) => ({ ...prev, mobile_number: e.target.value.replace(/\D/g, "").slice(0, 10) }))
+                          }
+                          placeholder={t("register.mobilePlaceholder")}
+                          inputMode="numeric"
+                          className={fieldErrors.mobile_number ? "border-jz-red-600" : ""}
+                        />
+                      </div>
                     </div>
                     {(fieldErrors.country_code || fieldErrors.mobile_number) && (
                       <p className="mt-1 text-xs text-jz-red-600">
@@ -329,13 +364,48 @@ export default function RegisterPage() {
                       type="file"
                       accept=".pdf,.doc,.docx"
                       onChange={handleFileChange}
-                      className="block w-full text-sm text-jz-white-400 file:mr-3 file:rounded-lg file:border-0 file:bg-jz-blue-800 file:px-3.5 file:py-2 file:text-sm file:text-jz-white-100"
+                      className="sr-only"
+                      id="resume-upload"
                     />
-                    {fieldErrors.resume ? (
-                      <p className="mt-1 text-xs text-jz-red-600">{fieldErrors.resume}</p>
+
+                    {resumeName ? (
+                      <div
+                        className={`flex items-center gap-3 rounded-xl border bg-jz-blue-900 px-3.5 py-2.5 ${
+                          fieldErrors.resume ? "border-jz-red-600" : "border-jz-border"
+                        }`}
+                      >
+                        <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-jz-yellow-400/10 text-jz-yellow-400">
+                          <DocumentIcon className="size-4.5" />
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm text-jz-white-100">{resumeName}</p>
+                          <p className="text-xs text-jz-white-600">{formatFileSize(resumeSize)}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleRemoveResume}
+                          aria-label={t("register.resumeRemove")}
+                          className="flex size-8 shrink-0 items-center justify-center rounded-lg text-jz-white-400 transition-colors hover:bg-jz-blue-800 hover:text-jz-white-100"
+                        >
+                          <CloseIcon className="size-4" />
+                        </button>
+                      </div>
                     ) : (
-                      <p className="mt-1 text-xs text-jz-white-600">{resumeName || t("register.resumeHint")}</p>
+                      <label
+                        htmlFor="resume-upload"
+                        className={`flex cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed px-4 py-6 text-center transition-colors hover:border-jz-yellow-400 hover:bg-jz-blue-900 ${
+                          fieldErrors.resume ? "border-jz-red-600" : "border-jz-border"
+                        }`}
+                      >
+                        <span className="flex size-10 items-center justify-center rounded-full bg-jz-blue-800 text-jz-yellow-400">
+                          <UploadIcon className="size-5" />
+                        </span>
+                        <span className="text-sm text-jz-white-100">{t("register.resumeUploadCta")}</span>
+                        <span className="text-xs text-jz-white-600">{t("register.resumeHint")}</span>
+                      </label>
                     )}
+
+                    {fieldErrors.resume && <p className="mt-1 text-xs text-jz-red-600">{fieldErrors.resume}</p>}
                   </div>
 
                   <div>

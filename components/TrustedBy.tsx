@@ -12,30 +12,38 @@ export default function TrustedBy() {
   const countries = t("trustedBy.countries", { returnObjects: true }) as string[];
   const stats = t("trustedBy.stats", { returnObjects: true }) as Stat[];
   const badges = t("trustedBy.badges", { returnObjects: true }) as string[];
+  const headingHighlight = t("trustedBy.headingHighlight", { defaultValue: "" });
 
   return (
     <section className="bg-jz-blue-950 py-14">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10">
-        <h2 className="font-serif text-2xl font-semibold text-jz-white-50 sm:text-3xl">{t("trustedBy.heading")}</h2>
+        <h2 className="font-serif text-2xl font-semibold text-jz-white-50 sm:text-3xl">
+          {t("trustedBy.heading")}
+          {headingHighlight ? <> <em className="italic">{headingHighlight}</em></> : null}
+        </h2>
 
-        <div className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-jz-white-200">
-          <span className="rounded-full border border-jz-grey-400 px-4 py-2">{t("trustedBy.industriesLabel")}</span>
-          <span className="max-w-3xl text-jz-white-400">{t("trustedBy.industries")}</span>
-        </div>
+        <div className="mt-7 flex flex-col gap-4 lg:flex-row lg:items-start">
+          <div className="flex flex-1 flex-col gap-2">
+            <span className="text-sm text-jz-white-600">{t("trustedBy.industriesLabel")}</span>
+            <div className="flex h-[52px] items-center rounded-2xl border border-jz-grey-400 bg-jz-bg-primary px-4">
+              <span className="text-sm font-light whitespace-nowrap text-jz-white-50">{t("trustedBy.industries")}</span>
+            </div>
+          </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          <span className="rounded-full border border-jz-grey-400 px-4 py-2 text-sm text-jz-white-200">{t("trustedBy.acrossLabel")}</span>
-          <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-jz-grey-400 bg-jz-bg-primary p-1">
-            {countries.map((country, i) => (
-              <span key={country} className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-jz-white-50">
-                <span aria-hidden="true">{COUNTRY_FLAGS[i]}</span>
-                {country}
-              </span>
-            ))}
+          <div className="flex flex-col gap-2">
+            <span className="text-sm text-jz-white-600">{t("trustedBy.acrossLabel")}</span>
+            <div className="flex flex-wrap items-center gap-1 rounded-2xl border border-jz-grey-400 bg-jz-bg-primary p-1">
+              {countries.map((country, i) => (
+                <span key={country} className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-light whitespace-nowrap text-jz-white-50">
+                  <span aria-hidden="true">{COUNTRY_FLAGS[i]}</span>
+                  {country}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="mt-12 grid grid-cols-2 divide-y divide-jz-grey-400 overflow-hidden rounded-2xl border border-jz-grey-400 bg-gradient-to-r from-jz-bg-primary to-jz-blue-900 sm:grid-cols-3 sm:divide-y-0 md:grid-cols-5">
+        <div className="mt-4 grid grid-cols-2 divide-y divide-jz-grey-400 overflow-hidden rounded-2xl border border-jz-grey-400 bg-gradient-to-r from-jz-bg-primary to-jz-blue-900 sm:grid-cols-3 sm:divide-y-0 md:grid-cols-5">
           {stats.map((stat, i) => (
             <div
               key={stat.label}
@@ -49,9 +57,9 @@ export default function TrustedBy() {
           ))}
         </div>
 
-        <div className="mt-6 flex flex-wrap gap-x-8 gap-y-3">
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 rounded-2xl border border-jz-grey-400 bg-jz-bg-primary px-4 py-3">
           {badges.map((badge) => (
-            <div key={badge} className="flex items-center gap-2 text-sm text-jz-white-200">
+            <div key={badge} className="flex items-center gap-2 text-sm text-jz-white-50">
               <SparkleIcon className="size-4 text-jz-blue-400" />
               {badge}
             </div>

@@ -31,13 +31,13 @@ export default function ComparisonSection() {
 
           <div
             aria-hidden="true"
-            className="absolute left-1/2 top-1/2 z-10 hidden size-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-jz-yellow-400 bg-jz-blue-950 font-serif text-sm font-semibold text-jz-yellow-400 lg:flex"
+            className="absolute left-1/2 top-1/2 z-10 hidden size-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-jz-yellow-500 bg-jz-blue-950 font-serif text-sm font-semibold text-jz-yellow-500 lg:flex"
           >
             {t("comparison.vs")}
           </div>
 
-          <div className="rounded-2xl border border-jz-yellow-400 bg-jz-bg-primary p-6">
-            <h3 className="font-serif text-lg font-bold text-jz-yellow-400">{jobzshala.title}</h3>
+          <div className="rounded-2xl border border-jz-yellow-500 bg-jz-bg-primary p-6">
+            <h3 className="font-serif text-lg font-bold text-jz-yellow-500">{jobzshala.title}</h3>
             <ul className="mt-4 flex flex-col gap-3">
               {jobzshala.items.map((item) => (
                 <li key={item} className="flex items-center gap-3 text-sm text-jz-white-200">

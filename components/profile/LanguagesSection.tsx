@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
+import { GlobeIcon } from "@/components/ui/icons";
 import FormSelect from "@/components/ui/FormSelect";
 import Checkbox from "@/components/ui/Checkbox";
 import { ApiError } from "@/lib/api/client";
@@ -159,7 +160,12 @@ export default function LanguagesSection() {
   return (
     <section id="languages" className="scroll-mt-24 rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6">
       <div className="flex items-center justify-between">
-        <h2 className="font-serif text-lg font-semibold text-jz-white-50">{t("profile.languages.heading")}</h2>
+        <div className="flex items-center gap-2.5">
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#4ADE80]/15 text-[#8FD13F]">
+            <GlobeIcon className="size-4" />
+          </span>
+          <h2 className="font-serif text-lg font-semibold text-jz-white-50">{t("profile.languages.heading")}</h2>
+        </div>
         {editingId === null && (
           <button
             type="button"

@@ -33,32 +33,29 @@ export default function WorkforceChallenge() {
   return (
     <section className="bg-jz-blue-950 py-14 sm:py-20">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10">
-        <SectionHeading
-          heading={t("challenge.heading")}
-          highlight={t("challenge.headingHighlight")}
-          subheading={t("challenge.body")}
-          align="center"
-        />
-        <p className="mx-auto mt-3 max-w-3xl text-center font-serif text-lg font-medium text-jz-white-100 sm:text-xl">
-          {t("challenge.title")}
-        </p>
+        <SectionHeading heading={t("challenge.heading")} highlight={t("challenge.headingHighlight")} />
 
-        <div className="mt-12 grid items-center gap-6 lg:grid-cols-3">
-          <ChallengeCard icon={<BriefcaseIcon className="size-5" />} title={employers.title} items={employers.items} />
+        <div className="mt-7 rounded-3xl border border-jz-grey-400 bg-gradient-to-br from-jz-bg-primary to-jz-blue-900 p-6 sm:p-10">
+          <p className="max-w-3xl font-serif text-lg font-semibold text-jz-white-50 sm:text-xl">{t("challenge.title")}</p>
+          <p className="mt-3 max-w-3xl text-sm text-jz-white-200">{t("challenge.body")}</p>
 
-          <div className="relative z-10 flex flex-col items-center gap-4 rounded-2xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 p-8 text-center text-jz-ink-on-accent shadow-2xl lg:-my-6 lg:py-12">
-            <SparkleIcon className="size-8" />
-            <h3 className="font-serif text-xl font-semibold">{t("challenge.mission.title")}</h3>
-            <p className="text-sm leading-relaxed">{t("challenge.mission.body")}</p>
-            <button
-              type="button"
-              className="mt-2 rounded-xl bg-jz-blue-950 px-6 py-2.5 text-sm font-medium text-jz-white-50 transition-opacity hover:opacity-90"
-            >
-              {t("challenge.mission.cta")}
-            </button>
+          <div className="mt-10 grid items-center gap-6 lg:grid-cols-3">
+            <ChallengeCard icon={<BriefcaseIcon className="size-5" />} title={employers.title} items={employers.items} />
+
+            <div className="relative z-10 flex flex-col items-center gap-4 rounded-2xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 p-8 text-center text-jz-ink-on-accent shadow-2xl lg:-my-6 lg:py-12">
+              <SparkleIcon className="size-8" />
+              <h3 className="font-serif text-xl font-semibold">{t("challenge.mission.title")}</h3>
+              <p className="text-sm leading-relaxed">{t("challenge.mission.body")}</p>
+              <button
+                type="button"
+                className="mt-2 rounded-xl bg-jz-blue-950 px-6 py-2.5 text-sm font-medium text-jz-white-50 transition-opacity hover:opacity-90"
+              >
+                {t("challenge.mission.cta")}
+              </button>
+            </div>
+
+            <ChallengeCard icon={<UserIcon className="size-5" />} title={candidates.title} items={candidates.items} />
           </div>
-
-          <ChallengeCard icon={<UserIcon className="size-5" />} title={candidates.title} items={candidates.items} />
         </div>
       </div>
     </section>

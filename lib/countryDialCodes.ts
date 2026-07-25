@@ -137,3 +137,10 @@ export const COUNTRY_DIAL_CODES: CountryDialCode[] = [
 ];
 
 export const DEFAULT_COUNTRY_DIAL_CODE = COUNTRY_DIAL_CODES[0]; // India
+
+// Regional indicator symbols (flag emoji are just two of these, one per
+// ISO 3166-1 alpha-2 letter) — lets the country-code picker show a flag
+// instead of the full country name, so its closed/collapsed width can stay
+// compact without clipping the label.
+export const getFlagEmoji = (iso2: string): string =>
+  String.fromCodePoint(...[...iso2.toUpperCase()].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65));

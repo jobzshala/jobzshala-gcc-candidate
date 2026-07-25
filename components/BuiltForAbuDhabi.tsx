@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { useTranslation } from "react-i18next";
+import AbuDhabiSkyline from "./ui/AbuDhabiSkyline";
 import { splitHighlight } from "@/lib/utils";
 
 export default function BuiltForAbuDhabi() {
@@ -23,9 +23,7 @@ export default function BuiltForAbuDhabi() {
           {bodyAfter}
         </p>
 
-        <div className="relative mt-10 aspect-[1348/347] w-full overflow-hidden rounded-2xl">
-          <Image src="/images/abu-dhabi-skyline.png" alt="" fill sizes="100vw" className="object-cover" />
-        </div>
+        <AbuDhabiSkyline className="mt-10 aspect-[1440/340] w-full" />
       </div>
     </section>
   );
