@@ -2,10 +2,14 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Cookie Policy | Jobzshala",
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Cookie Policy",
+  description:
+    "The cookies and local storage Jobzshala uses for sign-in sessions, language and theme preferences, and how to control them in your browser.",
+  path: "/cookie-policy",
+});
 
 function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (

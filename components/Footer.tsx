@@ -3,11 +3,17 @@
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import Logo from "./ui/Logo";
+import FlagIcon, { type GccCountryCode } from "./ui/FlagIcon";
 
-const COUNTRY_FLAGS = ["🇦🇪", "🇸🇦", "🇶🇦", "🇴🇲", "🇰🇼", "🇧🇭"];
+// Index-matched to footer.countries. Emoji flags were showing as bare region
+// letters ("AE") on Windows, which has no flag glyphs — see components/ui/FlagIcon.
+const COUNTRY_CODES: GccCountryCode[] = ["AE", "SA", "QA", "OM", "KW", "BH"];
 
 // Index-matched to footer.legal.links (Privacy Policy, Terms & Conditions, Refund Policy, Cookie Policy).
 const LEGAL_LINK_HREFS = ["/privacy-policy", "/terms-conditions", "/refund-policy", "/cookie-policy"];
+
+// Index-matched to footer.company.links (About Us, Contact Us, Blog, Careers, Success Stories, Pricing).
+const COMPANY_LINK_HREFS = [undefined, "/contact-us", "/blog", undefined, "/success-stories", "/pricing"];
 
 type LinkGroup = { title: string; links: string[] };
 
@@ -36,7 +42,8 @@ export default function Footer() {
                 <h4 className="text-sm font-semibold text-jz-white-50">{group.title}</h4>
                 <ul className="mt-3 flex flex-col gap-2">
                   {group.links.map((link, i) => {
-                    const href = group === legal ? LEGAL_LINK_HREFS[i] : undefined;
+                    const href =
+                      group === legal ? LEGAL_LINK_HREFS[i] : group === company ? COMPANY_LINK_HREFS[i] : undefined;
                     return (
                       <li key={link}>
                         {href ? (
@@ -58,11 +65,16 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-jz-grey-400 pt-6">
-          <p className="text-xs text-jz-white-600">{t("footer.copyright")}</p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <p className="text-xs text-jz-white-600">{t("footer.copyright")}</p>
+            <Link href="/sitemap" className="text-xs text-jz-white-400 hover:text-jz-yellow-400">
+              {t("footer.sitemap")}
+            </Link>
+          </div>
           <div className="flex flex-wrap gap-3">
             {countries.map((country, i) => (
               <span key={country} className="flex items-center gap-1.5 text-xs text-jz-white-400">
-                <span aria-hidden="true">{COUNTRY_FLAGS[i]}</span>
+                <FlagIcon code={COUNTRY_CODES[i]} />
                 {country}
               </span>
             ))}

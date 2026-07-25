@@ -2,10 +2,14 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy | Jobzshala",
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Privacy Policy",
+  description:
+    "How Jobzshala collects, uses, stores and protects candidate and employer personal data, document uploads and verification records, and the data rights available to you.",
+  path: "/privacy-policy",
+});
 
 function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (

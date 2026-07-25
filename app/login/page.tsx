@@ -82,8 +82,9 @@ export default function LoginPage() {
   return (
     <div className="flex flex-1 flex-col bg-jz-blue-950">
       <header className="flex items-center justify-between px-6 py-4 md:px-12">
-        <Link href="/">
+        <Link href="/" className="flex flex-col gap-1">
           <Logo priority />
+          <p className="hidden text-[10px] text-jz-white-100 sm:block">{t("nav.tagline")}</p>
         </Link>
         <div className="flex items-center gap-3">
           <ThemeToggle />

@@ -4,20 +4,85 @@ import { useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
+import NavDropdown, { type NavDropdownItem } from "./NavDropdown";
 import ThemeToggle from "./ThemeToggle";
 import Logo from "./ui/Logo";
-import { ChevronDownIcon, CloseIcon, MenuIcon } from "./ui/icons";
+import {
+  BriefcaseIcon,
+  CloseIcon,
+  DocumentIcon,
+  GlobeIcon,
+  MailIcon,
+  MenuIcon,
+  ShieldCheckIcon,
+  SparkleIcon,
+  TargetIcon,
+  UserIcon,
+} from "./ui/icons";
+
+// Employer-portal links point at the separate Next.js app served under
+// /hire (see sitemap/page.tsx) — plain hrefs, not next/link.
+const EMPLOYER_ITEMS: NavDropdownItem[] = [
+  { label: "Employer portal", href: "/hire", icon: BriefcaseIcon, external: true },
+  { label: "Register as an employer", href: "/hire/register", icon: DocumentIcon, external: true },
+  { label: "Employer login", href: "/hire/login", icon: UserIcon, external: true },
+  { label: "Pricing", href: "/pricing", icon: TargetIcon },
+];
+
+const CANDIDATE_ITEMS: NavDropdownItem[] = [
+  { label: "Create a GCC Workforce Profile", href: "/register?role=candidate", icon: UserIcon },
+  { label: "Candidate login", href: "/login", icon: ShieldCheckIcon },
+  { label: "Success stories", href: "/success-stories", icon: SparkleIcon },
+  { label: "Blog", href: "/blog", icon: DocumentIcon },
+];
+
+// Anchors point at homepage sections (ids added on WhyChooseUs, HowItWorks,
+// TrustVerification, WorkforceCorridor) — no dedicated solution pages exist
+// yet, so this links straight to the part of the homepage that covers each.
+const SOLUTIONS_ITEMS: NavDropdownItem[] = [
+  {
+    label: "Recruitment Solutions",
+    href: "/#recruitment-solutions",
+    description: "AI-assisted sourcing and end-to-end hiring",
+    icon: BriefcaseIcon,
+  },
+  {
+    label: "Workforce Infrastructure",
+    href: "/#workforce-infrastructure",
+    description: "Structured India → GCC workforce mobility",
+    icon: GlobeIcon,
+  },
+  {
+    label: "AI Matching",
+    href: "/#ai-matching",
+    description: "AI-powered candidate-to-job matching",
+    icon: SparkleIcon,
+  },
+  {
+    label: "Candidate Verification",
+    href: "/#candidate-verification",
+    description: "Recruiter-verified, document-checked profiles",
+    icon: ShieldCheckIcon,
+  },
+  {
+    label: "Visa Assistance",
+    href: "/blog/uae-work-visas-explained-a-simple-guide-for-first-time-job-seekers",
+    description: "Guides on GCC work visas and relocation",
+    icon: DocumentIcon,
+  },
+];
+
+const RESOURCES_ITEMS: NavDropdownItem[] = [
+  { label: "Blog", href: "/blog", description: "Career advice and hiring playbooks", icon: DocumentIcon },
+  { label: "Success Stories", href: "/success-stories", description: "Real placements across the GCC", icon: SparkleIcon },
+  { label: "Pricing", href: "/pricing", description: "Plans for candidates and employers", icon: TargetIcon },
+  { label: "Sitemap", href: "/sitemap", description: "Every public page in one index", icon: GlobeIcon },
+  { label: "Contact Us", href: "/contact-us", description: "Get in touch with our team", icon: MailIcon },
+];
 
 export default function Header() {
   const { t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  const navLinks = [
-    { label: t("nav.forCandidates"), href: "#" },
-    { label: t("nav.solutions"), href: "#" },
-    { label: t("nav.aboutUs"), href: "#" },
-    { label: t("nav.resources"), href: "#" },
-  ];
 
   return (
     <header className="sticky top-0 z-40 border-b-2 border-jz-yellow-400 bg-jz-blue-900">
@@ -28,15 +93,13 @@ export default function Header() {
         </Link>
 
         <nav className="hidden items-center gap-1 xl:flex">
-          <button type="button" className="flex items-center gap-1 rounded-xl bg-jz-blue-900 px-4 py-2 text-sm text-jz-white-200">
-            {t("nav.forEmployers")}
-            <ChevronDownIcon className="size-5" />
-          </button>
-          {navLinks.map((link) => (
-            <a key={link.label} href={link.href} className="rounded px-4 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
-              {link.label}
-            </a>
-          ))}
+          <NavDropdown label={t("nav.forEmployers")} items={EMPLOYER_ITEMS} />
+          <NavDropdown label={t("nav.forCandidates")} items={CANDIDATE_ITEMS} />
+          <NavDropdown label={t("nav.solutions")} items={SOLUTIONS_ITEMS} />
+          <a href="#" className="rounded px-4 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
+            {t("nav.aboutUs")}
+          </a>
+          <NavDropdown label={t("nav.resources")} items={RESOURCES_ITEMS} />
         </nav>
 
         <div className="hidden items-center gap-3 xl:flex">
@@ -65,14 +128,45 @@ export default function Header() {
       </div>
 
       {mobileOpen ? (
-        <div className="border-t border-jz-border bg-jz-blue-900 px-4 py-4 xl:hidden">
-          <nav className="flex flex-col gap-1">
-            <span className="rounded px-3 py-2 text-sm text-jz-white-200">{t("nav.forEmployers")}</span>
-            {navLinks.map((link) => (
-              <a key={link.label} href={link.href} className="rounded px-3 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
-                {link.label}
-              </a>
+        <div className="max-h-[calc(100vh-64px)] overflow-y-auto border-t border-jz-border bg-jz-blue-900 px-4 py-4 xl:hidden">
+          <nav className="flex flex-col gap-4">
+            {[
+              { title: t("nav.forEmployers"), items: EMPLOYER_ITEMS },
+              { title: t("nav.forCandidates"), items: CANDIDATE_ITEMS },
+              { title: t("nav.solutions"), items: SOLUTIONS_ITEMS },
+              { title: t("nav.resources"), items: RESOURCES_ITEMS },
+            ].map((group) => (
+              <div key={group.title}>
+                <p className="px-3 text-xs font-semibold uppercase tracking-wide text-jz-white-600">{group.title}</p>
+                <div className="mt-1 flex flex-col gap-1">
+                  {group.items.map((item) =>
+                    item.external ? (
+                      <a
+                        key={item.href}
+                        href={item.href}
+                        className="rounded px-3 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400"
+                      >
+                        {item.label}
+                      </a>
+                    ) : (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="rounded px-3 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400"
+                      >
+                        {item.label}
+                      </Link>
+                    )
+                  )}
+                </div>
+              </div>
             ))}
+
+            <div className="flex flex-col gap-1 border-t border-jz-border pt-3">
+              <a href="#" className="rounded px-3 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
+                {t("nav.aboutUs")}
+              </a>
+            </div>
           </nav>
           <div className="mt-4 flex items-center gap-3">
             <ThemeToggle />

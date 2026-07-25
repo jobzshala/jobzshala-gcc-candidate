@@ -1,21 +1,12 @@
 "use client";
 
 import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
-import { store, persistor } from "./store";
-import AppLoader from "@/components/ui/AppLoader";
+import { store } from "./store";
 
-// Wraps the whole app (see app/layout.tsx). PersistGate's `loading` fallback
-// only ever shows once, while redux-persist rehydrates auth state from
-// storage on first boot — every page under this provider (including
-// app/dashboard/layout.tsx) can then read the session synchronously from
-// Redux with no per-page "checking" state of its own.
+// Wraps the whole app (see app/layout.tsx) so any page can dispatch and read
+// Redux. Rehydration is NOT gated here — see lib/store/SessionGate.tsx for why
+// that gate lives in the authenticated areas instead (gating the root would
+// leave every public page server-rendering an empty shell).
 export default function StoreProvider({ children }: { children: React.ReactNode }) {
-  return (
-    <Provider store={store}>
-      <PersistGate loading={<AppLoader />} persistor={persistor}>
-        {children}
-      </PersistGate>
-    </Provider>
-  );
+  return <Provider store={store}>{children}</Provider>;
 }

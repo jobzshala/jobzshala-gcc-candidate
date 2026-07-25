@@ -1,0 +1,41 @@
+# Jobzshala
+
+> AI-native workforce infrastructure for the GCC. Jobzshala connects verified
+> blue-collar and technical workforce with employers across the UAE, Saudi
+> Arabia, Qatar, Oman, Kuwait and Bahrain, and runs the full journey from
+> sourcing through visa, deployment and retention.
+
+Jobzshala operates two audiences on one platform:
+
+- **Candidates** create a verified workforce profile, upload documents, and are
+  screened by recruiters before being matched to GCC openings. Onboarding is
+  mobile-first and available over WhatsApp.
+- **Employers** post roles, review recruiter-verified candidates, run interviews
+  and offers, and track visa, medical, travel and joining operations.
+
+What distinguishes the platform: every candidate is recruiter-verified before
+activation, employers never see raw candidate contact details, and AI-assisted
+matching recommendations are reviewed by a recruiter before reaching an employer.
+
+## Key pages
+
+- [Home](https://jobzshala.ae/): what the platform does, how hiring works, industries served.
+- [Pricing](https://jobzshala.ae/pricing): plans for candidates and for employers.
+- [Register](https://jobzshala.ae/register): create a GCC workforce profile.
+- [Employer portal](https://jobzshala.ae/hire): employer sign-up and hiring dashboard.
+- [Success stories](https://jobzshala.ae/success-stories): placement outcomes.
+- [Blog](https://jobzshala.ae/blog): GCC hiring, workforce mobility and compliance writing.
+
+## Legal
+
+- [Privacy Policy](https://jobzshala.ae/privacy-policy)
+- [Terms & Conditions](https://jobzshala.ae/terms-conditions)
+- [Refund Policy](https://jobzshala.ae/refund-policy)
+- [Cookie Policy](https://jobzshala.ae/cookie-policy)
+
+## Notes for crawlers
+
+Authenticated areas (`/dashboard`), the admin console (`/admin`) and the API
+(`/api`, `/api-docs`) are not indexable and hold no public content.
+Machine-readable structured data (Organization, WebSite, Service, BlogPosting,
+OfferCatalog) is embedded as JSON-LD on the corresponding pages.

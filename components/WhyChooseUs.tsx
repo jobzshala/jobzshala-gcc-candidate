@@ -9,7 +9,7 @@ export default function WhyChooseUs() {
   const features = t("whyChooseUs.features", { returnObjects: true }) as string[];
 
   return (
-    <section className="bg-jz-blue-950 py-14">
+    <section id="ai-matching" className="scroll-mt-24 bg-jz-blue-950 py-14">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10">
         <SectionHeading heading={t("whyChooseUs.heading")} highlight={t("whyChooseUs.headingHighlight")} />
 

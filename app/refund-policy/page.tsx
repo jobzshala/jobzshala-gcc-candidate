@@ -2,10 +2,14 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Refund Policy | Jobzshala",
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Refund Policy",
+  description:
+    "Jobzshala's refund terms for candidate profile activation and employer subscription payments, including eligibility, timelines and how to request a refund.",
+  path: "/refund-policy",
+});
 
 function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (

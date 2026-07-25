@@ -119,3 +119,40 @@ body {
 html[dir="rtl"] body {
   font-family: "Segoe UI", Tahoma, var(--font-inter), Arial, sans-serif;
 }
+
+/* A panel that stays dark in light theme, for surfaces whose artwork is itself
+   dark (the GCC availability map) — otherwise the light theme turns the card
+   pale and the dark image reads as a black slab dropped onto it. Re-points the
+   tokens the panel uses to their dark-theme values; because @theme inline emits
+   utilities as var() references, this cascades to Tailwind classes inside. */
+.surface-always-dark {
+  --jz-blue-800: #003d5b;
+  --jz-border-default: #1e375a;
+  --jz-grey-400: #2c3b52;
+  --jz-white-50: #f9f9f8;
+  --jz-white-100: #f3f4f2;
+  --jz-white-200: #eaebe8;
+  --jz-white-400: #d6d8d4;
+  --jz-white-600: #a0a19e;
+}
+
+/* Slow Ken Burns drift on large editorial imagery. */
+@keyframes slow-zoom {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.08);
+  }
+}
+
+.animate-slow-zoom {
+  animation: slow-zoom 18s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-slow-zoom {
+    animation: none;
+  }
+}

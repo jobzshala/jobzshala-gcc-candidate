@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import Logo from "@/components/ui/Logo";
@@ -36,6 +36,17 @@ export default function RegisterPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [step, setStep] = useState<Step>("select");
+
+  // Links that already say "register as a candidate" (contact page, footer,
+  // etc.) shouldn't dump the visitor back onto the audience-picker they just
+  // answered — /register?role=candidate skips straight to the form. Read via
+  // window.location instead of useSearchParams() so this page doesn't need a
+  // Suspense boundary just for this deep link.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("role") === "candidate") {
+      setStep("form");
+    }
+  }, []);
   const [form, setForm] = useState({
     full_name: "",
     age: "",
@@ -224,8 +235,9 @@ export default function RegisterPage() {
   return (
     <div className="flex flex-1 flex-col bg-jz-blue-950">
       <header className="flex items-center justify-between px-6 py-4 md:px-12">
-        <Link href="/">
+        <Link href="/" className="flex flex-col gap-1">
           <Logo priority />
+          <p className="hidden text-[10px] text-jz-white-100 sm:block">{t("nav.tagline")}</p>
         </Link>
         <div className="flex items-center gap-3">
           <ThemeToggle />

@@ -1,0 +1,107 @@
+"use client";
+
+import { FormEvent, useState } from "react";
+import FormInput from "@/components/ui/FormInput";
+import FormTextarea from "@/components/ui/FormTextarea";
+import { ContactFormError, submitContactLead } from "@/lib/api/contact";
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export default function ContactForm() {
+  const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleChange = (field: keyof typeof form) => (e: { target: { value: string } }) => {
+    setForm((prev) => ({ ...prev, [field]: e.target.value }));
+  };
+
+  const validate = (): Record<string, string> => {
+    const errors: Record<string, string> = {};
+    if (!form.name.trim()) errors.name = "Name is required.";
+    if (!form.email.trim()) errors.email = "Email is required.";
+    else if (!EMAIL_PATTERN.test(form.email.trim())) errors.email = "Enter a valid email address.";
+    if (!form.message.trim() || form.message.trim().length < 5) errors.message = "Tell us a bit more — at least 5 characters.";
+    return errors;
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError("");
+    const errors = validate();
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
+    setFieldErrors({});
+    setSubmitting(true);
+    try {
+      await submitContactLead({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim() || undefined,
+        subject: form.subject.trim() || undefined,
+        message: form.message.trim(),
+      });
+      setSubmitted(true);
+    } catch (err) {
+      if (err instanceof ContactFormError) {
+        if (err.fieldErrors) setFieldErrors(err.fieldErrors);
+        setError(err.message);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (submitted) {
+    return (
+      <div className="rounded-2xl border border-jz-grey-400 bg-jz-bg-primary p-8 text-center">
+        <h3 className="font-serif text-xl font-semibold text-jz-white-50">Thanks for reaching out</h3>
+        <p className="mt-2 text-sm text-jz-white-400">
+          We&apos;ve received your message and will get back to you shortly.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="rounded-2xl border border-jz-grey-400 bg-jz-bg-primary p-6 sm:p-8">
+      {error && (
+        <div className="mb-5 rounded-xl border border-jz-red-600/40 bg-jz-red-600/10 px-3.5 py-2.5 text-sm text-jz-red-600">
+          {error}
+        </div>
+      )}
+
+      <div className="grid gap-5 sm:grid-cols-2">
+        <FormInput label="Full name" value={form.name} onChange={handleChange("name")} placeholder="Your name" error={fieldErrors.name} />
+        <FormInput label="Email" type="email" value={form.email} onChange={handleChange("email")} placeholder="you@example.com" error={fieldErrors.email} />
+        <FormInput label="Phone (optional)" value={form.phone} onChange={handleChange("phone")} placeholder="+91 98765 43210" error={fieldErrors.phone} />
+        <FormInput label="Subject (optional)" value={form.subject} onChange={handleChange("subject")} placeholder="What's this about?" error={fieldErrors.subject} />
+      </div>
+
+      <div className="mt-5">
+        <FormTextarea
+          label="Message"
+          value={form.message}
+          onChange={handleChange("message")}
+          placeholder="How can we help?"
+          rows={5}
+          error={fieldErrors.message}
+        />
+      </div>
+
+      <button
+        type="submit"
+        disabled={submitting}
+        className="mt-6 inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-6 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90 disabled:opacity-60"
+      >
+        {submitting ? "Sending…" : "Send message"}
+      </button>
+    </form>
+  );
+}

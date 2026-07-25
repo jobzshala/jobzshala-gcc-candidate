@@ -7,7 +7,7 @@ export default function TrustVerification() {
   const { t } = useTranslation();
 
   return (
-    <section className="bg-jz-blue-950 py-14">
+    <section id="candidate-verification" className="scroll-mt-24 bg-jz-blue-950 py-14">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10">
         <div className="flex flex-col-reverse items-center gap-8 rounded-2xl border border-jz-grey-400 bg-gradient-to-r from-jz-bg-primary to-jz-blue-900 p-8 sm:p-10 lg:flex-row rtl:lg:flex-row-reverse">
           <div className="text-center lg:text-left rtl:lg:text-right">

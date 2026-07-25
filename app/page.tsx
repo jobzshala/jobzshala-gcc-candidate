@@ -14,10 +14,23 @@ import BuiltForAbuDhabi from "@/components/BuiltForAbuDhabi";
 import OurVision from "@/components/OurVision";
 import CtaCards from "@/components/CtaCards";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
+import { SITE_DESCRIPTION, serviceSchema } from "@/lib/seo";
+
+export const metadata = {
+  // Title intentionally omitted so the root layout's default (which is already
+  // the landing page's title) applies without the "%s | Jobzshala" template
+  // doubling the brand name.
+  description: SITE_DESCRIPTION,
+  alternates: { canonical: "/" },
+};
 
 export default function Home() {
   return (
     <div className="flex flex-1 flex-col bg-jz-blue-950">
+      {/* Describes the actual offering, so search and AI answer engines can
+          state what Jobzshala does and where, rather than inferring it. */}
+      <JsonLd schema={serviceSchema()} />
       <Header />
       <main className="flex-1">
         <Hero />

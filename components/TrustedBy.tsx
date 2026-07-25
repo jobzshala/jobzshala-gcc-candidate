@@ -2,8 +2,11 @@
 
 import { useTranslation } from "react-i18next";
 import { SparkleIcon } from "./ui/icons";
+import FlagIcon, { type GccCountryCode } from "./ui/FlagIcon";
 
-const COUNTRY_FLAGS = ["🇦🇪", "🇸🇦", "🇶🇦", "🇴🇲", "🇰🇼", "🇧🇭"];
+// Index-matched to trustedBy.countries. SVG rather than emoji — Windows renders
+// flag emoji as bare region letters ("AE"). See components/ui/FlagIcon.
+const COUNTRY_CODES: GccCountryCode[] = ["AE", "SA", "QA", "OM", "KW", "BH"];
 
 type Stat = { value: string; label: string };
 
@@ -25,8 +28,11 @@ export default function TrustedBy() {
         <div className="mt-7 flex flex-col gap-4 lg:flex-row lg:items-start">
           <div className="flex flex-1 flex-col gap-2">
             <span className="text-sm text-jz-white-600">{t("trustedBy.industriesLabel")}</span>
-            <div className="flex h-[52px] items-center rounded-2xl border border-jz-grey-400 bg-jz-bg-primary px-4">
-              <span className="text-sm font-light whitespace-nowrap text-jz-white-50">{t("trustedBy.industries")}</span>
+            {/* Wraps rather than staying on one line: this string is ~630px wide,
+                so whitespace-nowrap here forced the whole page into horizontal
+                overflow on phones. Wide screens still render it on one line. */}
+            <div className="flex min-h-[52px] items-center rounded-2xl border border-jz-grey-400 bg-jz-bg-primary px-4 py-2.5">
+              <span className="text-sm font-light text-jz-white-50">{t("trustedBy.industries")}</span>
             </div>
           </div>
 
@@ -35,7 +41,7 @@ export default function TrustedBy() {
             <div className="flex flex-wrap items-center gap-1 rounded-2xl border border-jz-grey-400 bg-jz-bg-primary p-1">
               {countries.map((country, i) => (
                 <span key={country} className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-light whitespace-nowrap text-jz-white-50">
-                  <span aria-hidden="true">{COUNTRY_FLAGS[i]}</span>
+                  <FlagIcon code={COUNTRY_CODES[i]} />
                   {country}
                 </span>
               ))}

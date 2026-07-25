@@ -62,7 +62,9 @@ function PlanCard({ plan }: { plan: SubscriptionPlan }) {
 
       <div className="mt-5 h-px bg-jz-grey-400" />
 
-      <ul className="mt-5 flex flex-col gap-3 text-sm text-jz-white-200">
+      {/* flex-1 so the feature list absorbs the height difference between plans
+          and every card's CTA lines up at the same place. */}
+      <ul className="mt-5 flex flex-1 flex-col gap-3 text-sm text-jz-white-200">
         <li className="flex items-start gap-2">
           <CheckIcon />
           {plan.unlimited_job_postings ? "Unlimited job postings" : `${plan.job_posting_limit ?? 0} job postings`}
@@ -87,6 +89,22 @@ function PlanCard({ plan }: { plan: SubscriptionPlan }) {
       </a>
     </div>
   );
+}
+
+// Column count adapts to how many plans there are, so a short catalog
+// doesn't end up as narrow cards stranded in a 3-column grid meant for more.
+// 1 -> full width, 2 -> halves, 3 -> thirds, 4 -> 2x2 halves, 5+ -> thirds (wraps).
+function gridClass(count: number): string {
+  switch (count) {
+    case 1:
+      return "grid-cols-1 max-w-xl mx-auto";
+    case 2:
+      return "grid-cols-1 sm:grid-cols-2";
+    case 4:
+      return "grid-cols-1 sm:grid-cols-2";
+    default:
+      return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
+  }
 }
 
 export default function PricingPlans({ plans }: { plans: SubscriptionPlan[] }) {
@@ -126,7 +144,7 @@ export default function PricingPlans({ plans }: { plans: SubscriptionPlan[] }) {
           Plans for {audience === "CANDIDATE" ? "candidates" : "employers"} are coming soon.
         </p>
       ) : (
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className={`mt-10 grid gap-6 ${gridClass(visiblePlans.length)}`}>
           {visiblePlans.map((plan) => (
             <PlanCard key={plan.id} plan={plan} />
           ))}

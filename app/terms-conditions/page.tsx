@@ -2,10 +2,14 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Terms and Conditions | Jobzshala",
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Terms and Conditions",
+  description:
+    "The terms governing use of Jobzshala by candidates and GCC employers, including account eligibility, verification, fees, placement obligations and platform conduct.",
+  path: "/terms-conditions",
+});
 
 function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (

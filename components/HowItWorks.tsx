@@ -20,7 +20,7 @@ export default function HowItWorks() {
   const steps = t("howItWorks.steps", { returnObjects: true }) as string[];
 
   return (
-    <section className="bg-jz-blue-950 py-14 sm:py-20">
+    <section id="recruitment-solutions" className="scroll-mt-24 bg-jz-blue-950 py-14 sm:py-20">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10">
         <SectionHeading heading={t("howItWorks.heading")} highlight={t("howItWorks.headingHighlight")} align="center" />
 
