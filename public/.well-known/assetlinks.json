@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.jobzshala.gcc",
+      "sha256_cert_fingerprints": [
+        "79:88:4B:4F:09:08:C7:90:6A:95:DE:0B:F8:11:1C:91:38:13:55:F4:26:C3:3C:28:7F:6F:52:DB:3E:6B:99:ED"
+      ]
+    }
+  }
+]

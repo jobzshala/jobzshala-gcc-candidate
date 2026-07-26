@@ -109,6 +109,26 @@ function ViewField({ label, value }: { label: string; value: string | null }) {
   );
 }
 
+const KYC_STATUS_TONE: Record<string, string> = {
+  VERIFIED: "border-[#4ADE80]/30 bg-[#4ADE80]/10 text-[#8FD13F]",
+  PENDING: "border-jz-yellow-400/30 bg-jz-yellow-400/10 text-jz-yellow-400",
+  REJECTED: "border-jz-red-600/40 bg-jz-red-600/10 text-jz-red-600",
+};
+
+const PASSPORT_STATUS_TONE: Record<string, string> = {
+  AVAILABLE: "border-[#4ADE80]/30 bg-[#4ADE80]/10 text-[#8FD13F]",
+  APPLIED: "border-jz-yellow-400/30 bg-jz-yellow-400/10 text-jz-yellow-400",
+  NOT_AVAILABLE: "border-jz-white-600/40 bg-jz-white-600/10 text-jz-white-400",
+};
+
+function StatusBadge({ label, tone }: { label: string; tone: string }) {
+  return (
+    <span className={`inline-flex w-fit items-center rounded-full border px-2.5 py-1 text-xs font-medium ${tone}`}>
+      {label}
+    </span>
+  );
+}
+
 export default function ProfilePage() {
   const { t } = useTranslation();
 
@@ -441,7 +461,7 @@ export default function ProfilePage() {
 
             <div className="min-w-0 flex-1 space-y-6">
               {/* Personal Details */}
-              <section id="personal-details" className="scroll-mt-24 rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6">
+              <section id="personal-details" className="scroll-mt-24 rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6 backdrop-blur-xl shadow-[0_1px_0_rgba(74,222,128,0.12),0_14px_30px_-22px_rgba(0,0,0,0.35)]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
                     <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#4ADE80]/15 text-[#8FD13F]">
@@ -609,12 +629,32 @@ export default function ProfilePage() {
                     <ViewField label={t("profile.personalDetails.pincodeLabel")} value={profile.pincode} />
                     <ViewField label={t("profile.personalDetails.addressLine1Label")} value={profile.address_line_1} />
                     <ViewField label={t("profile.personalDetails.addressLine2Label")} value={profile.address_line_2} />
+                    <div>
+                      <p className="text-xs text-jz-white-600">{t("profile.personalDetails.kycStatusLabel")}</p>
+                      <div className="mt-1.5">
+                        <StatusBadge
+                          label={t(`profile.personalDetails.kycStatusOptions.${profile.kyc_status}`, { defaultValue: profile.kyc_status })}
+                          tone={KYC_STATUS_TONE[profile.kyc_status] ?? "border-jz-border bg-jz-blue-900/60 text-jz-white-200"}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-xs text-jz-white-600">{t("profile.personalDetails.passportStatusLabel")}</p>
+                      <div className="mt-1.5">
+                        <StatusBadge
+                          label={t(`profile.personalDetails.passportStatusOptions.${profile.passport_status}`, {
+                            defaultValue: profile.passport_status,
+                          })}
+                          tone={PASSPORT_STATUS_TONE[profile.passport_status] ?? "border-jz-border bg-jz-blue-900/60 text-jz-white-200"}
+                        />
+                      </div>
+                    </div>
                   </div>
                 )}
               </section>
 
               {/* Profile Summary */}
-              <section id="profile-summary" className="scroll-mt-24 rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6">
+              <section id="profile-summary" className="scroll-mt-24 rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6 backdrop-blur-xl shadow-[0_1px_0_rgba(74,222,128,0.12),0_14px_30px_-22px_rgba(0,0,0,0.35)]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
                     <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#4ADE80]/15 text-[#8FD13F]">
@@ -683,7 +723,7 @@ export default function ProfilePage() {
               </section>
 
               {/* Career Profile */}
-              <section id="career-preference" className="scroll-mt-24 rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6">
+              <section id="career-preference" className="scroll-mt-24 rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6 backdrop-blur-xl shadow-[0_1px_0_rgba(74,222,128,0.12),0_14px_30px_-22px_rgba(0,0,0,0.35)]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
                     <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#4ADE80]/15 text-[#8FD13F]">

@@ -74,6 +74,7 @@ export const PUBLIC_ROUTES: {
   { path: "/pricing", label: "Pricing", group: "Platform", changeFrequency: "monthly", priority: 0.9 },
   { path: "/register", label: "Create a GCC Workforce Profile", group: "Platform", changeFrequency: "monthly", priority: 0.9 },
   { path: "/success-stories", label: "Success Stories", group: "Platform", changeFrequency: "weekly", priority: 0.8 },
+  { path: "/status", label: "System Status", group: "Platform", changeFrequency: "weekly", priority: 0.3 },
   { path: "/blog", label: "Blog", group: "Platform", changeFrequency: "weekly", priority: 0.8 },
   { path: "/login", label: "Candidate Login", group: "Platform", changeFrequency: "yearly", priority: 0.4 },
   { path: "/sitemap", label: "Sitemap", group: "Platform", changeFrequency: "monthly", priority: 0.3 },

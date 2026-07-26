@@ -4,20 +4,12 @@ import type { CandidateProfile } from "@/lib/api/candidate";
 import { sendEmailVerificationOtp, confirmEmailVerificationOtp } from "@/lib/api/candidate";
 import { ApiError } from "@/lib/api/client";
 import CompletionRing from "@/components/ui/CompletionRing";
-import { TickIcon, CrossIcon } from "@/components/ui/icons";
+import VerifiedBadge from "@/components/profile/VerifiedBadge";
 
 type ProfileTopBarProps = {
   profile: CandidateProfile;
   completionPercent?: number;
 };
-
-function VerifiedBadge({ verified }: { verified: boolean }) {
-  return (
-    <span title={verified ? "Verified" : "Not verified"} className="flex shrink-0 items-center">
-      {verified ? <TickIcon className="size-4" /> : <CrossIcon className="size-4" />}
-    </span>
-  );
-}
 
 type VerifyStage = "idle" | "sending" | "otp" | "confirming";
 
@@ -85,13 +77,19 @@ export default function ProfileTopBar({ profile, completionPercent }: ProfileTop
               {profile.mobile_number && (
                 <span className="inline-flex items-center gap-1.5">
                   {profile.mobile_number}
-                  <VerifiedBadge verified={profile.is_mobile_verified} />
+                  <VerifiedBadge
+                    verified={profile.is_mobile_verified}
+                    label={profile.is_mobile_verified ? t("profile.personalDetails.verifiedLabel") : t("profile.personalDetails.notVerifiedLabel")}
+                  />
                 </span>
               )}
               {profile.email && (
                 <span className="inline-flex items-center gap-1.5">
                   {profile.email}
-                  <VerifiedBadge verified={emailVerified} />
+                  <VerifiedBadge
+                    verified={emailVerified}
+                    label={emailVerified ? t("profile.personalDetails.verifiedLabel") : t("profile.personalDetails.notVerifiedLabel")}
+                  />
                   {!emailVerified && verifyStage === "idle" && (
                     <button
                       type="button"

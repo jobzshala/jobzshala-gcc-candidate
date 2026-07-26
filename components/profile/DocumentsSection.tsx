@@ -92,7 +92,7 @@ export default function DocumentsSection() {
   };
 
   return (
-    <section id="documents" className="scroll-mt-24 rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6">
+    <section id="documents" className="scroll-mt-24 rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6 backdrop-blur-xl shadow-[0_1px_0_rgba(74,222,128,0.12),0_14px_30px_-22px_rgba(0,0,0,0.35)]">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#4ADE80]/15 text-[#8FD13F]">

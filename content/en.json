@@ -441,7 +441,9 @@
   "dashboard": {
     "loading": "Loading…",
     "nav": {
+      "overview": "Overview",
       "profile": "My Profile",
+      "changePassword": "Change Password",
       "logout": "Log Out"
     }
   },
@@ -488,7 +490,21 @@
       "cityPlaceholder": "Select city",
       "addressLine1Label": "Address Line 1",
       "addressLine2Label": "Address Line 2",
-      "pincodeLabel": "Pincode"
+      "pincodeLabel": "Pincode",
+      "kycStatusLabel": "KYC Status",
+      "kycStatusOptions": {
+        "PENDING": "Pending",
+        "VERIFIED": "Verified",
+        "REJECTED": "Rejected"
+      },
+      "passportStatusLabel": "Passport Status",
+      "passportStatusOptions": {
+        "AVAILABLE": "Available",
+        "APPLIED": "Applied",
+        "NOT_AVAILABLE": "Not Available"
+      },
+      "verifiedLabel": "Verified",
+      "notVerifiedLabel": "Not verified"
     },
     "summary": {
       "heading": "Profile Summary",
