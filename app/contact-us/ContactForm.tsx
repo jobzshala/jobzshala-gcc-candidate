@@ -7,8 +7,13 @@ import { ContactFormError, submitContactLead } from "@/lib/api/contact";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Mirrors the page's own subheading ("hiring, registering as a candidate, or
+// partnering") so the topic picker doesn't introduce categories the rest of
+// the page doesn't already promise.
+const TOPICS = ["Hiring workforce", "Registering as a candidate", "Partnership", "Something else"];
+
 export default function ContactForm() {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", subject: TOPICS[0], message: "" });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -77,11 +82,38 @@ export default function ContactForm() {
         </div>
       )}
 
+      <div className="mb-5">
+        <p className="mb-2 text-sm text-jz-white-200">What&apos;s this about?</p>
+        <div className="flex flex-wrap gap-2">
+          {TOPICS.map((topic) => (
+            <button
+              key={topic}
+              type="button"
+              onClick={() => setForm((prev) => ({ ...prev, subject: topic }))}
+              className={`rounded-full border px-3.5 py-2 text-xs font-medium transition-colors ${
+                form.subject === topic
+                  ? "border-jz-yellow-400 bg-jz-yellow-400 text-jz-ink-on-accent"
+                  : "border-jz-grey-400 bg-jz-blue-950 text-jz-white-200 hover:border-jz-blue-400"
+              }`}
+            >
+              {topic}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="grid gap-5 sm:grid-cols-2">
         <FormInput label="Full name" value={form.name} onChange={handleChange("name")} placeholder="Your name" error={fieldErrors.name} />
         <FormInput label="Email" type="email" value={form.email} onChange={handleChange("email")} placeholder="you@example.com" error={fieldErrors.email} />
-        <FormInput label="Phone (optional)" value={form.phone} onChange={handleChange("phone")} placeholder="+91 98765 43210" error={fieldErrors.phone} />
-        <FormInput label="Subject (optional)" value={form.subject} onChange={handleChange("subject")} placeholder="What's this about?" error={fieldErrors.subject} />
+        <div className="sm:col-span-2">
+          <FormInput
+            label="Phone (optional)"
+            value={form.phone}
+            onChange={handleChange("phone")}
+            placeholder="+91 98765 43210"
+            error={fieldErrors.phone}
+          />
+        </div>
       </div>
 
       <div className="mt-5">

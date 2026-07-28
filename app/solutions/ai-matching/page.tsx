@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CtaCards from "@/components/CtaCards";
 import JsonLd from "@/components/JsonLd";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Accordion, { type AccordionItem } from "@/components/ui/Accordion";
+import MatchVisual from "@/components/ui/MatchVisual";
 import {
   ArrowRightIcon,
   DocumentIcon,
@@ -118,16 +118,7 @@ export default async function AiMatchingPage() {
               </blockquote>
             </div>
 
-            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl lg:sticky lg:top-24">
-              <Image
-                src="/images/gcc-employers.jpg"
-                alt="AI-matched GCC workforce"
-                fill
-                loading="lazy"
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover object-bottom"
-              />
-            </div>
+            <MatchVisual className="aspect-[4/3] w-full lg:sticky lg:top-24" />
           </div>
 
           {faqItems.length > 0 && (

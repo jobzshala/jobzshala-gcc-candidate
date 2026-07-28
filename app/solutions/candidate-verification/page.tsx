@@ -62,7 +62,7 @@ export default async function CandidateVerificationPage() {
       />
       <Header />
       <main className="flex-1">
-        <div className="mx-auto max-w-[1000px] px-4 py-14 sm:px-6 lg:px-10 lg:py-20">
+        <div className="mx-auto max-w-[1440px] px-4 py-14 sm:px-6 lg:px-10 lg:py-20">
           <SectionHeading
             align="center"
             heading="Candidate"
@@ -71,7 +71,7 @@ export default async function CandidateVerificationPage() {
             className="mx-auto max-w-2xl"
           />
 
-          <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_300px] lg:items-start">
+          <div className="mx-auto mt-12 grid max-w-3xl gap-10 lg:grid-cols-[1fr_300px] lg:items-start">
             <div>
               <h2 className="font-serif text-xl font-semibold text-jz-white-50">The verification pipeline</h2>
               <p className="mt-2 text-sm text-jz-white-400">Tap a stage to see what it checks for.</p>
@@ -107,7 +107,7 @@ export default async function CandidateVerificationPage() {
             </div>
           </div>
 
-          <div className="mt-6 flex flex-col-reverse items-center gap-8 rounded-2xl border border-jz-grey-400 bg-gradient-to-r from-jz-bg-primary to-jz-blue-900 p-8 sm:p-10 lg:flex-row rtl:lg:flex-row-reverse">
+          <div className="mx-auto mt-6 flex max-w-3xl flex-col-reverse items-center gap-8 rounded-2xl border border-jz-grey-400 bg-gradient-to-r from-jz-bg-primary to-jz-blue-900 p-8 sm:p-10 lg:flex-row rtl:lg:flex-row-reverse">
             <div className="text-center lg:text-left rtl:lg:text-right">
               <h2 className="font-serif text-2xl font-semibold text-jz-white-50 sm:text-3xl">Trust &amp; Verification</h2>
               <p className="mt-4 max-w-3xl text-jz-white-200">
@@ -125,8 +125,8 @@ export default async function CandidateVerificationPage() {
 
           {faqItems.length > 0 && (
             <>
-              <h2 className="mt-10 font-serif text-xl font-semibold text-jz-white-50 sm:text-2xl">Common questions</h2>
-              <div className="mt-6">
+              <h2 className="mt-10 text-center font-serif text-xl font-semibold text-jz-white-50 sm:text-2xl">Common questions</h2>
+              <div className="mx-auto mt-6 max-w-3xl">
                 <Accordion items={faqItems} defaultOpen={-1} />
               </div>
             </>

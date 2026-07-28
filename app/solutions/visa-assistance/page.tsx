@@ -7,6 +7,7 @@ import JsonLd from "@/components/JsonLd";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Timeline, { type TimelineStep } from "@/components/ui/Timeline";
 import Accordion, { type AccordionItem } from "@/components/ui/Accordion";
+import StageDashboard, { type DashboardRow } from "@/components/ui/StageDashboard";
 import { ArrowRightIcon, DocumentIcon, GlobeIcon, ShieldCheckIcon, TargetIcon, TickIcon, UserIcon } from "@/components/ui/icons";
 import { getPublicFaqs } from "@/lib/api/faqs";
 import { breadcrumbSchema, pageMetadata } from "@/lib/seo";
@@ -51,6 +52,13 @@ const JOURNEY: TimelineStep[] = [
   },
 ];
 
+const DASHBOARD_ROWS: DashboardRow[] = [
+  { name: "Offer Accepted", status: "verified", statusLabel: "Done" },
+  { name: "Documentation Collected", status: "verified", statusLabel: "Done" },
+  { name: "Medical Fitness Check", status: "screening", statusLabel: "In Progress", active: true },
+  { name: "Visa Processing", status: "pending", statusLabel: "Pending" },
+];
+
 export default async function VisaAssistancePage() {
   const faqs = await getPublicFaqs({ category: "VISA_ASSISTANCE" }).catch(() => []);
   const faqItems: AccordionItem[] = faqs.map((faq) => ({ question: faq.question, answer: faq.answer }));
@@ -66,7 +74,7 @@ export default async function VisaAssistancePage() {
       />
       <Header />
       <main className="flex-1">
-        <div className="mx-auto max-w-[1000px] px-4 py-14 sm:px-6 lg:px-10 lg:py-20">
+        <div className="mx-auto max-w-[1440px] px-4 py-14 sm:px-6 lg:px-10 lg:py-20">
           <SectionHeading
             align="center"
             heading="Visa &"
@@ -75,25 +83,43 @@ export default async function VisaAssistancePage() {
             className="mx-auto max-w-2xl"
           />
 
-          <h2 className="mt-14 font-serif text-xl font-semibold text-jz-white-50 sm:text-2xl">From offer to first day</h2>
-          <p className="mt-2 text-sm text-jz-white-400">Tap a stage to see what it involves.</p>
-          <div className="mt-6">
-            <Timeline steps={JOURNEY} />
+          <div className="mt-16 grid gap-10 lg:grid-cols-2 lg:items-stretch">
+            <div>
+              <h2 className="font-serif text-xl font-semibold text-jz-white-50 sm:text-2xl">From offer to first day</h2>
+              <p className="mt-2 text-sm text-jz-white-400">Tap a stage to see what it involves.</p>
+              <div className="mt-6">
+                <Timeline steps={JOURNEY} />
+              </div>
+              <p className="text-xs text-jz-white-600 italic">
+                Exact steps and document requirements can vary by country and role — your recruiter will confirm specifics for your
+                case.
+              </p>
+            </div>
+
+            <div className="lg:sticky lg:top-24 lg:self-start">
+              <StageDashboard
+                windowTitle="visa file · candidate #4821"
+                rows={DASHBOARD_ROWS}
+                progressLabel="Visa progress"
+                progressPercent={42}
+              />
+              <p className="mt-4 text-sm leading-relaxed text-jz-white-400">
+                Every visa stage on the left moves through this same tracked pipeline — visible to both employer and
+                candidate, no separate emails or spreadsheets.
+              </p>
+            </div>
           </div>
-          <p className="text-xs text-jz-white-600 italic">
-            Exact steps and document requirements can vary by country and role — your recruiter will confirm specifics for your case.
-          </p>
 
           {faqItems.length > 0 && (
             <>
-              <h2 className="mt-10 font-serif text-xl font-semibold text-jz-white-50 sm:text-2xl">Common questions</h2>
-              <div className="mt-6">
+              <h2 className="mt-16 text-center font-serif text-xl font-semibold text-jz-white-50 sm:text-2xl">Common questions</h2>
+              <div className="mx-auto mt-6 max-w-3xl">
                 <Accordion items={faqItems} defaultOpen={-1} />
               </div>
             </>
           )}
 
-          <div className="mt-8 flex items-center gap-4 rounded-2xl border border-jz-grey-400 bg-gradient-to-r from-jz-bg-primary to-jz-blue-900 p-6">
+          <div className="mx-auto mt-10 flex max-w-3xl items-center gap-4 rounded-2xl border border-jz-grey-400 bg-gradient-to-r from-jz-bg-primary to-jz-blue-900 p-6">
             <DocumentIcon className="size-8 shrink-0 text-jz-yellow-400" />
             <div className="min-w-0">
               <h3 className="font-serif text-base font-semibold text-jz-white-50">New to GCC work visas?</h3>

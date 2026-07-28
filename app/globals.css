@@ -156,3 +156,24 @@ html[dir="rtl"] body {
     animation: none;
   }
 }
+
+/* Highlights the in-progress row on StageDashboard. */
+@keyframes dash-glow {
+  0%,
+  100% {
+    border-color: var(--jz-grey-400);
+  }
+  50% {
+    border-color: var(--jz-blue-400);
+  }
+}
+
+.animate-dash-glow {
+  animation: dash-glow 2.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-dash-glow {
+    animation: none;
+  }
+}

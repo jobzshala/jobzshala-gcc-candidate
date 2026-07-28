@@ -34,7 +34,7 @@ export default function ContactUsPage() {
             className="mx-auto max-w-2xl"
           />
 
-          <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_360px]">
+          <div className="mt-10 grid items-start gap-6 lg:grid-cols-[1fr_360px]">
             <ContactForm />
             <ContactInfo />
           </div>

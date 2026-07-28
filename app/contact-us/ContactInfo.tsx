@@ -1,7 +1,5 @@
 import Link from "next/link";
-import { MailIcon } from "@/components/ui/icons";
-
-const HELP_TOPICS = ["Recruitment Solutions", "Workforce Infrastructure", "AI Matching", "Candidate Verification", "Visa Assistance"];
+import { MailIcon, QuestionIcon } from "@/components/ui/icons";
 
 const GCC_COUNTRIES = ["UAE", "Saudi Arabia", "Qatar", "Oman", "Kuwait", "Bahrain"];
 
@@ -22,16 +20,21 @@ export default function ContactInfo() {
         </a>
       </div>
 
-      <div className="rounded-2xl border border-jz-grey-400 bg-jz-bg-primary p-6">
-        <h3 className="font-serif text-lg font-semibold text-jz-white-50">What we can help with</h3>
-        <ul className="mt-3 flex flex-col gap-2">
-          {HELP_TOPICS.map((topic) => (
-            <li key={topic} className="flex items-start gap-2 text-sm text-jz-white-400">
-              <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-jz-yellow-400" aria-hidden="true" />
-              {topic}
-            </li>
-          ))}
-        </ul>
+      <div className="rounded-2xl border border-jz-blue-400 bg-gradient-to-br from-jz-bg-primary to-jz-blue-900 p-6">
+        <div className="flex items-start gap-3">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-jz-blue-800 text-jz-blue-400">
+            <QuestionIcon className="size-4.5" />
+          </span>
+          <div>
+            <h3 className="font-serif text-lg font-semibold text-jz-white-50">Check the FAQ first</h3>
+            <p className="mt-1 text-sm text-jz-white-400">
+              Login, registration, subscriptions and account questions are usually answered instantly here.
+            </p>
+          </div>
+        </div>
+        <Link href="/faq" className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-jz-blue-400 hover:underline">
+          Browse FAQs →
+        </Link>
       </div>
 
       <div className="rounded-2xl border border-jz-grey-400 bg-jz-bg-primary p-6">
