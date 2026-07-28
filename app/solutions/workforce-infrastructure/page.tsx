@@ -6,7 +6,9 @@ import JsonLd from "@/components/JsonLd";
 import SectionHeading from "@/components/ui/SectionHeading";
 import CorridorVisual from "@/components/ui/CorridorVisual";
 import FlagIcon, { type GccCountryCode } from "@/components/ui/FlagIcon";
+import Accordion, { type AccordionItem } from "@/components/ui/Accordion";
 import { ArrowRightIcon, GlobeIcon, ShieldCheckIcon, TickIcon, UserIcon } from "@/components/ui/icons";
+import { getPublicFaqs } from "@/lib/api/faqs";
 import { breadcrumbSchema, GCC_COUNTRIES, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -33,7 +35,10 @@ const PIPELINE = [
   { title: "In-Region Support", subtitle: "Post-Deployment", icon: TickIcon, body: "Once deployed, candidates and employers stay visible on the platform through onboarding and beyond." },
 ];
 
-export default function WorkforceInfrastructurePage() {
+export default async function WorkforceInfrastructurePage() {
+  const faqs = await getPublicFaqs({ category: "WORKFORCE_INFRASTRUCTURE" }).catch(() => []);
+  const faqItems: AccordionItem[] = faqs.map((faq) => ({ question: faq.question, answer: faq.answer }));
+
   return (
     <div className="flex flex-1 flex-col bg-jz-blue-950">
       <JsonLd
@@ -114,6 +119,15 @@ export default function WorkforceInfrastructurePage() {
               hiring turnaround time with workforce already in-region.
             </p>
           </div>
+
+          {faqItems.length > 0 && (
+            <>
+              <h2 className="mt-16 font-serif text-xl font-semibold text-jz-white-50 sm:text-2xl">Common questions</h2>
+              <div className="mt-6 max-w-3xl">
+                <Accordion items={faqItems} defaultOpen={-1} />
+              </div>
+            </>
+          )}
         </div>
       </main>
       <CtaCards />

@@ -5,7 +5,9 @@ import CtaCards from "@/components/CtaCards";
 import JsonLd from "@/components/JsonLd";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Timeline, { type TimelineStep } from "@/components/ui/Timeline";
+import Accordion, { type AccordionItem } from "@/components/ui/Accordion";
 import { CheckIcon, DocumentIcon, ShieldCheckIcon, TargetIcon, TickIcon, UserIcon } from "@/components/ui/icons";
+import { getPublicFaqs } from "@/lib/api/faqs";
 import { breadcrumbSchema, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -45,7 +47,10 @@ const STEPS: TimelineStep[] = [
 
 const BADGES = ["Recruiter-Verified", "Document-Validated", "Skill-Assessed", "Interview-Ready"];
 
-export default function CandidateVerificationPage() {
+export default async function CandidateVerificationPage() {
+  const faqs = await getPublicFaqs({ category: "CANDIDATE_VERIFICATION" }).catch(() => []);
+  const faqItems: AccordionItem[] = faqs.map((faq) => ({ question: faq.question, answer: faq.answer }));
+
   return (
     <div className="flex flex-1 flex-col bg-jz-blue-950">
       <JsonLd
@@ -117,6 +122,15 @@ export default function CandidateVerificationPage() {
               <ShieldCheckIcon className="size-14 lg:size-20" />
             </div>
           </div>
+
+          {faqItems.length > 0 && (
+            <>
+              <h2 className="mt-10 font-serif text-xl font-semibold text-jz-white-50 sm:text-2xl">Common questions</h2>
+              <div className="mt-6">
+                <Accordion items={faqItems} defaultOpen={-1} />
+              </div>
+            </>
+          )}
         </div>
       </main>
       <CtaCards />

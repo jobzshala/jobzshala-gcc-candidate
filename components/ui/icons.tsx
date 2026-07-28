@@ -371,6 +371,22 @@ export function LockIcon({ className = "size-5" }: IconProps) {
   );
 }
 
+export function QuestionIcon({ className = "size-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
+      <path
+        d="M9.3 9.3a2.7 2.7 0 1 1 3.9 2.4c-.7.4-1.2.9-1.2 1.8v.3"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="12" cy="17" r="1" fill="currentColor" />
+    </svg>
+  );
+}
+
 export function LogoutIcon({ className = "size-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">

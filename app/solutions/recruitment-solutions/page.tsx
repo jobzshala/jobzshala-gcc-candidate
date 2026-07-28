@@ -6,7 +6,9 @@ import JsonLd from "@/components/JsonLd";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Button from "@/components/ui/Button";
 import Timeline, { type TimelineStep } from "@/components/ui/Timeline";
+import Accordion, { type AccordionItem } from "@/components/ui/Accordion";
 import { BriefcaseIcon, CrossIcon, DocumentIcon, GlobeIcon, SearchIcon, SparkleIcon, TargetIcon, TickIcon } from "@/components/ui/icons";
+import { getPublicFaqs } from "@/lib/api/faqs";
 import { breadcrumbSchema, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -66,7 +68,10 @@ const STEPS: TimelineStep[] = [
 const TRADITIONAL = ["Resume database", "Manual hiring", "Fragmented", "Agent-dependent"];
 const JOBZSHALA = ["AI + Human Recruiters", "Verified Workforce", "Deployment", "Analytics — one integrated platform"];
 
-export default function RecruitmentSolutionsPage() {
+export default async function RecruitmentSolutionsPage() {
+  const faqs = await getPublicFaqs({ category: "RECRUITMENT_SOLUTIONS" }).catch(() => []);
+  const faqItems: AccordionItem[] = faqs.map((faq) => ({ question: faq.question, answer: faq.answer }));
+
   return (
     <div className="flex flex-1 flex-col bg-jz-blue-950">
       <JsonLd
@@ -125,6 +130,15 @@ export default function RecruitmentSolutionsPage() {
               </div>
             ))}
           </div>
+
+          {faqItems.length > 0 && (
+            <>
+              <h2 className="mt-8 font-serif text-xl font-semibold text-jz-white-50 sm:text-2xl">Common questions</h2>
+              <div className="mt-6">
+                <Accordion items={faqItems} defaultOpen={-1} />
+              </div>
+            </>
+          )}
 
           <div className="mt-10 flex justify-center">
             <Button variant="primary" href="/hire/login">

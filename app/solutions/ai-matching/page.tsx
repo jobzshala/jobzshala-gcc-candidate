@@ -16,6 +16,7 @@ import {
   TickIcon,
   VideoIcon,
 } from "@/components/ui/icons";
+import { getPublicFaqs } from "@/lib/api/faqs";
 import { breadcrumbSchema, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -64,7 +65,10 @@ const FEATURES: AccordionItem[] = [
   },
 ];
 
-export default function AiMatchingPage() {
+export default async function AiMatchingPage() {
+  const faqs = await getPublicFaqs({ category: "AI_MATCHING" }).catch(() => []);
+  const faqItems: AccordionItem[] = faqs.map((faq) => ({ question: faq.question, answer: faq.answer }));
+
   return (
     <div className="flex flex-1 flex-col bg-jz-blue-950">
       <JsonLd
@@ -125,6 +129,15 @@ export default function AiMatchingPage() {
               />
             </div>
           </div>
+
+          {faqItems.length > 0 && (
+            <>
+              <h2 className="mt-16 font-serif text-xl font-semibold text-jz-white-50 sm:text-2xl">Common questions</h2>
+              <div className="mt-6 max-w-3xl">
+                <Accordion items={faqItems} defaultOpen={-1} />
+              </div>
+            </>
+          )}
         </div>
       </main>
       <CtaCards />

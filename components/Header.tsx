@@ -14,6 +14,7 @@ import {
   GlobeIcon,
   MailIcon,
   MenuIcon,
+  QuestionIcon,
   ShieldCheckIcon,
   SparkleIcon,
   TargetIcon,
@@ -75,6 +76,7 @@ const RESOURCES_ITEMS: NavDropdownItem[] = [
   { label: "Pricing", href: "/pricing", description: "Plans for candidates and employers", icon: TargetIcon },
   { label: "Sitemap", href: "/sitemap", description: "Every public page in one index", icon: GlobeIcon },
   { label: "Contact Us", href: "/contact-us", description: "Get in touch with our team", icon: MailIcon },
+  { label: "FAQs", href: "/faq", description: "Common questions about your account", icon: QuestionIcon },
 ];
 
 export default function Header() {

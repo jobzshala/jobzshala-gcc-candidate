@@ -76,6 +76,7 @@ export const PUBLIC_ROUTES: {
   { path: "/success-stories", label: "Success Stories", group: "Platform", changeFrequency: "weekly", priority: 0.8 },
   { path: "/status", label: "System Status", group: "Platform", changeFrequency: "weekly", priority: 0.3 },
   { path: "/blog", label: "Blog", group: "Platform", changeFrequency: "weekly", priority: 0.8 },
+  { path: "/faq", label: "FAQs", group: "Platform", changeFrequency: "monthly", priority: 0.6 },
   { path: "/login", label: "Candidate Login", group: "Platform", changeFrequency: "yearly", priority: 0.4 },
   { path: "/sitemap", label: "Sitemap", group: "Platform", changeFrequency: "monthly", priority: 0.3 },
   { path: "/solutions", label: "Solutions", group: "Solutions", changeFrequency: "monthly", priority: 0.7 },
