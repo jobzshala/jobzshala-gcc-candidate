@@ -36,38 +36,35 @@ const CANDIDATE_ITEMS: NavDropdownItem[] = [
   { label: "Blog", href: "/blog", icon: DocumentIcon },
 ];
 
-// Anchors point at homepage sections (ids added on WhyChooseUs, HowItWorks,
-// TrustVerification, WorkforceCorridor) — no dedicated solution pages exist
-// yet, so this links straight to the part of the homepage that covers each.
 const SOLUTIONS_ITEMS: NavDropdownItem[] = [
   {
     label: "Recruitment Solutions",
-    href: "/#recruitment-solutions",
+    href: "/solutions/recruitment-solutions",
     description: "AI-assisted sourcing and end-to-end hiring",
     icon: BriefcaseIcon,
   },
   {
     label: "Workforce Infrastructure",
-    href: "/#workforce-infrastructure",
+    href: "/solutions/workforce-infrastructure",
     description: "Structured India → GCC workforce mobility",
     icon: GlobeIcon,
   },
   {
     label: "AI Matching",
-    href: "/#ai-matching",
+    href: "/solutions/ai-matching",
     description: "AI-powered candidate-to-job matching",
     icon: SparkleIcon,
   },
   {
     label: "Candidate Verification",
-    href: "/#candidate-verification",
+    href: "/solutions/candidate-verification",
     description: "Recruiter-verified, document-checked profiles",
     icon: ShieldCheckIcon,
   },
   {
     label: "Visa Assistance",
-    href: "/blog/uae-work-visas-explained-a-simple-guide-for-first-time-job-seekers",
-    description: "Guides on GCC work visas and relocation",
+    href: "/solutions/visa-assistance",
+    description: "Visa, medical, travel and joining support",
     icon: DocumentIcon,
   },
 ];

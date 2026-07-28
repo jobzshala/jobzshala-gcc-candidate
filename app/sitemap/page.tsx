@@ -48,6 +48,7 @@ export default async function SitemapPage() {
   const posts = await getPublicBlogPosts({ limit: 200 }).catch(() => []);
 
   const platform = PUBLIC_ROUTES.filter((route) => route.group === "Platform");
+  const solutions = PUBLIC_ROUTES.filter((route) => route.group === "Solutions");
   const legal = PUBLIC_ROUTES.filter((route) => route.group === "Legal");
 
   return (
@@ -72,6 +73,10 @@ export default async function SitemapPage() {
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <Group title="Platform">
               <LinkList links={platform} />
+            </Group>
+
+            <Group title="Solutions">
+              <LinkList links={solutions} />
             </Group>
 
             <Group title="Legal">

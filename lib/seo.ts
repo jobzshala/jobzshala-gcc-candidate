@@ -64,7 +64,7 @@ export function absoluteUrl(path = "/"): string {
 export const PUBLIC_ROUTES: {
   path: string;
   label: string;
-  group: "Platform" | "Legal";
+  group: "Platform" | "Solutions" | "Legal";
   changeFrequency: "weekly" | "monthly" | "yearly";
   priority: number;
 }[] = [
@@ -78,6 +78,36 @@ export const PUBLIC_ROUTES: {
   { path: "/blog", label: "Blog", group: "Platform", changeFrequency: "weekly", priority: 0.8 },
   { path: "/login", label: "Candidate Login", group: "Platform", changeFrequency: "yearly", priority: 0.4 },
   { path: "/sitemap", label: "Sitemap", group: "Platform", changeFrequency: "monthly", priority: 0.3 },
+  { path: "/solutions", label: "Solutions", group: "Solutions", changeFrequency: "monthly", priority: 0.7 },
+  {
+    path: "/solutions/recruitment-solutions",
+    label: "Recruitment Solutions",
+    group: "Solutions",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
+    path: "/solutions/workforce-infrastructure",
+    label: "Workforce Infrastructure",
+    group: "Solutions",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  { path: "/solutions/ai-matching", label: "AI Matching", group: "Solutions", changeFrequency: "monthly", priority: 0.7 },
+  {
+    path: "/solutions/candidate-verification",
+    label: "Candidate Verification",
+    group: "Solutions",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
+    path: "/solutions/visa-assistance",
+    label: "Visa Assistance",
+    group: "Solutions",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
   { path: "/privacy-policy", label: "Privacy Policy", group: "Legal", changeFrequency: "yearly", priority: 0.3 },
   { path: "/terms-conditions", label: "Terms & Conditions", group: "Legal", changeFrequency: "yearly", priority: 0.3 },
   { path: "/refund-policy", label: "Refund Policy", group: "Legal", changeFrequency: "yearly", priority: 0.3 },

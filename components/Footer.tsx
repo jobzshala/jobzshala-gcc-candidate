@@ -15,6 +15,16 @@ const LEGAL_LINK_HREFS = ["/privacy-policy", "/terms-conditions", "/refund-polic
 // Index-matched to footer.company.links (About Us, Contact Us, Blog, Careers, Success Stories, Pricing).
 const COMPANY_LINK_HREFS = ["/about-us", "/contact-us", "/blog", undefined, "/success-stories", "/pricing"];
 
+// Index-matched to footer.services.links (Recruitment Solutions, Workforce Infrastructure,
+// AI Matching, Candidate Verification, Visa Assistance).
+const SERVICES_LINK_HREFS = [
+  "/solutions/recruitment-solutions",
+  "/solutions/workforce-infrastructure",
+  "/solutions/ai-matching",
+  "/solutions/candidate-verification",
+  "/solutions/visa-assistance",
+];
+
 type LinkGroup = { title: string; links: string[] };
 
 export default function Footer() {
@@ -43,7 +53,13 @@ export default function Footer() {
                 <ul className="mt-3 flex flex-col gap-2">
                   {group.links.map((link, i) => {
                     const href =
-                      group === legal ? LEGAL_LINK_HREFS[i] : group === company ? COMPANY_LINK_HREFS[i] : undefined;
+                      group === legal
+                        ? LEGAL_LINK_HREFS[i]
+                        : group === company
+                          ? COMPANY_LINK_HREFS[i]
+                          : group === services
+                            ? SERVICES_LINK_HREFS[i]
+                            : undefined;
                     return (
                       <li key={link}>
                         {href ? (
