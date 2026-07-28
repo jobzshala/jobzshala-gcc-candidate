@@ -8,6 +8,7 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import Timeline, { type TimelineStep } from "@/components/ui/Timeline";
 import Accordion, { type AccordionItem } from "@/components/ui/Accordion";
 import { ArrowRightIcon, DocumentIcon, GlobeIcon, ShieldCheckIcon, TargetIcon, TickIcon, UserIcon } from "@/components/ui/icons";
+import { getPublicFaqs } from "@/lib/api/faqs";
 import { breadcrumbSchema, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -50,27 +51,10 @@ const JOURNEY: TimelineStep[] = [
   },
 ];
 
-const FAQS: AccordionItem[] = [
-  {
-    question: "Who handles my visa paperwork?",
-    answer: "Jobzshala coordinates the visa process with your employer once you accept an offer, so you're not navigating it alone.",
-  },
-  {
-    question: "What documents do I typically need?",
-    answer:
-      "Most GCC work visas start with a valid passport, passport-size photographs and your educational or experience certificates — your recruiter will confirm the exact list for your role and country.",
-  },
-  {
-    question: "Do I need a medical check?",
-    answer: "Yes — a medical fitness check is a standard requirement for GCC work visas and is arranged as part of the process.",
-  },
-  {
-    question: "What happens after I land?",
-    answer: "Joining support continues after arrival, with visibility into onboarding until you're settled in the role.",
-  },
-];
+export default async function VisaAssistancePage() {
+  const faqs = await getPublicFaqs({ category: "VISA_ASSISTANCE" }).catch(() => []);
+  const faqItems: AccordionItem[] = faqs.map((faq) => ({ question: faq.question, answer: faq.answer }));
 
-export default function VisaAssistancePage() {
   return (
     <div className="flex flex-1 flex-col bg-jz-blue-950">
       <JsonLd
@@ -100,10 +84,14 @@ export default function VisaAssistancePage() {
             Exact steps and document requirements can vary by country and role — your recruiter will confirm specifics for your case.
           </p>
 
-          <h2 className="mt-10 font-serif text-xl font-semibold text-jz-white-50 sm:text-2xl">Common questions</h2>
-          <div className="mt-6">
-            <Accordion items={FAQS} defaultOpen={-1} />
-          </div>
+          {faqItems.length > 0 && (
+            <>
+              <h2 className="mt-10 font-serif text-xl font-semibold text-jz-white-50 sm:text-2xl">Common questions</h2>
+              <div className="mt-6">
+                <Accordion items={faqItems} defaultOpen={-1} />
+              </div>
+            </>
+          )}
 
           <div className="mt-8 flex items-center gap-4 rounded-2xl border border-jz-grey-400 bg-gradient-to-r from-jz-bg-primary to-jz-blue-900 p-6">
             <DocumentIcon className="size-8 shrink-0 text-jz-yellow-400" />
