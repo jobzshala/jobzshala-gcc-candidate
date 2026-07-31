@@ -13,6 +13,11 @@ export interface SubscriptionPlan {
   name: string;
   user_type: SubscriptionUserType;
   price: string | number;
+  currency: {
+    id: number;
+    code: string;
+    symbol: string;
+  } | null;
   billing_cycle: BillingCycle;
   unlimited_job_postings: boolean;
   job_posting_limit: number | null;

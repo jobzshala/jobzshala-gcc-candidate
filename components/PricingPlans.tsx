@@ -55,7 +55,8 @@ function PlanCard({ plan }: { plan: SubscriptionPlan }) {
 
       <div className="mt-3 flex items-baseline gap-1.5">
         <span className="font-serif text-3xl font-bold text-jz-white-50">
-          ₹{Number.isNaN(priceNum) ? "-" : priceNum.toLocaleString("en-IN")}
+          {plan.currency?.symbol ?? ""}
+          {Number.isNaN(priceNum) ? "-" : priceNum.toLocaleString()}
         </span>
         <span className="text-sm text-jz-white-600">/ {billingCycleLabel[plan.billing_cycle]}</span>
       </div>
