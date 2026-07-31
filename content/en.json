@@ -633,6 +633,15 @@
       "fileLabel": "File",
       "mandatory": "Required",
       "view": "View"
+    },
+    "image": {
+      "upload": "Add photo",
+      "change": "Change photo",
+      "remove": "Remove photo",
+      "invalidType": "Use a JPG, PNG, or WebP image.",
+      "tooLarge": "Image must be under 2 MB.",
+      "genericError": "Something went wrong. Please try again.",
+      "alt": "{{name}} profile photo"
     }
   }
 }

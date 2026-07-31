@@ -40,6 +40,9 @@ export interface CandidateProfile {
   passport_status: string;
   kyc_status: string;
   status: string;
+  // Signed, time-limited URL (regenerated on each profile fetch), not a
+  // permanent link — don't cache it across sessions.
+  profile_image_url: string | null;
   resume_url: string | null;
   video_url: string | null;
   profile_activated_at: string | null;
@@ -364,6 +367,23 @@ export function updateResume(file: File): Promise<ResumeInfo> {
   const formData = new FormData();
   formData.set("resume", file);
   return authFetch<ResumeInfo>("/candidate/profile/resume", { method: "PUT", body: formData });
+}
+
+// ---------------------------------------------------------------------------
+// Profile image
+// ---------------------------------------------------------------------------
+
+// One image per candidate, so upload doubles as replace — the backend deletes
+// the previous S3 object itself. The returned URL is a signed, time-limited
+// GET (candidate media lives in the private bucket), not a permanent link.
+export function updateProfileImage(file: File): Promise<{ profile_image_url: string }> {
+  const formData = new FormData();
+  formData.set("image", file);
+  return authFetch<{ profile_image_url: string }>("/candidate/profile/image", { method: "PUT", body: formData });
+}
+
+export function deleteProfileImage(): Promise<void> {
+  return authFetch<void>("/candidate/profile/image", { method: "DELETE" });
 }
 
 // ---------------------------------------------------------------------------

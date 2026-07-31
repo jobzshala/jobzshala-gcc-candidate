@@ -454,7 +454,15 @@ export default function ProfilePage() {
         </>
       ) : (
         <>
-          <ProfileTopBar profile={profile} completionPercent={completion?.percent} />
+          <ProfileTopBar
+            profile={profile}
+            completionPercent={completion?.percent}
+            // Keep the page's copy in sync so a later section save (which
+            // re-renders from `profile`) doesn't show a stale photo.
+            onImageChange={(profile_image_url) =>
+              setProfile((current) => (current ? { ...current, profile_image_url } : current))
+            }
+          />
 
           <div className="mt-6 flex items-start gap-6">
             <ProfileSidebarNav />

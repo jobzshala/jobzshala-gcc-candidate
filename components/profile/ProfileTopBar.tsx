@@ -3,19 +3,21 @@ import { useTranslation } from "react-i18next";
 import type { CandidateProfile } from "@/lib/api/candidate";
 import { sendEmailVerificationOtp, confirmEmailVerificationOtp } from "@/lib/api/candidate";
 import { ApiError } from "@/lib/api/client";
-import CompletionRing from "@/components/ui/CompletionRing";
 import VerifiedBadge from "@/components/profile/VerifiedBadge";
+import ProfileImageUploader from "@/components/profile/ProfileImageUploader";
 
 type ProfileTopBarProps = {
   profile: CandidateProfile;
   completionPercent?: number;
+  onImageChange?: (imageUrl: string | null) => void;
 };
 
 type VerifyStage = "idle" | "sending" | "otp" | "confirming";
 
-export default function ProfileTopBar({ profile, completionPercent }: ProfileTopBarProps) {
+export default function ProfileTopBar({ profile, completionPercent, onImageChange }: ProfileTopBarProps) {
   const { t } = useTranslation();
 
+  const [imageUrl, setImageUrl] = useState(profile.profile_image_url);
   const [emailVerified, setEmailVerified] = useState(profile.is_email_verified);
   const [verifyStage, setVerifyStage] = useState<VerifyStage>("idle");
   const [otp, setOtp] = useState("");
@@ -59,18 +61,15 @@ export default function ProfileTopBar({ profile, completionPercent }: ProfileTop
       <div className="pointer-events-none absolute -inset-y-10 -left-1/4 w-1/2 rotate-12 bg-gradient-to-r from-transparent via-white/25 to-transparent" />
       <div className="relative flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
-          {completionPercent !== undefined ? (
-            <div className="relative shrink-0">
-              <CompletionRing percent={completionPercent} size={64} strokeWidth={5} />
-              <span className="absolute inset-0 flex items-center justify-center text-lg font-semibold text-white">
-                {profile.full_name.charAt(0).toUpperCase()}
-              </span>
-            </div>
-          ) : (
-            <span className="flex size-16 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#4ADE80] to-[#16A34A] text-2xl font-semibold text-white">
-              {profile.full_name.charAt(0).toUpperCase()}
-            </span>
-          )}
+          <ProfileImageUploader
+            fullName={profile.full_name}
+            imageUrl={imageUrl}
+            completionPercent={completionPercent}
+            onChange={(next) => {
+              setImageUrl(next);
+              onImageChange?.(next);
+            }}
+          />
           <div>
             <h1 className="font-serif text-xl font-semibold text-white sm:text-2xl">{profile.full_name}</h1>
             <div className="mt-1 flex flex-col gap-1 text-sm text-white/70 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-1">
