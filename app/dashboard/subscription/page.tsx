@@ -134,7 +134,7 @@ function SubscriptionInner() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-[1200px] px-4 py-10 sm:px-6 lg:px-10 space-y-6">
       <header>
         <h1 className="flex items-center gap-2 text-xl font-semibold text-jz-white-100">
           <SparkleIcon className="size-5 text-jz-yellow-400" />

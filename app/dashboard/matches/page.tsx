@@ -149,7 +149,7 @@ export default function MatchesPage() {
   }, [load, page]);
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-[1200px] px-4 py-10 sm:px-6 lg:px-10 space-y-6">
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="flex items-center gap-2 text-xl font-semibold text-jz-white-100">
