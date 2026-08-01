@@ -16,14 +16,18 @@ export class ApiError extends Error {
   }
 }
 
-interface ApiEnvelope<T> {
+export interface ApiEnvelope<T> {
   status: boolean;
   message?: string | string[];
   result?: T;
   errors?: Record<string, string>;
 }
 
-export async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
+// Returns the whole envelope. Most endpoints only need `result`, which is
+// what apiFetch hands back — but a few put data alongside it rather than
+// inside it (the matches endpoint carries `entitlement` and `access` as
+// siblings of `result`), and those would lose it to the unwrap.
+async function fetchEnvelope<T>(path: string, options: RequestInit = {}): Promise<ApiEnvelope<T>> {
   const isFormData = options.body instanceof FormData;
 
   const response = await fetch(`${API_BASE_URL}${path}`, {
@@ -42,6 +46,11 @@ export async function apiFetch<T>(path: string, options: RequestInit = {}): Prom
     throw new ApiError(message || "Something went wrong. Please try again.", data?.errors, response.status);
   }
 
+  return data;
+}
+
+export async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const data = await fetchEnvelope<T>(path, options);
   return data.result as T;
 }
 
@@ -86,7 +95,11 @@ async function refreshAccessToken(): Promise<string> {
 // Same as apiFetch, but attaches the signed-in candidate's access token and
 // transparently refreshes + retries once on a 401 (expired access token)
 // before giving up and sending the user back to /login.
-export async function authFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
+async function authRequest<R>(
+  path: string,
+  options: RequestInit,
+  run: (path: string, options: RequestInit) => Promise<R>
+): Promise<R> {
   const session = store.getState().auth;
 
   if (!session.accessToken) {
@@ -99,12 +112,12 @@ export async function authFetch<T>(path: string, options: RequestInit = {}): Pro
   });
 
   try {
-    return await apiFetch<T>(path, withAuth(session.accessToken));
+    return await run(path, withAuth(session.accessToken));
   } catch (err) {
     if (err instanceof ApiError && err.status === 401) {
       try {
         const newAccessToken = await refreshAccessToken();
-        return await apiFetch<T>(path, withAuth(newAccessToken));
+        return await run(path, withAuth(newAccessToken));
       } catch {
         if (typeof window !== "undefined") window.location.href = "/login";
         throw err;
@@ -112,4 +125,14 @@ export async function authFetch<T>(path: string, options: RequestInit = {}): Pro
     }
     throw err;
   }
+}
+
+export function authFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
+  return authRequest(path, options, apiFetch<T>);
+}
+
+// Same auth + refresh-and-retry behaviour as authFetch, but hands back the
+// whole envelope for endpoints that return data outside `result`.
+export function authFetchEnvelope<T>(path: string, options: RequestInit = {}): Promise<ApiEnvelope<T>> {
+  return authRequest(path, options, fetchEnvelope<T>);
 }
