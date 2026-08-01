@@ -1,6 +1,7 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import Logo from "@/components/ui/Logo";
@@ -17,12 +18,23 @@ import { setSession } from "@/lib/store/authSlice";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { ApiError } from "@/lib/api/client";
 
+// Only same-origin relative paths are honoured as a post-login destination.
+// Anything else — a protocol, a host, a protocol-relative "//evil.com" — is
+// ignored, so ?next= cannot be used to bounce a freshly-authenticated user
+// off-site.
+const safeReturnPath = (value: string | null): string | null => {
+  if (!value) return null;
+  if (!value.startsWith("/") || value.startsWith("//")) return null;
+  return value;
+};
+
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MOBILE_PATTERN = /^[0-9]{10}$/;
 
-export default function LoginPage() {
+function LoginForm() {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [keepSignedIn, setKeepSignedIn] = useState(true);
@@ -60,9 +72,14 @@ export default function LoginPage() {
       dispatch(setSession(result));
       // First login on the emailed temporary password: force a password
       // change before anything else (dashboard/layout.tsx enforces it too).
+      // ?next= carries the page the candidate was trying to reach — most
+      // importantly a /subscribe/<token> offer link, which is single-use and
+      // would otherwise be lost by bouncing them to the dashboard.
+      const next = safeReturnPath(searchParams.get("next"));
+
       window.location.href = result.candidate.must_change_password
         ? "/change-password"
-        : "/dashboard";
+        : (next ?? "/dashboard");
     } catch (err) {
       if (err instanceof ApiError) {
         setFieldErrors(err.fieldErrors ?? {});
@@ -213,5 +230,17 @@ export default function LoginPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+// useSearchParams (for the ?next= return path) forces client-side rendering
+// up to the nearest Suspense boundary, and a production build of a static
+// page fails outright without one. Dev renders on demand and would not have
+// caught this.
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
   );
 }
