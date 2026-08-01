@@ -444,7 +444,9 @@
       "overview": "Overview",
       "profile": "My Profile",
       "changePassword": "Change Password",
-      "logout": "Log Out"
+      "logout": "Log Out",
+      "matches": "Job Matches",
+      "subscription": "Subscription"
     }
   },
   "profile": {

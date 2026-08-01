@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import Logo from "@/components/ui/Logo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ThemeToggle from "@/components/ThemeToggle";
-import { GridIcon, UserIcon, LockIcon, LogoutIcon, ChevronDownIcon } from "@/components/ui/icons";
+import { GridIcon, UserIcon, LockIcon, LogoutIcon, ChevronDownIcon, TargetIcon, SparkleIcon } from "@/components/ui/icons";
 import { clearSession as clearRawSession } from "@/lib/auth/session";
 import { clearSession as clearReduxSession } from "@/lib/store/authSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
@@ -42,6 +42,8 @@ function UserMenu({ name, onLogout }: { name: string; onLogout: () => void }) {
   const menuItems = [
     { label: t("dashboard.nav.overview"), href: "/dashboard", icon: GridIcon },
     { label: t("dashboard.nav.profile"), href: "/dashboard/profile", icon: UserIcon },
+    { label: t("dashboard.nav.matches"), href: "/dashboard/matches", icon: TargetIcon },
+    { label: t("dashboard.nav.subscription"), href: "/dashboard/subscription", icon: SparkleIcon },
     { label: t("dashboard.nav.changePassword"), href: "/change-password", icon: LockIcon },
   ];
 
