@@ -102,6 +102,29 @@ function LockedCard({ rank }: { rank: number }) {
 function Paywall({ access }: { access: MatchesPage["access"] }) {
   if (!access.paywall) return null;
 
+  // Not a subscription state — nothing to buy yet, so no Subscribe/Renew CTA.
+  // Points at the profile instead, where verification status is visible.
+  if (access.paywall.reason === "PROFILE_NOT_VERIFIED") {
+    return (
+      <div className="rounded-2xl border border-jz-white-800/60 bg-jz-blue-900/40 p-5">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p className="text-base font-semibold text-jz-white-100">Profile verification in progress</p>
+            <p className="mt-1 text-sm text-jz-white-400">{access.paywall.message}</p>
+          </div>
+
+          <Link
+            href="/dashboard/profile"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-jz-blue-800/60 px-4 py-2 text-sm font-semibold text-jz-white-100 transition-opacity hover:opacity-90"
+          >
+            View profile
+            <ChevronRightIcon className="size-4" />
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   const expired = access.paywall.reason === "SUBSCRIPTION_EXPIRED";
 
   return (

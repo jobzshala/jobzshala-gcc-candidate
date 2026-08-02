@@ -57,7 +57,12 @@ export interface MatchAccess {
   // null once the candidate is subscribed. Otherwise it carries the copy the
   // CTA should show, computed server-side so the client does not reimplement
   // the entitlement rules and get them subtly wrong.
-  paywall: { reason: "FREE_LIMIT" | "SUBSCRIPTION_EXPIRED"; message: string } | null;
+  //
+  // PROFILE_NOT_VERIFIED is not a subscription state at all — it fires ahead
+  // of and independent of FREE_LIMIT/SUBSCRIPTION_EXPIRED, for a candidate
+  // whose profile hasn't cleared recruiter verification yet. No "Subscribe"/
+  // "Renew" CTA applies; see the Paywall component.
+  paywall: { reason: "FREE_LIMIT" | "SUBSCRIPTION_EXPIRED" | "PROFILE_NOT_VERIFIED"; message: string } | null;
 }
 
 export interface MatchesPage {
