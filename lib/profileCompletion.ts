@@ -55,3 +55,13 @@ export function getProfileCompletion({
 
   return { items, percent, doneCount, total: items.length };
 }
+
+// The 13 items collapse onto 9 distinct #hash groups (personal-details alone
+// covers 4 of them). A group counts as done only once every item in it is —
+// used by the wizard's progress dots and the tabs shell's "done" tab badge
+// so both read the same underlying model instead of each inventing its own
+// notion of "this section is complete".
+export const isStepDone = (items: CompletionItem[], hashId: string): boolean => {
+  const group = items.filter((item) => item.href.endsWith(`#${hashId}`));
+  return group.length > 0 && group.every((item) => item.done);
+};

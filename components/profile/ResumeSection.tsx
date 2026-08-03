@@ -3,17 +3,52 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ApiError } from "@/lib/api/client";
-import { getResume, getResumeHistory, updateResume, type ResumeInfo, type ResumeHistoryItem } from "@/lib/api/candidate";
+import {
+  getResume,
+  getResumeHistory,
+  updateResume,
+  parseResume,
+  type ResumeInfo,
+  type ResumeHistoryItem,
+  type ParsedResume,
+  type CandidateProfile,
+} from "@/lib/api/candidate";
 import Dropzone from "@/components/ui/Dropzone";
 import Modal from "@/components/ui/Modal";
 import { DocumentIcon, DownloadIcon, UploadIcon } from "@/components/ui/icons";
+import ParsedResumeReview from "@/components/profile/upload/ParsedResumeReview";
+import DocumentsGallery from "@/components/profile/upload/DocumentsGallery";
 
 const RESUME_ACCEPT = ".pdf,.doc,.docx";
 const RESUME_MAX_MB = 5;
 
 const isPdfUrl = (url: string) => /\.pdf(\?|$)/i.test(url);
 
-export default function ResumeSection() {
+interface ResumeSectionProps {
+  // Both optional — when present, a successful upload also runs the resume
+  // through AI parsing and offers to fill in whatever the candidate hasn't
+  // already typed (merge, never overwrite). Without them the section still
+  // works exactly as before, just without the auto-fill offer.
+  profile?: CandidateProfile;
+  onProfileRefresh?: () => Promise<void>;
+  // Forwarded straight into ParsedResumeReview/DocumentsGallery so accepting
+  // a parsed employment/education/language/document entry from this section
+  // keeps the wizard/tabs shell's own completion counts in sync, same as
+  // every other section already does for its own adds/edits/deletes.
+  onEmploymentCountChange?: (count: number) => void;
+  onEducationCountChange?: (count: number) => void;
+  onLanguagesCountChange?: (count: number) => void;
+  onDocumentsCountChange?: (count: number) => void;
+}
+
+export default function ResumeSection({
+  profile,
+  onProfileRefresh,
+  onEmploymentCountChange,
+  onEducationCountChange,
+  onLanguagesCountChange,
+  onDocumentsCountChange,
+}: ResumeSectionProps = {}) {
   const { t } = useTranslation();
 
   const [resume, setResume] = useState<ResumeInfo | null>(null);
@@ -22,6 +57,7 @@ export default function ResumeSection() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [parsed, setParsed] = useState<ParsedResume | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -43,6 +79,7 @@ export default function ResumeSection() {
 
   const handleFileSelected = async (file: File) => {
     setError("");
+    setParsed(null);
 
     if (file.size > RESUME_MAX_MB * 1024 * 1024) {
       setError(t("profile.resume.tooLarge", { maxMb: RESUME_MAX_MB }));
@@ -55,8 +92,19 @@ export default function ResumeSection() {
       await load();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : t("profile.saveError"));
-    } finally {
       setUploading(false);
+      return;
+    }
+    setUploading(false);
+
+    // Best-effort — the resume itself is already saved above regardless of
+    // whether parsing succeeds, so a parse failure never blocks the upload.
+    if (profile) {
+      try {
+        setParsed(await parseResume(file));
+      } catch {
+        setParsed(null);
+      }
     }
   };
 
@@ -113,6 +161,25 @@ export default function ResumeSection() {
             label={resume?.resume_url ? t("profile.resume.replace") : t("profile.resume.upload")}
             hint={t("profile.resume.hint", { maxMb: RESUME_MAX_MB })}
           />
+
+          {parsed && profile && onProfileRefresh && (
+            <div className="space-y-4">
+              <ParsedResumeReview
+                parsed={parsed}
+                profile={profile}
+                onProfileRefresh={onProfileRefresh}
+                onEmploymentCountChange={onEmploymentCountChange}
+                onEducationCountChange={onEducationCountChange}
+                onLanguagesCountChange={onLanguagesCountChange}
+              />
+              {parsed.documents.length > 0 && (
+                <DocumentsGallery documents={parsed.documents} onDocumentsCountChange={onDocumentsCountChange} />
+              )}
+              <button type="button" onClick={() => setParsed(null)} className="text-sm text-jz-white-400 hover:text-jz-white-100">
+                {t("profile.resume.autoFill.dismiss")}
+              </button>
+            </div>
+          )}
 
           {history.length > 0 && (
             <div>

@@ -608,7 +608,15 @@
       "download": "Download",
       "previewUnavailable": "Preview isn't available for this file type — use Download to open it.",
       "history": "Version History",
-      "version": "Version"
+      "version": "Version",
+      "autoFill": {
+        "heading": "We read your resume",
+        "summary": "Found {{employment}} job(s), {{education}} education entry, and {{languages}} language(s). Add them below, or apply the personal details we found now.",
+        "apply": "Apply to my profile",
+        "dismiss": "Not now",
+        "note": "We'll only fill in details you haven't already added — nothing gets overwritten.",
+        "applied": "Applied — check the sections below and add anything we missed."
+      }
     },
     "video": {
       "heading": "Video Profile",
@@ -636,6 +644,45 @@
       "mandatory": "Required",
       "view": "View"
     },
+    "upload": {
+      "landingTitle": "Let's fill your profile in seconds",
+      "landingSubtitle": "Upload your resume and we'll read it — job history, education, languages, certificates, even a passport or ID page if it's in the same file. You review and confirm everything before it's saved.",
+      "dropzoneLabel": "Click or drag your resume to upload",
+      "dropzoneHint": "PDF, DOC, DOCX or a photo — up to {{maxMb}}MB",
+      "parsing": "Reading your resume…",
+      "skip": "Skip, I'll fill it in myself",
+      "unsupportedType": "That file type isn't supported. Try a PDF, DOC, DOCX, JPG, PNG or WEBP.",
+      "reviewTitle": "Here's what we found",
+      "reviewSubtitle": "Review and edit anything before it's added to your profile — nothing is saved until you confirm.",
+      "nothingFound": "We couldn't automatically read details from this file, but your resume is saved. You can fill in the rest yourself below.",
+      "continueToProfile": "Continue to my profile",
+      "pleaseCheck": "Please double-check: {{fields}}",
+      "saveSelected": "Save selected to my profile",
+      "collectionsSaved": "Saved — check the sections below and add anything we missed.",
+      "include": "Include",
+      "pickQualification": "We couldn't match this to a qualification — please pick one.",
+      "pickLanguage": "We couldn't match this to a language — please pick one.",
+      "lowConfidenceBadge": "Please check",
+      "documents": {
+        "heading": "Other documents found",
+        "subtitle": "{{count}} item(s) from the same upload, not part of your resume.",
+        "pagesCount": "{{count}} pages",
+        "pageOne": "1 page",
+        "accept": "Add to my documents",
+        "reject": "Not needed",
+        "saved": "Added to your documents",
+        "labelField": "What is this, specifically? (optional)",
+        "labelPlaceholder": "e.g. 10th Marksheet, Trade Certificate…",
+        "type": {
+          "resume": "Resume",
+          "certificate": "Certificate",
+          "passport": "Passport",
+          "education_degree": "Education certificate",
+          "id_proof": "ID proof",
+          "other": "Other document"
+        }
+      }
+    },
     "image": {
       "upload": "Add photo",
       "change": "Change photo",
@@ -644,6 +691,68 @@
       "tooLarge": "Image must be under 2 MB.",
       "genericError": "Something went wrong. Please try again.",
       "alt": "{{name}} profile photo"
+    },
+    "wizard": {
+      "stepOf": "Step {{current}} of {{total}}",
+      "continue": "Continue →",
+      "back": "Back",
+      "skip": "Skip for now",
+      "done": "Done",
+      "rewardWithCount": "{{count}}+ jobs are waiting for you — keep going to see them.",
+      "rewardGeneric": "The more you add, the better your job matches get.",
+      "steps": {
+        "personal": {
+          "title": "Tell us about yourself",
+          "subtitle": "Just the basics — you can add more later."
+        },
+        "career": {
+          "title": "What work are you ready for?",
+          "subtitle": "Just tell us this much, and we'll show matching jobs right away."
+        },
+        "summary": {
+          "title": "A short summary about you",
+          "subtitle": "A few lines employers see first. You can skip this and come back."
+        },
+        "employment": {
+          "title": "Where have you worked before?",
+          "subtitle": "Add your past jobs — even one helps employers trust your profile."
+        },
+        "education": {
+          "title": "Your education",
+          "subtitle": "Add your highest qualification."
+        },
+        "languages": {
+          "title": "Languages you speak",
+          "subtitle": "Employers look for candidates who can communicate with their team."
+        },
+        "resume": {
+          "title": "Upload your resume",
+          "subtitle": "We'll read it and fill in details for you — you just confirm."
+        },
+        "video": {
+          "title": "Add a short video",
+          "subtitle": "A quick intro video helps employers get to know you."
+        },
+        "documents": {
+          "title": "Upload your documents",
+          "subtitle": "ID, certificates, or anything else employers may ask for."
+        }
+      }
+    },
+    "tabs": {
+      "labels": {
+        "personal": "Personal",
+        "career": "Career",
+        "summary": "Summary",
+        "employment": "Employment",
+        "education": "Education",
+        "languages": "Languages",
+        "resume": "Resume",
+        "video": "Video",
+        "documents": "Documents"
+      },
+      "rewardCount": "{{count}}+ jobs match so far",
+      "rewardSubtitle": "Keep your profile updated and the list keeps growing."
     }
   }
 }

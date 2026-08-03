@@ -14,7 +14,11 @@ import {
   type DocumentTypeOption,
 } from "@/lib/api/candidate";
 
-export default function DocumentsSection() {
+interface DocumentsSectionProps {
+  onCountChange?: (count: number) => void;
+}
+
+export default function DocumentsSection({ onCountChange }: DocumentsSectionProps = {}) {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -33,7 +37,9 @@ export default function DocumentsSection() {
     setLoading(true);
     setLoadError(false);
     try {
-      setRecords(await getDocuments());
+      const data = await getDocuments();
+      setRecords(data);
+      onCountChange?.(data.length);
     } catch {
       setLoadError(true);
     } finally {

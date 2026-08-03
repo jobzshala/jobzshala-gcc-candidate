@@ -210,7 +210,10 @@ export interface EmploymentRecord {
 export interface EmploymentPayload {
   company_name: string;
   designation: string;
-  employment_type: EmploymentType;
+  // Nullable so this same shape can back both the single-record add/update
+  // endpoints (which always send a real value) and the bulk collections
+  // write, whose validation allows employment_type to be omitted/null.
+  employment_type: EmploymentType | null;
   start_date: string;
   end_date?: string | null;
   is_current?: boolean;
@@ -367,6 +370,146 @@ export function updateResume(file: File): Promise<ResumeInfo> {
   const formData = new FormData();
   formData.set("resume", file);
   return authFetch<ResumeInfo>("/candidate/profile/resume", { method: "PUT", body: formData });
+}
+
+// ---------------------------------------------------------------------------
+// Resume parsing (AI auto-fill) — extracts suggested field values from an
+// uploaded resume for the candidate to review before applying. Master-data
+// fields come back as names (job_title, job_industry, job_functional_area,
+// current_country, and each education/language entry's qualification/
+// language) since the backend has no candidate id to resolve ids against
+// yet — the caller matches these against already-loaded dropdown options.
+// Does not touch the profile or the active resume itself; see updateResume.
+// ---------------------------------------------------------------------------
+
+export interface ParsedResumePersonal {
+  full_name: string | null;
+  email: string | null;
+  mobile_number: string | null;
+  gender: string | null;
+  date_of_birth: string | null;
+  marital_status: string | null;
+  address_line_1: string | null;
+  address_line_2: string | null;
+  pincode: string | null;
+  current_country: string | null;
+}
+
+export interface ParsedResumeCareer {
+  job_title: string | null;
+  job_industry: string | null;
+  job_functional_area: string | null;
+  experience_years: number | null;
+  summary: string | null;
+  current_salary: number | null;
+  expected_salary: number | null;
+}
+
+export interface ParsedResumeEmployment {
+  company_name: string;
+  designation: string;
+  employment_type: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  is_current: boolean;
+  location: string | null;
+  description: string | null;
+}
+
+export interface ParsedResumeEducation {
+  qualification: string;
+  institution: string | null;
+  field_of_study: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  grade: string | null;
+}
+
+export interface ParsedResumeLanguage {
+  language: string;
+  proficiency: string | null;
+}
+
+// A page (or consecutive run of same-type pages) the resume upload split out
+// as *not* the resume itself — e.g. a passport photo page or a certificate
+// bundled into the same PDF. Every page is already uploaded to S3 by the
+// backend (s3Keys), grouped here for display only; accepting a group attaches
+// each of its pages as its own candidate_documents row via
+// attachDocumentByKey, one call per s3Key.
+export type SplitDocumentType = "resume" | "certificate" | "passport" | "education_degree" | "id_proof" | "other";
+
+export interface SplitDocument {
+  pageNumbers: number[];
+  type: SplitDocumentType;
+  s3Keys: string[];
+  suggestedDocumentTypeId: number | null;
+  suggestedDocumentTypeName: string | null;
+  // Starting point for the free-text label every candidate_documents row now
+  // carries — a document type alone can't distinguish "10th Marksheet" from
+  // "12th Marksheet" from "Diploma", all classified/grouped the same way.
+  suggestedLabel: string | null;
+  lowConfidence: boolean;
+}
+
+export interface ParsedResume {
+  document_key: string;
+  personal: ParsedResumePersonal;
+  career: ParsedResumeCareer;
+  employment: ParsedResumeEmployment[];
+  education: ParsedResumeEducation[];
+  languages: ParsedResumeLanguage[];
+  skills: string[];
+  // Dotted paths (e.g. "personal.email", "employment.0.company_name") the
+  // model itself flagged as unsure — present-and-listed needs a second look,
+  // present-and-not-listed is trusted, absent always needs manual entry
+  // regardless of this list.
+  low_confidence_fields: string[];
+  // Non-resume pages found in the same upload (certificates, ID pages, etc.)
+  // — empty by design whenever classification finds nothing or fails
+  // (degrades to today's single-resume behavior), never an error state.
+  documents: SplitDocument[];
+}
+
+export function parseResume(file: File): Promise<ParsedResume> {
+  const formData = new FormData();
+  formData.set("resume", file);
+  return authFetch<ParsedResume>("/candidate/profile/resume/parse", { method: "POST", body: formData });
+}
+
+// ---------------------------------------------------------------------------
+// Split-document attach + bulk collections write — the review-screen
+// counterparts of resume parsing above. Both consume data the parse call
+// already produced without re-uploading anything.
+// ---------------------------------------------------------------------------
+
+// Attaches one already-uploaded S3 page (a SplitDocument's s3Keys entry) as a
+// real candidate document, no re-upload. Call once per s3Key — a multi-page
+// SplitDocument group needs one call per page, all sharing the same chosen
+// document_type_id.
+export function attachDocumentByKey(documentKey: string, documentTypeId: number, label?: string): Promise<DocumentRecord> {
+  return authFetch<DocumentRecord>("/candidate/profile/documents/attach", {
+    method: "PATCH",
+    body: JSON.stringify({ document_key: documentKey, document_type_id: documentTypeId, label: label || undefined }),
+  });
+}
+
+// education/employment/languages are each full-replace: sending the key
+// replaces everything currently on file for that collection, so only include
+// a key here when the caller has already merged in whatever should survive
+// (existing records + newly accepted ones) — never send a partial array.
+// documents is additive-only and never touches existing document rows.
+export interface WriteCollectionsPayload {
+  education?: EducationPayload[];
+  employment?: EmploymentPayload[];
+  languages?: LanguagePayload[];
+  documents?: { document_key: string; document_type_id: number }[];
+}
+
+export function writeCandidateCollections(payload: WriteCollectionsPayload): Promise<{ updated: boolean }> {
+  return authFetch<{ updated: boolean }>("/candidate/profile/collections", {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
 }
 
 // ---------------------------------------------------------------------------

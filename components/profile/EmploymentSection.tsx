@@ -52,7 +52,14 @@ const formFromRecord = (record: EmploymentRecord): FormState => ({
   description: record.description ?? "",
 });
 
-export default function EmploymentSection() {
+interface EmploymentSectionProps {
+  // Called after every load/add/edit/delete so a parent tracking overall
+  // completion (wizard progress dots, tab "done" state) doesn't have to
+  // guess — this component already knows its own count on every change.
+  onCountChange?: (count: number) => void;
+}
+
+export default function EmploymentSection({ onCountChange }: EmploymentSectionProps = {}) {
   const { t } = useTranslation();
 
   const [records, setRecords] = useState<EmploymentRecord[]>([]);
@@ -70,7 +77,9 @@ export default function EmploymentSection() {
     setLoading(true);
     setLoadError(false);
     try {
-      setRecords(await getEmploymentHistory());
+      const data = await getEmploymentHistory();
+      setRecords(data);
+      onCountChange?.(data.length);
     } catch {
       setLoadError(true);
     } finally {

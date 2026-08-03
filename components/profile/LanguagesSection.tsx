@@ -36,7 +36,11 @@ const formFromRecord = (record: CandidateLanguageRecord): FormState => ({
   can_speak: record.can_speak,
 });
 
-export default function LanguagesSection() {
+interface LanguagesSectionProps {
+  onCountChange?: (count: number) => void;
+}
+
+export default function LanguagesSection({ onCountChange }: LanguagesSectionProps = {}) {
   const { t } = useTranslation();
 
   const [records, setRecords] = useState<CandidateLanguageRecord[]>([]);
@@ -55,7 +59,9 @@ export default function LanguagesSection() {
     setLoading(true);
     setLoadError(false);
     try {
-      setRecords(await getLanguages());
+      const data = await getLanguages();
+      setRecords(data);
+      onCountChange?.(data.length);
     } catch {
       setLoadError(true);
     } finally {

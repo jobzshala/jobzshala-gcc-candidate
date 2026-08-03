@@ -47,7 +47,11 @@ const formFromRecord = (record: EducationRecord): FormState => ({
   score: toDisplayValue(record.score),
 });
 
-export default function EducationSection() {
+interface EducationSectionProps {
+  onCountChange?: (count: number) => void;
+}
+
+export default function EducationSection({ onCountChange }: EducationSectionProps = {}) {
   const { t } = useTranslation();
 
   const [records, setRecords] = useState<EducationRecord[]>([]);
@@ -66,7 +70,9 @@ export default function EducationSection() {
     setLoading(true);
     setLoadError(false);
     try {
-      setRecords(await getEducationHistory());
+      const data = await getEducationHistory();
+      setRecords(data);
+      onCountChange?.(data.length);
     } catch {
       setLoadError(true);
     } finally {
