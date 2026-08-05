@@ -3,16 +3,8 @@ import CompletionRing from "@/components/ui/CompletionRing";
 import { CheckIcon, AlertIcon, StarIcon } from "@/components/ui/icons";
 import type { CandidateProfile } from "@/lib/api/candidate";
 
-// TODO(backend): there is no "readiness score" field anywhere in the API —
-// only the existing profile-completion percent (getProfileCompletion) is
-// real. The score below is a client-side heuristic (completion percent,
-// nudged by KYC status) purely so this card has a number to show; replace
-// the whole computation once/if a real scoring field is exposed. The
-// checklist rows underneath ARE wired to real profile data, though.
-
 type ReadinessScoreCardProps = {
   profile: CandidateProfile;
-  completionPercent: number;
   videoUploaded: boolean;
   educationCount: number;
   languagesCount: number;
@@ -20,14 +12,13 @@ type ReadinessScoreCardProps = {
 
 export default function ReadinessScoreCard({
   profile,
-  completionPercent,
   videoUploaded,
   educationCount,
   languagesCount,
 }: ReadinessScoreCardProps) {
-  const kycVerified = profile.kyc_status === "VERIFIED";
-  const score = Math.min(100, Math.round(completionPercent * 0.85 + (kycVerified ? 15 : 0)));
-  const stars = Math.max(1, Math.round(score / 20));
+  const score = profile.readiness_score;
+  const stars = profile.readiness_stars;
+  const kycVerified = profile.status === "VERIFIED";
 
   const improveItems = [
     { label: "Upload Video Resume", done: videoUploaded, href: "/dashboard/profile#video" },

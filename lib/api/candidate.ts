@@ -10,6 +10,9 @@ export interface LookupRef {
 
 export interface CandidateProfile {
   id: number;
+  // Backend-issued human-facing ID ("JZ-000123"), distinct from `id` — the
+  // format can change server-side without breaking anything showing it.
+  workforce_id: string | null;
   full_name: string;
   mobile_number: string;
   is_mobile_verified: boolean;
@@ -40,6 +43,17 @@ export interface CandidateProfile {
   passport_status: string;
   kyc_status: string;
   status: string;
+  assigned_recruiter: {
+    full_name: string;
+    phone: string | null;
+    email: string | null;
+    profile_image_url: string | null;
+  } | null;
+  // Backend-computed from the same 13-item completion checklist the
+  // frontend renders (lib/profileCompletion.ts) plus a KYC-verified bonus —
+  // authoritative, not a frontend heuristic.
+  readiness_score: number;
+  readiness_stars: number;
   // Signed, time-limited URL (regenerated on each profile fetch), not a
   // permanent link — don't cache it across sessions.
   profile_image_url: string | null;

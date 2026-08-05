@@ -33,6 +33,7 @@ const PAGE_TITLES: { match: (path: string) => boolean; titleKey: string; subKey:
   { match: (p) => p.startsWith("/dashboard/profile"), titleKey: "dashboard.nav.profile", subKey: "dashboard.topbar.profileSub" },
   { match: (p) => p.startsWith("/dashboard/matches"), titleKey: "dashboard.nav.matches", subKey: "dashboard.topbar.matchesSub" },
   { match: (p) => p.startsWith("/dashboard/subscription"), titleKey: "dashboard.nav.subscription", subKey: "dashboard.topbar.subscriptionSub" },
+  { match: (p) => p.startsWith("/dashboard/documents"), titleKey: "dashboard.nav.documents", subKey: "dashboard.topbar.documentsSub" },
 ];
 
 function ThemeIconPill() {

@@ -94,7 +94,7 @@ export default function ProfileTopBar({ profile, completionPercent, onImageChang
               </span>
             )}
           </div>
-          <div className="wid">Candidate ID: JZ-{profile.id}</div>
+          <div className="wid">Candidate ID: {profile.workforce_id ?? `JZ-${profile.id}`}</div>
           <div className="contact-line">
             {profile.mobile_number && (
               <span>

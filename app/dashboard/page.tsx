@@ -117,7 +117,7 @@ export default function DashboardOverviewPage() {
     <>
       <ProfileTopBar profile={profile} completionPercent={completion?.percent} />
 
-      <JourneyStepper />
+      <JourneyStepper status={profile.status} />
 
       <div className="grid">
         <div className="col">
@@ -186,7 +186,7 @@ export default function DashboardOverviewPage() {
           <DetailCard
             icon={FolderIcon}
             title="Documents"
-            editHref="/dashboard/profile#documents"
+            editHref="/dashboard/documents"
             editLabel="View All"
             complete={documents.length > 0}
             footerLabel={`${documents.length} uploaded`}
@@ -231,11 +231,10 @@ export default function DashboardOverviewPage() {
 
         {completion && (
           <div className="col">
-            <RecruiterCard />
+            <RecruiterCard recruiter={profile.assigned_recruiter} />
 
             <ReadinessScoreCard
               profile={profile}
-              completionPercent={completion.percent}
               videoUploaded={!!profile.video_url}
               educationCount={counts.educationCount}
               languagesCount={counts.languagesCount}

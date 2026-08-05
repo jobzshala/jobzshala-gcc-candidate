@@ -47,7 +47,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
     // than dead links or invented routes.
     { key: "applications", label: t("dashboard.nav.applications"), href: null, icon: ClipboardIcon },
     { key: "messages", label: t("dashboard.nav.messages"), href: null, icon: MailIcon },
-    { key: "documents", label: t("dashboard.nav.documents"), href: "/dashboard/profile#documents", icon: FolderIcon },
+    { key: "documents", label: t("dashboard.nav.documents"), href: "/dashboard/documents", icon: FolderIcon },
     { key: "subscription", label: t("dashboard.nav.subscription"), href: "/dashboard/subscription", icon: CreditCardIcon },
     { key: "support", label: t("dashboard.nav.support"), href: "/contact-us", icon: QuestionIcon },
   ];

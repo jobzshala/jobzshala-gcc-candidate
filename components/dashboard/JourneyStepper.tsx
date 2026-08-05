@@ -1,13 +1,5 @@
 import { CheckIcon, UserIcon, ShieldCheckIcon, ClockIcon, TargetIcon, ChatIcon, DocumentIcon, SendIcon } from "@/components/ui/icons";
 
-// TODO(backend): `CandidateProfile.status` is currently typed as a plain
-// `string` in lib/api/candidate.ts and no component in this app reads it —
-// confirm with backend which enum values it actually carries (the admin
-// pipeline is NEW_LEAD -> VERIFICATION_PENDING -> DOCUMENT_PENDING ->
-// SCREENING_COMPLETED -> VERIFIED -> PROFILE_ACTIVE) before wiring this
-// stepper's `currentStepKey` to real profile data. Until then this renders
-// a fixed placeholder stage so the layout/visual can be reviewed.
-
 const STEPS = [
   { key: "created", label: "Profile Created", icon: UserIcon },
   { key: "verified", label: "Verified", icon: ShieldCheckIcon },
@@ -21,12 +13,50 @@ const STEPS = [
 
 type StepKey = (typeof STEPS)[number]["key"];
 
+// The backend's CandidateStatus enum (public.prisma) backs two overlapping
+// state machines — a KYC flow and a legacy recruiter pipeline — neither of
+// which tracks anything past "active and eligible to be matched." The
+// schema does have interviews/offers/visa_applications/deployments tables,
+// but nothing in the app populates them yet (confirmed — grepping src/ for
+// each finds zero writes; interviews is read once, for an admin dashboard
+// count that's always zero). So this stepper can only honestly reach "Job
+// Matching" — the last four steps always render as not-yet-reached, which
+// is accurate for every real candidate today rather than fake progress.
+//
+// "Verified" here is NOT the backend's literal VERIFIED status (that's KYC
+// sign-off, which happens after document review) — it's read as "your
+// account exists and has left NEW_LEAD," true the moment a candidate has
+// registered at all (registration requires an email-OTP step; mobile-OTP
+// isn't built yet, so is_mobile_verified can't be used for this). That
+// keeps the original Created -> Verified -> Under Review visual order
+// intuitive (quick identity check, then a deeper review) without colliding
+// with the enum's own ordering.
+const KYC_REVIEW_STATUSES = new Set([
+  "PROFILE_COMPLETED",
+  "VERIFICATION_PENDING",
+  "DOCUMENT_PENDING",
+  "NEEDS_INFO",
+  "REJECTED",
+]);
+const ACTIVE_STATUSES = new Set(["VERIFIED", "SCREENING_COMPLETED", "PROFILE_ACTIVE"]);
+
+function stepKeyForStatus(status: string): StepKey {
+  if (ACTIVE_STATUSES.has(status)) return "matching";
+  if (KYC_REVIEW_STATUSES.has(status)) return "review";
+  // NEW_LEAD, and DEACTIVATED/DELETED/BLACKLISTED as a safe fallback — those
+  // three are auth-gated before a candidate ever reaches this dashboard, so
+  // this component isn't expected to render for them in practice.
+  return "created";
+}
+
 type JourneyStepperProps = {
-  currentStepKey?: StepKey;
+  status: string;
 };
 
-export default function JourneyStepper({ currentStepKey = "review" }: JourneyStepperProps) {
+export default function JourneyStepper({ status }: JourneyStepperProps) {
+  const currentStepKey = stepKeyForStatus(status);
   const currentIndex = STEPS.findIndex((s) => s.key === currentStepKey);
+  const needsAction = status === "REJECTED" || status === "NEEDS_INFO";
 
   return (
     <div className="journey">
@@ -42,6 +72,14 @@ export default function JourneyStepper({ currentStepKey = "review" }: JourneySte
           );
         })}
       </div>
+
+      {needsAction && (
+        <p className="journey-note">
+          {status === "REJECTED"
+            ? "Your verification wasn't approved — check your documents and resubmit."
+            : "We need a bit more information from you to continue your review."}
+        </p>
+      )}
     </div>
   );
 }

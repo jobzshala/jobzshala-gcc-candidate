@@ -1,49 +1,76 @@
 import { ChatIcon, PhoneIcon, CalendarIcon } from "@/components/ui/icons";
+import type { CandidateProfile } from "@/lib/api/candidate";
 
-// TODO(backend): there is no assigned-recruiter concept anywhere in
-// CandidateProfile or the API today (confirmed via repo-wide search — the
-// only related backend concept is verification gating matches, not a named
-// recruiter contact). This card is a static placeholder so the layout can
-// be reviewed; wire it up once a real recruiter-assignment field/endpoint
-// exists, and make the WhatsApp/call/schedule actions real at that point.
+type RecruiterCardProps = {
+  recruiter: CandidateProfile["assigned_recruiter"];
+};
 
-export default function RecruiterCard() {
+// No real presence/online tracking exists for staff, so unlike the old
+// placeholder this doesn't claim the recruiter is "Online" — that was
+// fabricated. Chat and Schedule stay disabled (no messaging or booking
+// system exists yet); Call is real whenever the assigned recruiter has a
+// phone number on file.
+export default function RecruiterCard({ recruiter }: RecruiterCardProps) {
+  if (!recruiter) {
+    return (
+      <div className="card">
+        <div className="card-body">
+          <h3 style={{ fontSize: 13.5 }}>Your Recruiter</h3>
+          <p style={{ marginTop: 12, fontSize: 12.5, color: "var(--ink-faint)" }}>
+            We&apos;re assigning a recruiter to your profile — check back soon.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const initials =
+    recruiter.full_name
+      .split(" ")
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0])
+      .join("")
+      .toUpperCase() || "R";
+  const firstName = recruiter.full_name.split(" ")[0];
+
   return (
     <div className="card">
       <div className="card-body">
-        <div className="card-head" style={{ marginBottom: 0 }}>
-          <h3 style={{ fontSize: 13.5 }}>Your Recruiter</h3>
-          <span
-            style={{ fontSize: 11, color: "var(--green-600)", display: "flex", alignItems: "center", gap: 4 }}
-          >
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--green-500)", display: "inline-block" }} />
-            Online
-          </span>
-        </div>
+        <h3 style={{ fontSize: 13.5 }}>Your Recruiter</h3>
         <div className="recruiter-top" style={{ marginTop: 12 }}>
-          <span className="rav">
-            PS
-            <span className="online" />
-          </span>
+          <span className="rav">{initials}</span>
           <div>
-            <div className="rname">Priya Sharma</div>
-            <div className="rrole">Senior Recruiter</div>
+            <div className="rname">{recruiter.full_name}</div>
+            <div className="rrole">Recruiter</div>
           </div>
         </div>
         <div className="contact-icons">
           <button type="button" disabled title="Coming soon" className="cicon wa">
             <ChatIcon className="icon" />
           </button>
-          <button type="button" disabled title="Coming soon" className="cicon">
-            <PhoneIcon className="icon" />
-          </button>
+          {recruiter.phone ? (
+            <a href={`tel:${recruiter.phone}`} className="cicon" title={`Call ${recruiter.full_name}`}>
+              <PhoneIcon className="icon" />
+            </a>
+          ) : (
+            <button type="button" disabled title="No phone number on file" className="cicon">
+              <PhoneIcon className="icon" />
+            </button>
+          )}
           <button type="button" disabled title="Coming soon" className="cicon">
             <CalendarIcon className="icon" />
           </button>
         </div>
-        <button type="button" disabled title="Coming soon" className="btn-block">
-          Schedule a Call
-        </button>
+        {recruiter.phone ? (
+          <a href={`tel:${recruiter.phone}`} className="btn-block" style={{ display: "block", textAlign: "center" }}>
+            Call {firstName}
+          </a>
+        ) : (
+          <button type="button" disabled title="No phone number on file" className="btn-block">
+            Schedule a Call
+          </button>
+        )}
       </div>
     </div>
   );
