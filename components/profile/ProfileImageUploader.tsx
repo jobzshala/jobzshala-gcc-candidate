@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { updateProfileImage, deleteProfileImage } from "@/lib/api/candidate";
 import { ApiError } from "@/lib/api/client";
 import CompletionRing from "@/components/ui/CompletionRing";
-import { CameraIcon, TrashIcon, SpinnerIcon, MaleAvatarIcon, FemaleAvatarIcon, UserIcon } from "@/components/ui/icons";
+import { CameraIcon, TrashIcon, SpinnerIcon, MaleAvatarIcon, FemaleAvatarIcon } from "@/components/ui/icons";
 import type { Gender } from "@/lib/api/candidate";
 
 // Mirrors the backend's IMAGE_MIME_TYPES + 2 MB cap (candidates.routes.ts) so
@@ -81,7 +81,7 @@ export default function ProfileImageUploader({ fullName, gender, imageUrl, compl
     }
   };
 
-  const AvatarIcon = gender === "MALE" ? MaleAvatarIcon : gender === "FEMALE" ? FemaleAvatarIcon : UserIcon;
+  const AvatarIcon = gender === "FEMALE" ? FemaleAvatarIcon : MaleAvatarIcon;
 
   // With a ring, the avatar is inset so the progress stroke stays visible
   // around it; without one it fills the whole box.
@@ -117,7 +117,7 @@ export default function ProfileImageUploader({ fullName, gender, imageUrl, compl
           disabled={busy}
           aria-label={imageUrl ? t("profile.image.change") : t("profile.image.upload")}
           style={{ top: avatarInset, right: avatarInset, bottom: avatarInset, left: avatarInset }}
-          className={`absolute flex items-center justify-center overflow-hidden rounded-full transition-transform focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none ${
+          className={`absolute flex items-center justify-center overflow-hidden rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.25)] ring-2 ring-white/40 transition-transform focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none ${
             dragging ? "scale-105 ring-2 ring-white" : ""
           } ${busy ? "cursor-wait" : "cursor-pointer"}`}
         >
@@ -125,8 +125,8 @@ export default function ProfileImageUploader({ fullName, gender, imageUrl, compl
             // eslint-disable-next-line @next/next/no-img-element -- the S3 host isn't in next.config's image domains; a plain img avoids that coupling.
             <img src={imageUrl} alt={t("profile.image.alt", { name: fullName })} className="size-full object-cover" />
           ) : (
-            <span className="flex size-full items-center justify-center bg-gradient-to-br from-[#4ADE80] to-[#16A34A] text-white">
-              <AvatarIcon className="size-7" />
+            <span className="flex size-full items-center justify-center bg-gradient-to-br from-[#4ADE80] via-[#22C55E] to-[#16A34A] text-white">
+              <AvatarIcon className="size-8 drop-shadow-sm" />
             </span>
           )}
 
@@ -145,7 +145,7 @@ export default function ProfileImageUploader({ fullName, gender, imageUrl, compl
             onClick={() => fileInputRef.current?.click()}
             aria-label={imageUrl ? t("profile.image.change") : t("profile.image.upload")}
             title={imageUrl ? t("profile.image.change") : t("profile.image.upload")}
-            className="absolute -right-0.5 -bottom-0.5 flex size-6 items-center justify-center rounded-full border-2 border-white bg-[#16A34A] text-white shadow-sm transition-colors hover:bg-[#15803d]"
+            className="absolute -right-0.5 -bottom-0.5 flex size-6 items-center justify-center rounded-full border-2 border-white bg-[#16A34A] text-white shadow-[0_2px_6px_rgba(0,0,0,0.35)] transition-colors hover:bg-[#15803d]"
           >
             <CameraIcon className="size-3.5" />
           </button>
