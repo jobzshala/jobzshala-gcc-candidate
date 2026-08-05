@@ -442,11 +442,23 @@
     "loading": "Loading…",
     "nav": {
       "overview": "Overview",
+      "myJourney": "My Journey",
       "profile": "My Profile",
       "changePassword": "Change Password",
       "logout": "Log Out",
       "matches": "Job Matches",
-      "subscription": "Subscription"
+      "applications": "Applications",
+      "messages": "Messages",
+      "documents": "Documents",
+      "subscription": "Subscription",
+      "support": "Support",
+      "comingSoon": "Coming soon"
+    },
+    "topbar": {
+      "journeySub": "Track your application progress",
+      "profileSub": "Manage your workforce profile and documents",
+      "matchesSub": "Jobs matched to your profile",
+      "subscriptionSub": "Manage your plan and billing"
     }
   },
   "profile": {

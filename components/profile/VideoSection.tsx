@@ -258,7 +258,7 @@ export default function VideoSection() {
                   type="button"
                   disabled={uploading}
                   onClick={handleUseRecording}
-                  className="rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent hover:opacity-90 disabled:opacity-60"
+                  className="rounded-xl bg-[var(--green-600)] px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent hover:opacity-90 disabled:opacity-60"
                 >
                   {uploading ? t("profile.video.uploading") : t("profile.video.useRecording")}
                 </button>

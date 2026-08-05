@@ -308,7 +308,7 @@ function LanguageForm({
         <button
           type="submit"
           disabled={saving}
-          className="rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90 disabled:opacity-60"
+          className="rounded-xl bg-[var(--green-600)] px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90 disabled:opacity-60"
         >
           {saving ? t("profile.common.saving") : t("profile.common.save")}
         </button>

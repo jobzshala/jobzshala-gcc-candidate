@@ -1,32 +1,115 @@
 "use client";
 
+import "./dashboard-artifact.css";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import Logo from "@/components/ui/Logo";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
-import ThemeToggle from "@/components/ThemeToggle";
-import { GridIcon, UserIcon, LockIcon, LogoutIcon, ChevronDownIcon, TargetIcon, SparkleIcon } from "@/components/ui/icons";
+import { useTheme } from "@/lib/theme/ThemeProvider";
+import { languages } from "@/lib/i18n/languages";
+import Sidebar from "@/components/dashboard/Sidebar";
+import {
+  GridIcon,
+  UserIcon,
+  LockIcon,
+  LogoutIcon,
+  ChevronDownIcon,
+  TargetIcon,
+  CreditCardIcon,
+  MenuIcon,
+  BellIcon,
+  GlobeIcon,
+  SunIcon,
+  MoonIcon,
+  ChatIcon,
+} from "@/components/ui/icons";
 import { clearSession as clearRawSession } from "@/lib/auth/session";
 import { clearSession as clearReduxSession } from "@/lib/store/authSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { logout } from "@/lib/api/auth";
 
-// Overview/Profile used to live as header tabs; they, plus Change Password
-// and Logout, now live in this one avatar menu instead — same
-// click-outside/Escape pattern as NavDropdown.tsx, but with a custom
-// avatar+name trigger NavDropdown's label-button doesn't support.
-function UserMenu({ name, onLogout }: { name: string; onLogout: () => void }) {
+const PAGE_TITLES: { match: (path: string) => boolean; titleKey: string; subKey: string }[] = [
+  { match: (p) => p === "/dashboard", titleKey: "dashboard.nav.myJourney", subKey: "dashboard.topbar.journeySub" },
+  { match: (p) => p.startsWith("/dashboard/profile"), titleKey: "dashboard.nav.profile", subKey: "dashboard.topbar.profileSub" },
+  { match: (p) => p.startsWith("/dashboard/matches"), titleKey: "dashboard.nav.matches", subKey: "dashboard.topbar.matchesSub" },
+  { match: (p) => p.startsWith("/dashboard/subscription"), titleKey: "dashboard.nav.subscription", subKey: "dashboard.topbar.subscriptionSub" },
+];
+
+function ThemeIconPill() {
+  const { theme, toggleTheme } = useTheme();
+  return (
+    <button
+      type="button"
+      onClick={toggleTheme}
+      className="icon-pill"
+      aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+    >
+      {theme === "dark" ? <SunIcon className="icon" /> : <MoonIcon className="icon" />}
+    </button>
+  );
+}
+
+function LangChip() {
+  const { i18n } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const current = languages.find((l) => l.code === i18n.language) ?? languages[0];
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (rootRef.current && !rootRef.current.contains(event.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div ref={rootRef} className="relative">
+      <button type="button" className="lang" onClick={() => setOpen((o) => !o)} aria-haspopup="listbox" aria-expanded={open}>
+        <GlobeIcon className="icon" />
+        <span className="txt">{current.short}</span>
+        <ChevronDownIcon className="size-2.5" />
+      </button>
+      {open && (
+        <ul
+          role="listbox"
+          className="absolute right-0 z-30 mt-2 w-44 overflow-hidden rounded-xl border py-1 shadow-xl rtl:right-auto rtl:left-0"
+          style={{ background: "var(--paper)", borderColor: "var(--line)" }}
+        >
+          {languages.map((lang) => (
+            <li key={lang.code}>
+              <button
+                type="button"
+                role="option"
+                aria-selected={lang.code === current.code}
+                onClick={() => {
+                  i18n.changeLanguage(lang.code);
+                  setOpen(false);
+                }}
+                className="flex w-full items-center justify-between px-4 py-2 text-sm hover:opacity-80"
+                style={{ color: lang.code === current.code ? "var(--green-600)" : "var(--ink)" }}
+              >
+                <span>{lang.label}</span>
+                <span style={{ color: "var(--ink-faint)", fontSize: 11 }}>{lang.short}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+function UserChipMenu({ name, onLogout }: { name: string; onLogout: () => void }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const initial = name.charAt(0).toUpperCase();
+  const firstName = name.split(" ")[0];
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (rootRef.current && !rootRef.current.contains(event.target as Node)) {
-        setOpen(false);
-      }
+      if (rootRef.current && !rootRef.current.contains(event.target as Node)) setOpen(false);
     }
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape") setOpen(false);
@@ -40,68 +123,69 @@ function UserMenu({ name, onLogout }: { name: string; onLogout: () => void }) {
   }, []);
 
   const menuItems = [
-    { label: t("dashboard.nav.overview"), href: "/dashboard", icon: GridIcon },
+    { label: t("dashboard.nav.myJourney"), href: "/dashboard", icon: GridIcon },
     { label: t("dashboard.nav.profile"), href: "/dashboard/profile", icon: UserIcon },
     { label: t("dashboard.nav.matches"), href: "/dashboard/matches", icon: TargetIcon },
-    { label: t("dashboard.nav.subscription"), href: "/dashboard/subscription", icon: SparkleIcon },
+    { label: t("dashboard.nav.subscription"), href: "/dashboard/subscription", icon: CreditCardIcon },
     { label: t("dashboard.nav.changePassword"), href: "/change-password", icon: LockIcon },
   ];
 
   return (
     <div ref={rootRef} className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        className="flex items-center gap-2 rounded-full border border-[#4ADE80]/40 bg-[#4ADE80]/10 py-1 pr-3 pl-1 text-sm text-jz-white-100 transition-colors hover:bg-[#4ADE80]/20"
-      >
-        <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#4ADE80] to-[#16A34A] text-xs font-semibold text-white">
-          {initial}
+      <button type="button" className="user-chip" onClick={() => setOpen((o) => !o)} aria-haspopup="menu" aria-expanded={open}>
+        <span className="av">{initial}</span>
+        <span className="meta">
+          <span className="hi">Hello,</span>
+          <br />
+          <span className="name">{firstName}</span>
         </span>
-        <span className="hidden max-w-[10rem] truncate sm:inline">{name}</span>
-        <ChevronDownIcon className={`size-4 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+        <ChevronDownIcon className={`size-3.5 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
       </button>
 
-      <div
-        role="menu"
-        className={`absolute right-0 z-30 mt-2 w-64 origin-top-right overflow-hidden rounded-2xl border border-jz-border bg-jz-blue-900 p-2 shadow-2xl shadow-black/50 transition-all duration-150 ease-out rtl:left-0 rtl:right-auto rtl:origin-top-left ${
-          open ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-1 opacity-0"
-        }`}
-      >
-        <div className="flex items-center gap-3 px-2.5 py-2">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#4ADE80] to-[#16A34A] text-sm font-semibold text-white">
-            {initial}
-          </span>
-          <span className="truncate text-sm font-medium text-jz-white-50">{name}</span>
-        </div>
-        <div className="my-1 h-px bg-jz-border" />
-        {menuItems.map((item) => (
-          <Link
-            key={item.href}
-            role="menuitem"
-            href={item.href}
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-3 rounded-xl px-2.5 py-2.5 text-sm text-jz-white-200 transition-colors hover:bg-[#4ADE80]/10 hover:text-jz-white-50"
-          >
-            <item.icon className="size-4.5 text-[#8FD13F]" />
-            {item.label}
-          </Link>
-        ))}
-        <div className="my-1 h-px bg-jz-border" />
-        <button
-          type="button"
-          role="menuitem"
-          onClick={() => {
-            setOpen(false);
-            onLogout();
-          }}
-          className="flex w-full items-center gap-3 rounded-xl px-2.5 py-2.5 text-left text-sm text-red-400 transition-colors hover:bg-red-500/10"
+      {open && (
+        <div
+          role="menu"
+          className="absolute right-0 z-30 mt-2 w-64 overflow-hidden rounded-2xl border p-2 shadow-2xl rtl:left-0 rtl:right-auto"
+          style={{ background: "var(--paper)", borderColor: "var(--line)" }}
         >
-          <LogoutIcon className="size-4.5" />
-          {t("dashboard.nav.logout")}
-        </button>
-      </div>
+          <div className="flex items-center gap-3 px-2.5 py-2">
+            <span className="av">{initial}</span>
+            <span className="truncate text-sm font-medium" style={{ color: "var(--ink)" }}>
+              {name}
+            </span>
+          </div>
+          <div className="my-1 h-px" style={{ background: "var(--line)" }} />
+          {menuItems.map((item) => (
+            <Link
+              key={item.href}
+              role="menuitem"
+              href={item.href}
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 rounded-xl px-2.5 py-2.5 text-sm hover:opacity-80"
+              style={{ color: "var(--ink-soft)" }}
+            >
+              <span className="flex" style={{ color: "var(--green-600)" }}>
+                <item.icon className="icon" />
+              </span>
+              {item.label}
+            </Link>
+          ))}
+          <div className="my-1 h-px" style={{ background: "var(--line)" }} />
+          <button
+            type="button"
+            role="menuitem"
+            onClick={() => {
+              setOpen(false);
+              onLogout();
+            }}
+            className="flex w-full items-center gap-3 rounded-xl px-2.5 py-2.5 text-left text-sm hover:opacity-80"
+            style={{ color: "var(--red)" }}
+          >
+            <LogoutIcon className="icon" />
+            {t("dashboard.nav.logout")}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -109,6 +193,8 @@ function UserMenu({ name, onLogout }: { name: string; onLogout: () => void }) {
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const pathname = usePathname();
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   // The SessionGate in app/dashboard/layout.tsx has already rehydrated the auth
   // state from storage by the time this mounts, so the session can be read
   // synchronously here with no per-page "checking" step.
@@ -143,23 +229,46 @@ export default function DashboardShell({ children }: { children: React.ReactNode
     return null;
   }
 
+  const page = PAGE_TITLES.find((p) => p.match(pathname));
+
   return (
-    <div className="flex flex-1 flex-col bg-jz-blue-950">
-      <header className="sticky top-0 z-40 border-b-2 border-[#16A34A] bg-jz-blue-900">
-        <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-10">
-          <div className="flex flex-col gap-1">
-            <Logo />
-            <p className="hidden text-[10px] text-jz-white-100 sm:block">{t("nav.tagline")}</p>
+    <div className="dashboard-artifact">
+      <div className={`shell${mobileNavOpen ? " nav-open" : ""}`}>
+        <div className="sidebar-veil" onClick={() => setMobileNavOpen(false)} />
+        <Sidebar onClose={() => setMobileNavOpen(false)} />
+
+        <main className="main">
+          <div className="topbar">
+            <button type="button" className="hamburger" onClick={() => setMobileNavOpen(true)} aria-label="Open menu">
+              <MenuIcon className="icon" />
+            </button>
+            <div className="topbar-title">
+              {page ? t(page.titleKey) : t("dashboard.nav.myJourney")}
+              <span className="sub">{page ? t(page.subKey) : ""}</span>
+            </div>
+            <div className="topbar-spacer" />
+            <div className="topbar-right">
+              <ThemeIconPill />
+              {/* TODO(backend): no notifications endpoint exists yet — the
+                  bell is a stable nav affordance, deliberately shown without
+                  a fabricated unread count. */}
+              <button type="button" className="icon-pill" disabled title="Coming soon">
+                <BellIcon className="icon" />
+              </button>
+              <LangChip />
+              <UserChipMenu name={session.candidate.full_name} onLogout={handleLogout} />
+            </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <ThemeToggle />
-            <LanguageSwitcher />
-            <UserMenu name={session.candidate.full_name} onLogout={handleLogout} />
-          </div>
-        </div>
-      </header>
-      <main className="flex-1">{children}</main>
+          {children}
+        </main>
+      </div>
+
+      {/* TODO(backend): no real support WhatsApp number is wired anywhere in
+          this app yet — see the matching note in Sidebar.tsx's help-card. */}
+      <button type="button" className="fab-wa" disabled title="Coming soon" aria-label="Chat on WhatsApp">
+        <ChatIcon className="icon" />
+      </button>
     </div>
   );
 }

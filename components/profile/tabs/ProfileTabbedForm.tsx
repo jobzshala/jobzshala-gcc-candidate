@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import TabsNav, { type TabItem } from "@/components/ui/TabsNav";
 import { RewardSidePanel } from "@/components/profile/RewardPanel";
 import ProfileTopBar from "@/components/profile/ProfileTopBar";
+import ProfileViewSummary from "@/components/profile/ProfileViewSummary";
 import PersonalDetailsStep from "@/components/profile/steps/PersonalDetailsStep";
 import ProfileSummaryStep from "@/components/profile/steps/ProfileSummaryStep";
 import CareerPreferenceStep from "@/components/profile/steps/CareerPreferenceStep";
@@ -66,15 +67,25 @@ export default function ProfileTabbedForm({
 }: ProfileTabbedFormProps) {
   const { t } = useTranslation();
   // Deep links from elsewhere (e.g. the dashboard overview's quick links)
-  // point at a #hash matching one of TAB_HASH_IDS — land on that tab
-  // instead of always defaulting to Personal. Only ever mounts client-side
-  // (the parent page gates on the device-tier hook resolving first), so
-  // reading window.location.hash here can't cause an SSR/hydration mismatch.
-  const [activeTab, setActiveTab] = useState<TabKey>(() => {
+  // point at a #hash matching one of TAB_HASH_IDS — land directly in edit
+  // mode on that tab instead of the view summary below. Only ever mounts
+  // client-side (the parent page gates on the device-tier hook resolving
+  // first), so reading window.location.hash here can't cause an SSR/
+  // hydration mismatch.
+  const hashTab = (() => {
     const hash = typeof window !== "undefined" ? window.location.hash.slice(1) : "";
-    const match = (Object.keys(TAB_HASH_IDS) as TabKey[]).find((key) => TAB_HASH_IDS[key] === hash);
-    return match ?? "personal";
-  });
+    return (Object.keys(TAB_HASH_IDS) as TabKey[]).find((key) => TAB_HASH_IDS[key] === hash);
+  })();
+  const [activeTab, setActiveTab] = useState<TabKey>(hashTab ?? "personal");
+  // View mode shows real field values in read-only cards (matching the
+  // /dashboard overview); edit mode is the pre-existing tabs form below.
+  // A direct #hash deep link skips straight to edit mode on that tab.
+  const [mode, setMode] = useState<"view" | "edit">(hashTab ? "edit" : "view");
+
+  const goToTab = (tab: TabKey) => {
+    setActiveTab(tab);
+    setMode("edit");
+  };
 
   const completion = useMemo(
     () => getProfileCompletion({ profile, ...completionCounts }),
@@ -88,37 +99,55 @@ export default function ProfileTabbedForm({
   }));
 
   return (
-    <div className="mx-auto max-w-[1280px] px-4 py-10 sm:px-6 lg:px-10">
+    <>
       <ProfileTopBar profile={profile} completionPercent={completionPercent} onImageChange={onImageChange} />
 
-      <div className="mt-6">
-        <TabsNav tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
-
-        <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start">
-          <div className="min-w-0 flex-1 rounded-2xl border border-jz-border bg-jz-blue-900/40 p-6 backdrop-blur-xl shadow-[0_1px_0_rgba(74,222,128,0.12),0_14px_30px_-22px_rgba(0,0,0,0.35)]">
-            {activeTab === "personal" && <PersonalDetailsStep profile={profile} onSaved={refreshProfile} />}
-            {activeTab === "career" && <CareerPreferenceStep profile={profile} onSaved={refreshProfile} />}
-            {activeTab === "summary" && <ProfileSummaryStep profile={profile} onSaved={refreshProfile} />}
-            {activeTab === "employment" && <EmploymentSection onCountChange={onEmploymentCountChange} />}
-            {activeTab === "education" && <EducationSection onCountChange={onEducationCountChange} />}
-            {activeTab === "languages" && <LanguagesSection onCountChange={onLanguagesCountChange} />}
-            {activeTab === "resume" && (
-              <ResumeSection
-                profile={profile}
-                onProfileRefresh={refreshProfile}
-                onEmploymentCountChange={onEmploymentCountChange}
-                onEducationCountChange={onEducationCountChange}
-                onLanguagesCountChange={onLanguagesCountChange}
-                onDocumentsCountChange={onDocumentsCountChange}
-              />
-            )}
-            {activeTab === "video" && <VideoSection />}
-            {activeTab === "documents" && <DocumentsSection onCountChange={onDocumentsCountChange} />}
+      {mode === "view" ? (
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+          <div className="min-w-0 flex-1">
+            <ProfileViewSummary profile={profile} onSaved={refreshProfile} onEditTab={goToTab} />
           </div>
-
           <RewardSidePanel className="lg:sticky lg:top-24 lg:w-64" />
         </div>
-      </div>
-    </div>
+      ) : (
+        <>
+          <button
+            type="button"
+            onClick={() => setMode("view")}
+            className="mb-4 text-sm font-medium"
+            style={{ color: "var(--ink-soft)" }}
+          >
+            ← Back to profile overview
+          </button>
+
+          <TabsNav tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
+
+          <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start">
+            <div className="card min-w-0 flex-1" style={{ padding: "24px" }}>
+              {activeTab === "personal" && <PersonalDetailsStep profile={profile} onSaved={refreshProfile} />}
+              {activeTab === "career" && <CareerPreferenceStep profile={profile} onSaved={refreshProfile} />}
+              {activeTab === "summary" && <ProfileSummaryStep profile={profile} onSaved={refreshProfile} />}
+              {activeTab === "employment" && <EmploymentSection onCountChange={onEmploymentCountChange} />}
+              {activeTab === "education" && <EducationSection onCountChange={onEducationCountChange} />}
+              {activeTab === "languages" && <LanguagesSection onCountChange={onLanguagesCountChange} />}
+              {activeTab === "resume" && (
+                <ResumeSection
+                  profile={profile}
+                  onProfileRefresh={refreshProfile}
+                  onEmploymentCountChange={onEmploymentCountChange}
+                  onEducationCountChange={onEducationCountChange}
+                  onLanguagesCountChange={onLanguagesCountChange}
+                  onDocumentsCountChange={onDocumentsCountChange}
+                />
+              )}
+              {activeTab === "video" && <VideoSection />}
+              {activeTab === "documents" && <DocumentsSection onCountChange={onDocumentsCountChange} />}
+            </div>
+
+            <RewardSidePanel className="lg:sticky lg:top-24 lg:w-64" />
+          </div>
+        </>
+      )}
+    </>
   );
 }
