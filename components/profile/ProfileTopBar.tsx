@@ -76,6 +76,7 @@ export default function ProfileTopBar({ profile, completionPercent, onImageChang
       <div className="hero-row">
         <ProfileImageUploader
           fullName={profile.full_name}
+          gender={profile.gender}
           imageUrl={imageUrl}
           onChange={(next) => {
             setImageUrl(next);

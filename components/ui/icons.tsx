@@ -98,6 +98,28 @@ export function UserIcon({ className = "size-5" }: IconProps) {
   );
 }
 
+export function MaleAvatarIcon({ className = "size-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <circle cx="12" cy="8.5" r="4" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M4.5 20.5c1.1-4 4.1-6.2 7.5-6.2s6.4 2.2 7.5 6.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function FemaleAvatarIcon({ className = "size-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M12 3.7c-2.9 0-5.2 2.3-5.2 5.3 0 1.7.7 3.6 1.7 4.9.3-1.8.3-3.7.3-3.7s1.1.9 3.2.9 3.2-.9 3.2-.9.1 1.9.3 3.7c1-1.3 1.7-3.2 1.7-4.9 0-3-2.3-5.3-5.2-5.3Z"
+        fill="currentColor"
+      />
+      <circle cx="12" cy="9.2" r="3.9" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M4.5 20.5c1.1-4 4.1-6.2 7.5-6.2s6.4 2.2 7.5 6.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function MenuIcon({ className = "size-6" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
