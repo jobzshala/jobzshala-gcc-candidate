@@ -117,7 +117,7 @@ export default function ProfileImageUploader({ fullName, gender, imageUrl, compl
           disabled={busy}
           aria-label={imageUrl ? t("profile.image.change") : t("profile.image.upload")}
           style={{ top: avatarInset, right: avatarInset, bottom: avatarInset, left: avatarInset }}
-          className={`absolute flex items-center justify-center overflow-hidden rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.25)] ring-2 ring-white/40 transition-transform focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none ${
+          className={`absolute flex items-center justify-center overflow-hidden rounded-full shadow-[inset_0_1.5px_2px_rgba(255,255,255,0.45),inset_0_-6px_10px_rgba(0,0,0,0.18),0_3px_12px_rgba(6,60,30,0.35)] ring-1 ring-white/30 transition-transform focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none ${
             dragging ? "scale-105 ring-2 ring-white" : ""
           } ${busy ? "cursor-wait" : "cursor-pointer"}`}
         >
@@ -125,8 +125,11 @@ export default function ProfileImageUploader({ fullName, gender, imageUrl, compl
             // eslint-disable-next-line @next/next/no-img-element -- the S3 host isn't in next.config's image domains; a plain img avoids that coupling.
             <img src={imageUrl} alt={t("profile.image.alt", { name: fullName })} className="size-full object-cover" />
           ) : (
-            <span className="flex size-full items-center justify-center bg-gradient-to-br from-[#4ADE80] via-[#22C55E] to-[#16A34A] text-white">
-              <AvatarIcon className="size-8 drop-shadow-sm" />
+            <span
+              className="flex size-full items-center justify-center text-white"
+              style={{ background: "radial-gradient(circle at 32% 28%, #5eead4 0%, #34d399 32%, #16a34a 78%, #0f7a3d 100%)" }}
+            >
+              <AvatarIcon className="size-8 drop-shadow-[0_1px_1px_rgba(0,0,0,0.25)]" />
             </span>
           )}
 
