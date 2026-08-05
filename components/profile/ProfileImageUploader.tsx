@@ -110,7 +110,19 @@ export default function ProfileImageUploader({ fullName, imageUrl, completionPer
           onClick={() => !busy && fileInputRef.current?.click()}
           disabled={busy}
           aria-label={imageUrl ? t("profile.image.change") : t("profile.image.upload")}
-          style={{ top: avatarInset, right: avatarInset, bottom: avatarInset, left: avatarInset }}
+          style={{
+            top: avatarInset,
+            right: avatarInset,
+            bottom: avatarInset,
+            left: avatarInset,
+            // Explicit single track — without it, place-items-center
+            // (justify-items isn't "stretch") makes the browser size the
+            // implicit auto grid column to content instead of the button's
+            // own width, so the size-full child below silently renders at
+            // roughly half width, clipping the visible avatar in half.
+            gridTemplateColumns: "1fr",
+            gridTemplateRows: "1fr",
+          }}
           className={`group absolute grid place-items-center overflow-hidden rounded-full transition-transform focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none ${
             dragging ? "scale-105 ring-2 ring-white" : ""
           } ${busy ? "cursor-wait" : "cursor-pointer"}`}
