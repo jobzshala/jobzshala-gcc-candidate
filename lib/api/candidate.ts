@@ -570,6 +570,7 @@ export interface DocumentRecord {
   candidate_id: number;
   document_type_id: number;
   file_url: string;
+  label: string | null;
   created_at: string;
   document_type: DocumentTypeOption;
 }
@@ -578,17 +579,22 @@ export function getDocuments(): Promise<DocumentRecord[]> {
   return authFetch<DocumentRecord[]>("/candidate/profile/documents");
 }
 
-export function addDocument(documentTypeId: number, file: File): Promise<DocumentRecord> {
+export function addDocument(documentTypeId: number, file: File, label?: string): Promise<DocumentRecord> {
   const formData = new FormData();
   formData.set("document_type_id", String(documentTypeId));
   formData.set("document", file);
+  if (label) formData.set("label", label);
   return authFetch<DocumentRecord>("/candidate/profile/documents", { method: "POST", body: formData });
 }
 
-export function updateDocument(id: number, params: { documentTypeId?: number; file?: File }): Promise<DocumentRecord> {
+export function updateDocument(
+  id: number,
+  params: { documentTypeId?: number; file?: File; label?: string }
+): Promise<DocumentRecord> {
   const formData = new FormData();
   if (params.documentTypeId) formData.set("document_type_id", String(params.documentTypeId));
   if (params.file) formData.set("document", params.file);
+  if (params.label !== undefined) formData.set("label", params.label);
   return authFetch<DocumentRecord>(`/candidate/profile/documents/${id}`, { method: "PUT", body: formData });
 }
 

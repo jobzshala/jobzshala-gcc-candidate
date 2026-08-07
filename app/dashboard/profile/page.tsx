@@ -1,158 +1,287 @@
 "use client";
 
-import { useTranslation } from "react-i18next";
-import ProfileWizard from "@/components/profile/wizard/ProfileWizard";
-import ProfileTabbedForm from "@/components/profile/tabs/ProfileTabbedForm";
-import SmartUploadLanding from "@/components/profile/SmartUploadLanding";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { UploadIcon, PlayIcon, FolderIcon, CheckIcon, ChevronRightIcon, SearchIcon, VideoIcon } from "@/components/ui/icons";
+import ProfileTopBar from "@/components/profile/ProfileTopBar";
+import JourneyStepper from "@/components/dashboard/JourneyStepper";
+import RecruiterCard from "@/components/dashboard/RecruiterCard";
+import ReadinessScoreCard from "@/components/dashboard/ReadinessScoreCard";
+import ActivityCard from "@/components/dashboard/ActivityCard";
+import VerifiedStrip from "@/components/dashboard/VerifiedStrip";
+import TrustStrip from "@/components/dashboard/TrustStrip";
+import DetailCard from "@/components/dashboard/DetailCard";
+import PersonalInfoCard from "@/components/dashboard/PersonalInfoCard";
+import CareerProfileCard from "@/components/dashboard/CareerProfileCard";
+import { getDocumentIcon } from "@/lib/documentIcon";
+import {
+  getProfile,
+  getEmploymentHistory,
+  getEducationHistory,
+  getLanguages,
+  getDocuments,
+  type CandidateProfile,
+  type EmploymentRecord,
+  type EducationRecord,
+  type CandidateLanguageRecord,
+  type DocumentRecord,
+} from "@/lib/api/candidate";
 import { getProfileCompletion } from "@/lib/profileCompletion";
-import { useCandidateProfileData } from "@/lib/hooks/useCandidateProfileData";
-import { useDeviceTier } from "@/lib/hooks/useDeviceTier";
-import { useEffect, useState } from "react";
 
-// Below this completion percentage the profile is "mostly empty" — a fresh
-// candidate straight out of registration sits at 0% (full_name/mobile_number
-// aren't completion items), so this comfortably covers "just registered"
-// while still retiring itself once a candidate has meaningfully started
-// filling things in by hand.
-const SMART_UPLOAD_THRESHOLD_PERCENT = 25;
+export default function DashboardOverviewPage() {
+  const [profile, setProfile] = useState<CandidateProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [employment, setEmployment] = useState<EmploymentRecord[]>([]);
+  const [education, setEducation] = useState<EducationRecord[]>([]);
+  const [languages, setLanguages] = useState<CandidateLanguageRecord[]>([]);
+  const [documents, setDocuments] = useState<DocumentRecord[]>([]);
 
-const smartUploadDismissedKey = (candidateId: number) => `jobzshala-smart-upload-dismissed:${candidateId}`;
-
-export default function ProfilePage() {
-  const { t } = useTranslation();
-  const deviceTier = useDeviceTier();
-  // Defaults to "dismissed" so returning candidates never see a flash of the
-  // landing screen before localStorage is checked — mirrors useDeviceTier's
-  // own "unknown until measured" caution above.
-  const [smartUploadDismissed, setSmartUploadDismissed] = useState(true);
-
-  const {
-    profile,
-    setProfile,
-    loading,
-    loadError,
-    completionCounts,
-    loadProfile,
-    refreshProfile,
-    onEmploymentCountChange,
-    onEducationCountChange,
-    onLanguagesCountChange,
-    onDocumentsCountChange,
-  } = useCandidateProfileData();
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    loadProfile();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Reads the per-candidate dismissal flag once the profile (and so its id)
-  // is known — a fresh candidate who's never dismissed it gets smartUploadDismissed
-  // flipped to false here, which is what actually lets the landing screen show.
-  useEffect(() => {
-    if (!profile) return;
+  const load = async () => {
+    setLoading(true);
+    setLoadError(false);
     try {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSmartUploadDismissed(window.localStorage.getItem(smartUploadDismissedKey(profile.id)) === "1");
+      const [profileData, employmentData, educationData, languagesData, documentsData] = await Promise.all([
+        getProfile(),
+        getEmploymentHistory(),
+        getEducationHistory(),
+        getLanguages(),
+        getDocuments(),
+      ]);
+      setProfile(profileData);
+      setEmployment(employmentData);
+      setEducation(educationData);
+      setLanguages(languagesData);
+      setDocuments(documentsData);
     } catch {
-      // Storage unavailable (private browsing, etc.) — fall back to always
-      // dismissed rather than risk showing the landing on every visit.
+      setLoadError(true);
+    } finally {
+      setLoading(false);
     }
-  }, [profile?.id]);
-
-  const dismissSmartUpload = () => {
-    if (profile) {
-      try {
-        window.localStorage.setItem(smartUploadDismissedKey(profile.id), "1");
-      } catch {
-        // Non-fatal — worst case the landing reappears next visit.
-      }
-    }
-    setSmartUploadDismissed(true);
   };
 
-  const handleImageChange = (profile_image_url: string | null) =>
-    setProfile((current) => (current ? { ...current, profile_image_url } : current));
+  // Lighter than load() — re-fetches just the profile after an inline-edit
+  // save, without flipping the whole page back to the loading skeleton.
+  const refreshProfile = async () => {
+    try {
+      setProfile(await getProfile());
+    } catch {
+      // Keep showing the last known-good profile — the save itself already
+      // succeeded, this is just the follow-up read.
+    }
+  };
 
-  // Skeleton until both the data and the device tier are known — avoids
-  // mounting the wrong shell for a beat (deviceTier is null until
-  // matchMedia can run client-side) and matches the old page's loading copy.
-  if (loading || deviceTier === null) {
+  useEffect(() => {
+    // Fetch-on-mount — load()'s setState calls happen inside its own async
+    // continuation, not synchronously in this effect body.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    load();
+  }, []);
+
+  const counts = useMemo(
+    () => ({
+      employmentCount: employment.length,
+      educationCount: education.length,
+      languagesCount: languages.length,
+      documentsCount: documents.length,
+    }),
+    [employment, education, languages, documents]
+  );
+
+  const completion = useMemo(() => (profile ? getProfileCompletion({ profile, ...counts }) : null), [profile, counts]);
+
+  if (loading) {
     return (
-      <div className="mx-auto max-w-[1280px] px-4 py-10 sm:px-6 lg:px-10">
-        <h1 className="font-serif text-2xl font-semibold text-jz-white-50 sm:text-3xl">{t("profile.title")}</h1>
-        <p className="mt-2 text-sm text-jz-white-400">{t("profile.subtitle")}</p>
-        <p className="mt-10 text-sm text-jz-white-400">{t("profile.loading")}</p>
+      <div>
+        <h1 style={{ fontSize: 24 }}>Overview</h1>
+        <p style={{ marginTop: 8, fontSize: 13, color: "var(--ink-faint)" }}>Loading your dashboard…</p>
       </div>
     );
   }
 
   if (loadError || !profile) {
     return (
-      <div className="mx-auto max-w-[1280px] px-4 py-10 sm:px-6 lg:px-10">
-        <h1 className="font-serif text-2xl font-semibold text-jz-white-50 sm:text-3xl">{t("profile.title")}</h1>
-        <p className="mt-2 text-sm text-jz-white-400">{t("profile.subtitle")}</p>
-        <div className="mt-10 rounded-2xl border border-jz-red-600/40 bg-jz-red-600/10 p-6 text-center">
-          <p className="text-sm text-jz-white-100">{t("profile.loadError")}</p>
-          <button
-            type="button"
-            onClick={loadProfile}
-            className="mt-3 rounded-xl border border-jz-white-600 px-4 py-2 text-sm text-jz-white-100 hover:opacity-90"
-          >
-            {t("profile.retry")}
+      <div>
+        <h1 style={{ fontSize: 24 }}>Overview</h1>
+        <div className="card" style={{ marginTop: 24, padding: 24, textAlign: "center" }}>
+          <p style={{ fontSize: 13, color: "var(--ink)" }}>We couldn&apos;t load your dashboard. Please try again.</p>
+          <button type="button" onClick={load} className="btn-outline" style={{ marginTop: 12 }}>
+            Retry
           </button>
         </div>
       </div>
     );
   }
 
-  const completion = getProfileCompletion({ profile, ...completionCounts });
-
-  // The new Smart Upload first screen — one shared build across every device
-  // tier (see SmartUploadLanding.tsx), shown ahead of both the mobile wizard
-  // and tablet/desktop tabs shells below, and only while the profile still
-  // has next to nothing in it. Skipping or finishing the review both dismiss
-  // it for this candidate (persisted so it doesn't reappear on refresh).
-  if (!smartUploadDismissed && completion.percent < SMART_UPLOAD_THRESHOLD_PERCENT) {
-    return (
-      <SmartUploadLanding
-        profile={profile}
-        refreshProfile={refreshProfile}
-        onEmploymentCountChange={onEmploymentCountChange}
-        onEducationCountChange={onEducationCountChange}
-        onLanguagesCountChange={onLanguagesCountChange}
-        onDocumentsCountChange={onDocumentsCountChange}
-        onSkip={dismissSmartUpload}
-        onDone={dismissSmartUpload}
-      />
-    );
-  }
-
-  if (deviceTier === "mobile") {
-    return (
-      <ProfileWizard
-        profile={profile}
-        completionCounts={completionCounts}
-        refreshProfile={refreshProfile}
-        onEmploymentCountChange={onEmploymentCountChange}
-        onEducationCountChange={onEducationCountChange}
-        onLanguagesCountChange={onLanguagesCountChange}
-        onDocumentsCountChange={onDocumentsCountChange}
-      />
-    );
-  }
-
   return (
-    <ProfileTabbedForm
-      profile={profile}
-      completionCounts={completionCounts}
-      completionPercent={completion.percent}
-      refreshProfile={refreshProfile}
-      onImageChange={handleImageChange}
-      onEmploymentCountChange={onEmploymentCountChange}
-      onEducationCountChange={onEducationCountChange}
-      onLanguagesCountChange={onLanguagesCountChange}
-      onDocumentsCountChange={onDocumentsCountChange}
-    />
+    <>
+      <ProfileTopBar profile={profile} completionPercent={completion?.percent} />
+
+      <JourneyStepper status={profile.status} />
+
+      <div className="grid">
+        <div className="col">
+          <PersonalInfoCard profile={profile} onSaved={refreshProfile} />
+          <CareerProfileCard profile={profile} onSaved={refreshProfile} />
+
+          {/* RESUME */}
+          <DetailCard icon={UploadIcon} title="Resume" complete={!!profile.resume_url}>
+            {profile.resume_url ? (
+              <div className="resume-row">
+                <span className="file-ic">
+                  <UploadIcon className="icon" />
+                </span>
+                <div className="resume-meta">
+                  <div className="name">Your resume is on file.</div>
+                </div>
+                <div className="resume-actions">
+                  <a href={profile.resume_url} target="_blank" rel="noreferrer" className="btn-outline">
+                    View Resume
+                  </a>
+                  <Link href="/dashboard/profile#resume" className="btn-solid">
+                    Replace
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="resume-row">
+                <p style={{ fontSize: 12, color: "var(--ink-faint)" }}>No resume uploaded yet.</p>
+                <Link href="/dashboard/profile#resume" className="btn-solid">
+                  Upload Resume
+                </Link>
+              </div>
+            )}
+          </DetailCard>
+
+          {/* VIDEO PROFILE */}
+          <DetailCard icon={PlayIcon} title="Video Profile" complete={!!profile.video_url}>
+            {profile.video_url ? (
+              <div className="video-row">
+                <div className="video-thumb">
+                  <VideoIcon className="icon" />
+                </div>
+                <div className="video-desc">Your video profile is on file.</div>
+                <div className="video-actions">
+                  <a href={profile.video_url} target="_blank" rel="noreferrer" className="btn-outline">
+                    Preview
+                  </a>
+                  <Link href="/dashboard/profile#video" className="btn-solid">
+                    Replace
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="video-row">
+                <p style={{ fontSize: 12, color: "var(--ink-faint)" }}>
+                  A short video helps you stand out to employers — not uploaded yet.
+                </p>
+                <Link href="/dashboard/profile#video" className="btn-solid">
+                  Upload Video
+                </Link>
+              </div>
+            )}
+          </DetailCard>
+
+          {/* DOCUMENTS */}
+          <DetailCard
+            icon={FolderIcon}
+            title="Documents"
+            editHref="/dashboard/documents"
+            editLabel="View All"
+            complete={documents.length > 0}
+            footerLabel={`${documents.length} uploaded`}
+          >
+            {documents.length > 0 ? (
+              <div className="doc-grid">
+                {documents.map((doc) => {
+                  const DocIcon = getDocumentIcon(doc.document_type.name);
+                  return (
+                    <div key={doc.id} className="doc-chip">
+                      <div className="dic">
+                        <DocIcon className="icon" />
+                      </div>
+                      <div className="dname">{doc.document_type.name}</div>
+                      <div className="dstat ok">
+                        <CheckIcon className="icon" />
+                        Uploaded
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p style={{ fontSize: 12, color: "var(--ink-faint)" }}>No documents uploaded yet.</p>
+            )}
+          </DetailCard>
+
+          <div className="card" style={{ borderStyle: "dashed", textAlign: "center", padding: 24 }}>
+            <span
+              className="trust-ic"
+              style={{ margin: "0 auto", background: "var(--green-soft)", color: "var(--green-600)" }}
+            >
+              <SearchIcon className="icon" />
+            </span>
+            <p style={{ marginTop: 10, fontSize: 13, fontWeight: 600, color: "var(--ink)" }}>Job matching is coming soon</p>
+            <p style={{ marginTop: 4, fontSize: 11.5, color: "var(--ink-faint)" }}>
+              We&apos;re building AI-matched job recommendations for GCC roles. Keep your profile complete so you&apos;re
+              ready when it launches.
+            </p>
+          </div>
+        </div>
+
+        {completion && (
+          <div className="col">
+            <RecruiterCard recruiter={profile.assigned_recruiter} />
+
+            <ReadinessScoreCard
+              profile={profile}
+              videoUploaded={!!profile.video_url}
+              educationCount={counts.educationCount}
+              languagesCount={counts.languagesCount}
+            />
+
+            <ActivityCard />
+
+            <div className="card">
+              <div className="card-body">
+                <h3 style={{ fontSize: 14.5 }}>Complete your profile</h3>
+                <p style={{ marginTop: 4, fontSize: 11.5, color: "var(--ink-faint)" }}>
+                  {completion.doneCount} of {completion.total} steps done
+                </p>
+                <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 2 }}>
+                  {completion.items.map((item) =>
+                    item.done ? (
+                      <div key={item.key} className="improve-row ok">
+                        <CheckIcon className="icon" />
+                        <span style={{ textDecoration: "line-through", opacity: 0.7 }}>{item.label}</span>
+                      </div>
+                    ) : (
+                      <Link key={item.key} href={item.href} className="improve-row" style={{ color: "var(--ink-soft)" }}>
+                        <span
+                          style={{
+                            width: 15,
+                            height: 15,
+                            borderRadius: "50%",
+                            border: "1.5px solid var(--ink-faint)",
+                            flexShrink: 0,
+                          }}
+                        />
+                        <span style={{ flex: 1 }}>{item.label}</span>
+                        <span style={{ color: "var(--ink-faint)" }}>
+                          <ChevronRightIcon className="size-3" />
+                        </span>
+                      </Link>
+                    )
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <VerifiedStrip kycStatus={profile.kyc_status} />
+      <TrustStrip />
+    </>
   );
 }

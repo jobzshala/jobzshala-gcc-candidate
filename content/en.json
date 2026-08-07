@@ -655,7 +655,12 @@
       "documentTypePlaceholder": "Select document type",
       "fileLabel": "File",
       "mandatory": "Required",
-      "view": "View"
+      "view": "View",
+      "uploadedOn": "Uploaded {{date}}",
+      "missingMandatory": "Still needed: {{names}}",
+      "fileHint": "PDF, DOC or DOCX — up to 5MB",
+      "labelField": "What is this, specifically?",
+      "labelPlaceholder": "e.g. 10th Marksheet, Trade Certificate…"
     },
     "upload": {
       "landingTitle": "Let's fill your profile in seconds",
