@@ -541,8 +541,8 @@
       "preferredCountryLabel": "Preferred Country",
       "preferredCountryPlaceholder": "Select country",
       "experienceYearsLabel": "Years of Experience",
-      "currentSalaryLabel": "Current Monthly Salary",
-      "expectedSalaryLabel": "Expected Monthly Salary",
+      "currentSalaryLabel": "Current Monthly Salary (AED)",
+      "expectedSalaryLabel": "Expected Monthly Salary (AED)",
       "hasGccExperienceLabel": "Do you have GCC work experience?",
       "yes": "Yes",
       "no": "No"

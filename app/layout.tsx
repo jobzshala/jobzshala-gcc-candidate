@@ -19,15 +19,22 @@ import "./globals.css";
 const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem('jobzshala-candidate-theme');if(t!=='light'&&t!=='dark'){t='dark';}document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();`;
 
 // Redirects an already-authenticated visitor away from the public landing
-// page before it ever paints. This has to live here, in the root layout's
-// <head>, not on the page itself (see components/RedirectIfAuthenticated.tsx
-// history) — a <script> rendered via dangerouslySetInnerHTML inside page
-// content gets inserted through React/RSC's client-side patching, where
-// browsers never execute injected <script> tags; only a script that's part
-// of the very first HTML the browser's own parser sees (the root <head>,
-// same as THEME_INIT_SCRIPT above) reliably runs before paint. Self-scoped
-// to "/" via a runtime pathname check since this fires on every route.
-const REDIRECT_IF_AUTHED_SCRIPT = `(function(){try{if(location.pathname==='/'){var raw=localStorage.getItem('jobzshala-candidate-session')||sessionStorage.getItem('jobzshala-candidate-session');if(raw){var target='/dashboard';try{var s=JSON.parse(raw);if(s&&s.candidate&&s.candidate.must_change_password){target='/change-password';}}catch(e){}location.replace(target);}}}catch(e){}})();`;
+// page and the logged-out-only auth pages (login/register/forgot-password,
+// plus a token-less reset-password) before any of them ever paint. This has
+// to live here, in the root layout's <head>, not on the page itself (see
+// components/RedirectIfAuthenticated.tsx history) — a <script> rendered via
+// dangerouslySetInnerHTML inside page content gets inserted through
+// React/RSC's client-side patching, where browsers never execute injected
+// <script> tags; only a script that's part of the very first HTML the
+// browser's own parser sees (the root <head>, same as THEME_INIT_SCRIPT
+// above) reliably runs before paint. Self-scoped via a runtime pathname
+// check since this fires on every route.
+//
+// reset-password is only guest-gated when it has no ?token= — that page is
+// reached from an emailed link tied to a specific account, independent of
+// whatever session happens to already be active in this browser, so a valid
+// token must always be allowed through even for a logged-in visitor.
+const REDIRECT_IF_AUTHED_SCRIPT = `(function(){try{var p=location.pathname;var guestOnly=p==='/'||p==='/login'||p==='/register'||p==='/forgot-password'||(p==='/reset-password'&&location.search.indexOf('token=')===-1);if(guestOnly){var raw=localStorage.getItem('jobzshala-candidate-session')||sessionStorage.getItem('jobzshala-candidate-session');if(raw){var target='/journey';try{var s=JSON.parse(raw);if(s&&s.candidate&&s.candidate.must_change_password){target='/change-password';}}catch(e){}location.replace(target);}}}catch(e){}})();`;
 
 const inter = Inter({
   variable: "--font-inter",

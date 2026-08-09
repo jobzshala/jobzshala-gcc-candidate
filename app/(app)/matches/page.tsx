@@ -3,10 +3,11 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  BriefcaseIcon,
   CheckIcon,
   ChevronRightIcon,
   GlobeIcon,
+  SearchIcon,
+  ShieldCheckIcon,
   SparkleIcon,
   TargetIcon,
 } from "@/components/ui/icons";
@@ -114,7 +115,7 @@ function Paywall({ access }: { access: MatchesPage["access"] }) {
           </div>
 
           <Link
-            href="/dashboard/profile"
+            href="/profile"
             className="inline-flex items-center gap-1.5 rounded-xl bg-jz-blue-800/60 px-4 py-2 text-sm font-semibold text-jz-white-100 transition-opacity hover:opacity-90"
           >
             View profile
@@ -138,13 +139,56 @@ function Paywall({ access }: { access: MatchesPage["access"] }) {
         </div>
 
         <Link
-          href="/dashboard/subscription"
+          href="/subscription"
           className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
         >
           {expired ? "Renew" : "See plans"}
           <ChevronRightIcon className="size-4" />
         </Link>
       </div>
+    </div>
+  );
+}
+
+/**
+ * Zero matches reads two different ways and the UI has to say which: a
+ * candidate mid-verification isn't in a dead end (matching hasn't started
+ * yet), while a verified candidate with nothing found is — and telling a
+ * verified candidate "finish your profile" when it's already done just
+ * erodes trust. `notVerified` comes straight off `access.paywall.reason`
+ * rather than a guess, so the two never get crossed.
+ */
+function EmptyMatchesState({ notVerified }: { notVerified: boolean }) {
+  const Icon = notVerified ? ShieldCheckIcon : SearchIcon;
+
+  return (
+    <div className="rounded-2xl border border-jz-white-800/60 bg-jz-blue-900/40 px-6 py-12 text-center sm:px-10">
+      <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-jz-yellow-400/10">
+        <Icon className="size-8 text-jz-yellow-400" />
+      </div>
+
+      <p className="mt-5 text-lg font-semibold text-jz-white-100">
+        {notVerified ? "Your profile is under verification" : "No matches yet — we're still looking"}
+      </p>
+
+      {/* div, not p — this page renders inside DashboardShell's
+          .dashboard-artifact wrapper, whose `.dashboard-artifact p { margin: 0 }`
+          reset (unlayered CSS, so it beats Tailwind's @layer utilities
+          regardless of specificity) was killing this element's mx-auto
+          centering while leaving its mt-2 mostly invisible too. */}
+      <div className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-jz-white-400">
+        {notVerified
+          ? "Matching starts as soon as a recruiter verifies your details — usually within 24–48 hours. We'll notify you the moment it's done."
+          : "We check new job postings against your profile every day. A more complete profile — skills, experience, salary expectations — gets matched to better-fit roles, faster."}
+      </div>
+
+      <Link
+        href="/profile"
+        className="mt-6 inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-5 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
+      >
+        {notVerified ? "Review your profile" : "Strengthen your profile"}
+        <ChevronRightIcon className="size-4" />
+      </Link>
     </div>
   );
 }
@@ -202,21 +246,7 @@ export default function MatchesPage() {
       {loading && !data && <p className="text-sm text-jz-white-400">Loading your matches…</p>}
 
       {data && data.pagination.total === 0 && !loading && (
-        <div className="rounded-2xl border border-jz-white-800/60 bg-jz-blue-900/40 p-8 text-center">
-          <BriefcaseIcon className="mx-auto size-8 text-jz-white-600" />
-          <p className="mt-3 text-base font-medium text-jz-white-200">No matches yet</p>
-          <p className="mx-auto mt-1 max-w-md text-sm text-jz-white-400">
-            Matches appear once your profile is complete and verified. Finishing your profile is the
-            fastest way to get them.
-          </p>
-          <Link
-            href="/dashboard/profile"
-            className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-jz-yellow-400 hover:opacity-90"
-          >
-            Complete your profile
-            <ChevronRightIcon className="size-4" />
-          </Link>
-        </div>
+        <EmptyMatchesState notVerified={data.access.paywall?.reason === "PROFILE_NOT_VERIFIED"} />
       )}
 
       {data && data.pagination.total > 0 && (

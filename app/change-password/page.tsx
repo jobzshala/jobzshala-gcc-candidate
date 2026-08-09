@@ -61,7 +61,7 @@ export default function ChangePasswordPage() {
       // to the profile the first-login flow was gating.
       saveSession(result, isSessionPersisted());
       dispatch(setSession(result));
-      window.location.href = "/dashboard";
+      window.location.href = "/journey";
     } catch (err) {
       if (err instanceof ApiError) {
         setFieldErrors(err.fieldErrors ?? {});

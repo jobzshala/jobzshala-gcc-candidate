@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import DetailCard from "@/components/dashboard/DetailCard";
 import PersonalInfoCard from "@/components/dashboard/PersonalInfoCard";
 import CareerProfileCard from "@/components/dashboard/CareerProfileCard";
+import ProfileSummaryCard from "@/components/dashboard/ProfileSummaryCard";
 import { getDocumentIcon } from "@/lib/documentIcon";
 import {
   getEmploymentHistory,
@@ -75,6 +76,7 @@ export default function ProfileViewSummary({ profile, onSaved, onEditTab }: Prof
     <div className="col" style={{ width: "100%" }}>
       <PersonalInfoCard profile={profile} onSaved={onSaved} />
       <CareerProfileCard profile={profile} onSaved={onSaved} />
+      <ProfileSummaryCard profile={profile} onSaved={onSaved} />
 
       <DetailCard
         icon={BriefcaseIcon}

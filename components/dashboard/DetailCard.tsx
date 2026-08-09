@@ -11,6 +11,10 @@ type DetailCardProps = {
   complete: boolean;
   footerLabel?: string;
   children: React.ReactNode;
+  /** Anchor target for "Complete your profile" deep links (e.g. #resume) —
+   *  those links only ever worked once something in the DOM actually had
+   *  the matching id. */
+  id?: string;
 };
 
 export default function DetailCard({
@@ -22,9 +26,10 @@ export default function DetailCard({
   complete,
   footerLabel,
   children,
+  id,
 }: DetailCardProps) {
   return (
-    <div className="card">
+    <div id={id} className="card">
       <div className="card-body">
         <div className="card-head">
           <div className="card-title">

@@ -14,7 +14,13 @@ const DISALLOWED = [
   "/admin",
   "/api/",
   "/api-docs",
-  "/dashboard",
+  // The old shared "/dashboard" prefix covered these with one entry; now
+  // that they're flat top-level routes (see app/(app)/), each needs its own.
+  "/journey",
+  "/profile",
+  "/matches",
+  "/subscription",
+  "/documents",
   "/change-password",
   "/reset-password",
   "/forgot-password",

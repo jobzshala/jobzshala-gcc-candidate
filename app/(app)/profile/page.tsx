@@ -2,17 +2,28 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { UploadIcon, PlayIcon, FolderIcon, CheckIcon, ChevronRightIcon, SearchIcon, VideoIcon } from "@/components/ui/icons";
+import {
+  UploadIcon,
+  PlayIcon,
+  FolderIcon,
+  CheckIcon,
+  ChevronRightIcon,
+  VideoIcon,
+  BriefcaseIcon,
+  GraduationCapIcon,
+  GlobeIcon,
+} from "@/components/ui/icons";
 import ProfileTopBar from "@/components/profile/ProfileTopBar";
 import JourneyStepper from "@/components/dashboard/JourneyStepper";
+import DetailCard from "@/components/dashboard/DetailCard";
+import PersonalInfoCard from "@/components/dashboard/PersonalInfoCard";
+import CareerProfileCard from "@/components/dashboard/CareerProfileCard";
+import ProfileSummaryCard from "@/components/dashboard/ProfileSummaryCard";
 import RecruiterCard from "@/components/dashboard/RecruiterCard";
 import ReadinessScoreCard from "@/components/dashboard/ReadinessScoreCard";
 import ActivityCard from "@/components/dashboard/ActivityCard";
 import VerifiedStrip from "@/components/dashboard/VerifiedStrip";
-import TrustStrip from "@/components/dashboard/TrustStrip";
-import DetailCard from "@/components/dashboard/DetailCard";
-import PersonalInfoCard from "@/components/dashboard/PersonalInfoCard";
-import CareerProfileCard from "@/components/dashboard/CareerProfileCard";
+import DashboardSkeleton from "@/components/dashboard/DashboardSkeleton";
 import { getDocumentIcon } from "@/lib/documentIcon";
 import {
   getProfile,
@@ -26,9 +37,23 @@ import {
   type CandidateLanguageRecord,
   type DocumentRecord,
 } from "@/lib/api/candidate";
+import { getMatches } from "@/lib/api/matches";
 import { getProfileCompletion } from "@/lib/profileCompletion";
 
-export default function DashboardOverviewPage() {
+function formatDate(value: string | null): string {
+  if (!value) return "Not set";
+  return new Date(value).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+}
+
+function titleCase(value: string | null): string {
+  if (!value) return "Not set";
+  return value.charAt(0) + value.slice(1).toLowerCase();
+}
+
+// This page owns every editable field. Pipeline/recruiter/readiness/activity
+// status widgets live on /journey ("My Journey") instead — see that file
+// for why the two used to be identical.
+export default function DashboardProfilePage() {
   const [profile, setProfile] = useState<CandidateProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
@@ -36,23 +61,27 @@ export default function DashboardOverviewPage() {
   const [education, setEducation] = useState<EducationRecord[]>([]);
   const [languages, setLanguages] = useState<CandidateLanguageRecord[]>([]);
   const [documents, setDocuments] = useState<DocumentRecord[]>([]);
+  const [matchesTotal, setMatchesTotal] = useState<number | null>(null);
 
   const load = async () => {
     setLoading(true);
     setLoadError(false);
     try {
-      const [profileData, employmentData, educationData, languagesData, documentsData] = await Promise.all([
+      const [profileData, employmentData, educationData, languagesData, documentsData, matchesData] = await Promise.all([
         getProfile(),
         getEmploymentHistory(),
         getEducationHistory(),
         getLanguages(),
         getDocuments(),
+        // limit: 1 — this card only needs pagination.total, not the rows.
+        getMatches({ limit: 1 }).catch(() => null),
       ]);
       setProfile(profileData);
       setEmployment(employmentData);
       setEducation(educationData);
       setLanguages(languagesData);
       setDocuments(documentsData);
+      setMatchesTotal(matchesData?.pagination.total ?? null);
     } catch {
       setLoadError(true);
     } finally {
@@ -91,20 +120,15 @@ export default function DashboardOverviewPage() {
   const completion = useMemo(() => (profile ? getProfileCompletion({ profile, ...counts }) : null), [profile, counts]);
 
   if (loading) {
-    return (
-      <div>
-        <h1 style={{ fontSize: 24 }}>Overview</h1>
-        <p style={{ marginTop: 8, fontSize: 13, color: "var(--ink-faint)" }}>Loading your dashboard…</p>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   if (loadError || !profile) {
     return (
       <div>
-        <h1 style={{ fontSize: 24 }}>Overview</h1>
+        <h1 style={{ fontSize: 24 }}>My Profile</h1>
         <div className="card" style={{ marginTop: 24, padding: 24, textAlign: "center" }}>
-          <p style={{ fontSize: 13, color: "var(--ink)" }}>We couldn&apos;t load your dashboard. Please try again.</p>
+          <p style={{ fontSize: 13, color: "var(--ink)" }}>We couldn&apos;t load your profile. Please try again.</p>
           <button type="button" onClick={load} className="btn-outline" style={{ marginTop: 12 }}>
             Retry
           </button>
@@ -117,15 +141,94 @@ export default function DashboardOverviewPage() {
     <>
       <ProfileTopBar profile={profile} completionPercent={completion?.percent} />
 
+      <VerifiedStrip kycStatus={profile.kyc_status} />
+
       <JourneyStepper status={profile.status} />
 
       <div className="grid">
         <div className="col">
           <PersonalInfoCard profile={profile} onSaved={refreshProfile} />
           <CareerProfileCard profile={profile} onSaved={refreshProfile} />
+          <ProfileSummaryCard profile={profile} onSaved={refreshProfile} />
+
+          {/* EMPLOYMENT HISTORY */}
+          <DetailCard
+            id="employment"
+            icon={BriefcaseIcon}
+            title="Employment History"
+            editHref="/profile#employment"
+            editLabel="Manage"
+            complete={employment.length > 0}
+            footerLabel={`${employment.length} added`}
+          >
+            {employment.length > 0 ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {employment.map((job) => (
+                  <div key={job.id} style={{ borderRadius: 10, border: "1px solid var(--line)", padding: 10 }}>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: "var(--ink)" }}>{job.designation}</p>
+                    <p style={{ fontSize: 11, color: "var(--ink-faint)" }}>
+                      {job.company_name} · {formatDate(job.start_date)} – {job.is_current ? "Present" : formatDate(job.end_date)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p style={{ fontSize: 12, color: "var(--ink-faint)" }}>No employment history added yet.</p>
+            )}
+          </DetailCard>
+
+          {/* EDUCATION */}
+          <DetailCard
+            id="education"
+            icon={GraduationCapIcon}
+            title="Education"
+            editHref="/profile#education"
+            editLabel="Manage"
+            complete={education.length > 0}
+            footerLabel={`${education.length} added`}
+          >
+            {education.length > 0 ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {education.map((edu) => (
+                  <div key={edu.id} style={{ borderRadius: 10, border: "1px solid var(--line)", padding: 10 }}>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: "var(--ink)" }}>{edu.education_qualification.name}</p>
+                    <p style={{ fontSize: 11, color: "var(--ink-faint)" }}>
+                      {edu.institution_name}
+                      {edu.specialization ? ` · ${edu.specialization}` : ""}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p style={{ fontSize: 12, color: "var(--ink-faint)" }}>No education details added yet.</p>
+            )}
+          </DetailCard>
+
+          {/* LANGUAGES */}
+          <DetailCard
+            id="languages"
+            icon={GlobeIcon}
+            title="Languages"
+            editHref="/profile#languages"
+            editLabel="Manage"
+            complete={languages.length > 0}
+            footerLabel={`${languages.length} added`}
+          >
+            {languages.length > 0 ? (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {languages.map((lang) => (
+                  <span key={lang.id} className="status-pill" style={{ background: "var(--paper-soft)", color: "var(--ink)" }}>
+                    {lang.language.name} · {titleCase(lang.proficiency)}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p style={{ fontSize: 12, color: "var(--ink-faint)" }}>No languages added yet.</p>
+            )}
+          </DetailCard>
 
           {/* RESUME */}
-          <DetailCard icon={UploadIcon} title="Resume" complete={!!profile.resume_url}>
+          <DetailCard id="resume" icon={UploadIcon} title="Resume" complete={!!profile.resume_url}>
             {profile.resume_url ? (
               <div className="resume-row">
                 <span className="file-ic">
@@ -138,7 +241,7 @@ export default function DashboardOverviewPage() {
                   <a href={profile.resume_url} target="_blank" rel="noreferrer" className="btn-outline">
                     View Resume
                   </a>
-                  <Link href="/dashboard/profile#resume" className="btn-solid">
+                  <Link href="/profile#resume" className="btn-solid">
                     Replace
                   </Link>
                 </div>
@@ -146,7 +249,7 @@ export default function DashboardOverviewPage() {
             ) : (
               <div className="resume-row">
                 <p style={{ fontSize: 12, color: "var(--ink-faint)" }}>No resume uploaded yet.</p>
-                <Link href="/dashboard/profile#resume" className="btn-solid">
+                <Link href="/profile#resume" className="btn-solid">
                   Upload Resume
                 </Link>
               </div>
@@ -154,7 +257,7 @@ export default function DashboardOverviewPage() {
           </DetailCard>
 
           {/* VIDEO PROFILE */}
-          <DetailCard icon={PlayIcon} title="Video Profile" complete={!!profile.video_url}>
+          <DetailCard id="video" icon={PlayIcon} title="Video Profile" complete={!!profile.video_url}>
             {profile.video_url ? (
               <div className="video-row">
                 <div className="video-thumb">
@@ -165,7 +268,7 @@ export default function DashboardOverviewPage() {
                   <a href={profile.video_url} target="_blank" rel="noreferrer" className="btn-outline">
                     Preview
                   </a>
-                  <Link href="/dashboard/profile#video" className="btn-solid">
+                  <Link href="/profile#video" className="btn-solid">
                     Replace
                   </Link>
                 </div>
@@ -175,7 +278,7 @@ export default function DashboardOverviewPage() {
                 <p style={{ fontSize: 12, color: "var(--ink-faint)" }}>
                   A short video helps you stand out to employers — not uploaded yet.
                 </p>
-                <Link href="/dashboard/profile#video" className="btn-solid">
+                <Link href="/profile#video" className="btn-solid">
                   Upload Video
                 </Link>
               </div>
@@ -184,9 +287,10 @@ export default function DashboardOverviewPage() {
 
           {/* DOCUMENTS */}
           <DetailCard
+            id="documents"
             icon={FolderIcon}
             title="Documents"
-            editHref="/dashboard/documents"
+            editHref="/documents"
             editLabel="View All"
             complete={documents.length > 0}
             footerLabel={`${documents.length} uploaded`}
@@ -213,20 +317,6 @@ export default function DashboardOverviewPage() {
               <p style={{ fontSize: 12, color: "var(--ink-faint)" }}>No documents uploaded yet.</p>
             )}
           </DetailCard>
-
-          <div className="card" style={{ borderStyle: "dashed", textAlign: "center", padding: 24 }}>
-            <span
-              className="trust-ic"
-              style={{ margin: "0 auto", background: "var(--green-soft)", color: "var(--green-600)" }}
-            >
-              <SearchIcon className="icon" />
-            </span>
-            <p style={{ marginTop: 10, fontSize: 13, fontWeight: 600, color: "var(--ink)" }}>Job matching is coming soon</p>
-            <p style={{ marginTop: 4, fontSize: 11.5, color: "var(--ink-faint)" }}>
-              We&apos;re building AI-matched job recommendations for GCC roles. Keep your profile complete so you&apos;re
-              ready when it launches.
-            </p>
-          </div>
         </div>
 
         {completion && (
@@ -240,7 +330,7 @@ export default function DashboardOverviewPage() {
               languagesCount={counts.languagesCount}
             />
 
-            <ActivityCard />
+            <ActivityCard matchesTotal={matchesTotal} />
 
             <div className="card">
               <div className="card-body">
@@ -280,8 +370,6 @@ export default function DashboardOverviewPage() {
         )}
       </div>
 
-      <VerifiedStrip kycStatus={profile.kyc_status} />
-      <TrustStrip />
     </>
   );
 }

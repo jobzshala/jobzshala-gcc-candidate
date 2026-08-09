@@ -38,6 +38,7 @@ export default function PersonalInfoCard({ profile, onSaved }: PersonalInfoCardP
 
   return (
     <DetailCard
+      id="personal-details"
       icon={UserIcon}
       title="Personal Information"
       onEdit={() => setEditing((e) => !e)}

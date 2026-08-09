@@ -138,6 +138,15 @@ export function getCountries(): Promise<CountryOption[]> {
   return authFetch<CountryOption[]>("/candidate/masters/countries");
 }
 
+export interface SupportSettings {
+  whatsapp_number: string | null;
+  whatsapp_message: string | null;
+}
+
+export function getSupportSettings(): Promise<SupportSettings> {
+  return authFetch<SupportSettings>("/candidate/masters/support-settings");
+}
+
 export interface RegionOption extends LookupRef {
   country_id: number;
 }

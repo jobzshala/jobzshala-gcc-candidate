@@ -80,7 +80,7 @@ export default function CustomOfferView({ token }: { token: string }) {
             If you were expecting an offer, please contact whoever sent it to you.
           </p>
           <Link
-            href="/dashboard/subscription"
+            href="/subscription"
             className="mt-5 inline-flex rounded-xl border border-jz-white-600 px-4 py-2 text-sm text-jz-white-100 hover:opacity-90"
           >
             See standard plans

@@ -807,7 +807,11 @@ html[data-theme="dark"] .dashboard-artifact {
 }
 .dashboard-artifact .btn-solid {
   border: none;
-  background: var(--green-600);
+  /* white on --green-600 measured 3.51:1 — fails WCAG AA at this 11.5px
+     bold size (needs 4.5:1). --green-800 clears 9.37:1. This is the same
+     class "Review offer" (JobApplicationsPreview.tsx) uses, so this one
+     change covers that button too. */
+  background: var(--green-800);
   color: #fff;
   font-size: 11.5px;
   font-weight: 700;
@@ -1395,5 +1399,320 @@ html[data-theme="dark"] .dashboard-artifact {
   }
   .dashboard-artifact .hero-id h2 {
     font-size: 19px;
+  }
+}
+
+/* ---------------- job applications preview (static, no backend yet) ---------------- */
+.dashboard-artifact .jbadge {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 999px;
+  white-space: nowrap;
+  height: fit-content;
+  letter-spacing: 0.01em;
+}
+.dashboard-artifact .jbadge-progress {
+  background: var(--green-soft);
+  color: var(--green-600);
+}
+.dashboard-artifact .jbadge-action {
+  background: var(--amber-soft);
+  color: var(--amber);
+  border: 1px solid var(--amber-line);
+}
+.dashboard-artifact .jbadge-closed {
+  background: var(--paper-soft);
+  color: var(--ink-faint);
+  border: 1px solid var(--line);
+}
+.dashboard-artifact .jbadge-preview {
+  background: var(--amber-soft);
+  color: var(--amber);
+  border: 1px solid var(--amber-line);
+}
+
+.dashboard-artifact .jlist {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dashboard-artifact .jcard {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px 20px;
+}
+.dashboard-artifact .jcard.rejected {
+  background: var(--paper-soft);
+}
+.dashboard-artifact .jcard-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.dashboard-artifact .jcard-title h4 {
+  font-size: 14.5px;
+  margin: 0 0 3px;
+}
+.dashboard-artifact .jcard.rejected .jcard-title h4 {
+  color: var(--ink-soft);
+}
+.dashboard-artifact .jcard-title .meta {
+  font-size: 11.5px;
+  color: var(--ink-faint);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: center;
+}
+.dashboard-artifact .jcard-title .meta .sal {
+  color: var(--green-600);
+  font-weight: 600;
+}
+
+/* compact 4-stage tracker inside each application card */
+.dashboard-artifact .mtrack {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 16px;
+}
+.dashboard-artifact .mtrack::before {
+  content: "";
+  position: absolute;
+  top: 13px;
+  left: 12.5%;
+  right: 12.5%;
+  height: 2px;
+  background: var(--line);
+  z-index: 0;
+}
+.dashboard-artifact .mtrack .fill {
+  position: absolute;
+  top: 13px;
+  height: 2px;
+  background: var(--green-500);
+  z-index: 1;
+}
+.dashboard-artifact .mtrack .fill.rejected {
+  background: var(--red);
+}
+.dashboard-artifact .mnode {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+.dashboard-artifact .mnode .c {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 2px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10.5px;
+  color: var(--ink-faint);
+}
+.dashboard-artifact .mnode.done .c {
+  background: var(--green-500);
+  border-color: var(--green-500);
+  color: #fff;
+}
+.dashboard-artifact .mnode.current .c {
+  background: var(--paper);
+  border-color: var(--green-600);
+  color: var(--green-600);
+  box-shadow: 0 0 0 4px var(--green-soft);
+}
+.dashboard-artifact .mnode.stopped .c {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+}
+.dashboard-artifact .mnode .l {
+  font-size: 10px;
+  color: var(--ink-faint);
+  max-width: 68px;
+  line-height: 1.25;
+}
+.dashboard-artifact .mnode.done .l,
+.dashboard-artifact .mnode.current .l,
+.dashboard-artifact .mnode.stopped .l {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* per-application detail timeline (expanded state) */
+.dashboard-artifact .tl {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.dashboard-artifact .tl-row {
+  display: flex;
+  gap: 12px;
+}
+.dashboard-artifact .tl-row .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--green-500);
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+.dashboard-artifact .tl-row.current .dot {
+  background: var(--paper);
+  border: 2px solid var(--green-600);
+  box-shadow: 0 0 0 4px var(--green-soft);
+  width: 7px;
+  height: 7px;
+}
+.dashboard-artifact .tl-row.pending .dot {
+  background: var(--line);
+}
+.dashboard-artifact .tl-row .body {
+  flex: 1;
+  min-width: 0;
+}
+.dashboard-artifact .tl-row .head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+.dashboard-artifact .tl-row h5 {
+  font-size: 13px;
+  font-weight: 700;
+}
+.dashboard-artifact .tl-row.pending h5 {
+  color: var(--ink-faint);
+  font-weight: 500;
+}
+.dashboard-artifact .tl-row .when {
+  font-size: 11px;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.dashboard-artifact .tl-row p {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.dashboard-artifact .jcard-foot {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.dashboard-artifact .jcard-foot .toggle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green-600);
+  background: none;
+  border: none;
+  padding: 0;
+}
+.dashboard-artifact .jcard-foot .actions {
+  display: flex;
+  gap: 8px;
+}
+
+.dashboard-artifact .postoffer {
+  margin-top: 18px;
+  border-radius: 14px;
+  border: 1px dashed var(--line);
+  background: var(--paper-soft);
+  padding: 18px 20px;
+}
+.dashboard-artifact .postoffer h4 {
+  font-size: 13.5px;
+  margin: 0 0 4px;
+}
+.dashboard-artifact .postoffer .note {
+  font-size: 11.5px;
+  color: var(--ink-faint);
+  max-width: 62ch;
+  line-height: 1.55;
+  margin: 0 0 14px;
+}
+.dashboard-artifact .potrack {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 260px;
+}
+.dashboard-artifact .potrack::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 25%;
+  right: 25%;
+  height: 2px;
+  background: var(--line);
+}
+.dashboard-artifact .potrack .fill {
+  position: absolute;
+  top: 12px;
+  left: 25%;
+  height: 2px;
+  background: var(--green-500);
+}
+
+@media (max-width: 640px) {
+  .dashboard-artifact .mnode .l {
+    display: none;
+  }
+  .dashboard-artifact .jcard-head {
+    flex-direction: column;
+  }
+}
+
+/* ---- Loading skeleton (replaces the old bare "Overview" + text flash) ---- */
+@keyframes skeleton-shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+.dashboard-artifact .skel {
+  background: linear-gradient(90deg, var(--paper-soft) 25%, var(--line) 37%, var(--paper-soft) 63%);
+  background-size: 400px 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  border-radius: 8px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-artifact .skel {
+    animation: none;
+    background: var(--paper-soft);
+  }
+}
+/* Same shimmer, lighter tones — for skeleton content sitting on .hero's
+   dark green gradient, where the neutral .skel gradient above would be
+   nearly invisible. */
+.dashboard-artifact .skel-light {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.16) 25%, rgba(255, 255, 255, 0.38) 37%, rgba(255, 255, 255, 0.16) 63%);
+  background-size: 400px 100%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-artifact .skel-light {
+    animation: none;
+    background: rgba(255, 255, 255, 0.22);
   }
 }

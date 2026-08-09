@@ -174,7 +174,7 @@ export default function ProfileTopBar({ profile, completionPercent, onImageChang
           </div>
           <div>
             <div className="msg">{message}</div>
-            <Link href="/dashboard/profile" className="btn-white">
+            <Link href="/profile" className="btn-white">
               Complete Profile
             </Link>
           </div>

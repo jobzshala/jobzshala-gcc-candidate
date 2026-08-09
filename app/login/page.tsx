@@ -64,22 +64,22 @@ function LoginForm() {
     try {
       const result = await login({ identifier, password });
       // Raw storage write for the pre-hydration blocking redirect script on
-      // the landing page (see components/RedirectIfAuthenticated.tsx), and
+      // the landing page (see app/layout.tsx's REDIRECT_IF_AUTHED_SCRIPT), and
       // the Redux dispatch for everything rendered in-app (see
-      // app/dashboard/layout.tsx) — kept in sync at every session mutation.
+      // app/(app)/layout.tsx) — kept in sync at every session mutation.
       saveSession(result, keepSignedIn);
       setPersistMode(keepSignedIn);
       dispatch(setSession(result));
       // First login on the emailed temporary password: force a password
-      // change before anything else (dashboard/layout.tsx enforces it too).
+      // change before anything else ((app)/DashboardShell.tsx enforces it too).
       // ?next= carries the page the candidate was trying to reach — most
       // importantly a /subscribe/<token> offer link, which is single-use and
-      // would otherwise be lost by bouncing them to the dashboard.
+      // would otherwise be lost by bouncing them to the default landing page.
       const next = safeReturnPath(searchParams.get("next"));
 
       window.location.href = result.candidate.must_change_password
         ? "/change-password"
-        : (next ?? "/dashboard");
+        : (next ?? "/journey");
     } catch (err) {
       if (err instanceof ApiError) {
         setFieldErrors(err.fieldErrors ?? {});

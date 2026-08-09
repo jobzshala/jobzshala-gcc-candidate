@@ -21,10 +21,10 @@ export default function ReadinessScoreCard({
   const kycVerified = profile.status === "VERIFIED";
 
   const improveItems = [
-    { label: "Upload Video Resume", done: videoUploaded, href: "/dashboard/profile#video" },
-    { label: "Add Education Details", done: educationCount > 0, href: "/dashboard/profile#education" },
-    { label: "Add Language Skills", done: languagesCount > 0, href: "/dashboard/profile#languages" },
-    { label: "Complete KYC Verification", done: kycVerified, href: "/dashboard/profile#documents" },
+    { label: "Upload Video Resume", done: videoUploaded, href: "/profile#video" },
+    { label: "Add Education Details", done: educationCount > 0, href: "/profile#education" },
+    { label: "Add Language Skills", done: languagesCount > 0, href: "/profile#languages" },
+    { label: "Complete KYC Verification", done: kycVerified, href: "/profile#documents" },
   ];
 
   const message =

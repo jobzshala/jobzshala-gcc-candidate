@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
 import NavDropdown, { type NavDropdownItem } from "./NavDropdown";
 import ThemeToggle from "./ThemeToggle";
 import Logo from "./ui/Logo";
+import UserMenu from "./UserMenu";
+import { STORAGE_KEY, clearSession, type CandidateSession } from "@/lib/auth/session";
+import { logout } from "@/lib/api/auth";
 import {
   BriefcaseIcon,
   CloseIcon,
@@ -21,8 +24,12 @@ import {
   UserIcon,
 } from "./ui/icons";
 
-// Employer-portal links point at the separate Next.js app served under
-// /hire (see sitemap/page.tsx) — plain hrefs, not next/link.
+// Both of these are acquisition-funnel dropdowns — "become an employer" /
+// "become a candidate" — aimed at a visitor who isn't one yet. Neither has a
+// job left once `session` is set (see below), so both disappear entirely
+// rather than getting their contents swapped for account links; that's what
+// UserMenu is for. Employer-portal links point at the separate Next.js app
+// served under /hire (see sitemap/page.tsx) — plain hrefs, not next/link.
 const EMPLOYER_ITEMS: NavDropdownItem[] = [
   { label: "Employer portal", href: "/hire", icon: BriefcaseIcon, external: true },
   { label: "Register as an employer", href: "/hire/register", icon: DocumentIcon, external: true },
@@ -82,6 +89,35 @@ const RESOURCES_ITEMS: NavDropdownItem[] = [
 export default function Header() {
   const { t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  // Public pages don't run PersistGate (see lib/store/SessionGate.tsx — it's
+  // deliberately scoped to the authenticated (app) area only, so public
+  // pages keep server-rendering real HTML for crawlers instead of an empty
+  // shell). So this header can't read Redux for auth state; it reads the
+  // same raw storage key directly instead, client-side only after mount —
+  // SSR and the first paint always render logged-out, then this corrects
+  // itself a moment later for a real visitor who's actually signed in.
+  const [session, setSession] = useState<CandidateSession | null>(null);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY) || window.sessionStorage.getItem(STORAGE_KEY);
+      if (raw) setSession(JSON.parse(raw));
+    } catch {
+      // Malformed storage — treat as logged out rather than throwing.
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    if (session?.refreshToken) {
+      try {
+        await logout(session.refreshToken);
+      } catch {
+        // Best-effort — the session is being cleared locally either way.
+      }
+    }
+    clearSession();
+    setSession(null);
+  };
 
   return (
     <header className="sticky top-0 z-40 border-b-2 border-jz-yellow-400 bg-jz-blue-900">
@@ -92,8 +128,8 @@ export default function Header() {
         </Link>
 
         <nav className="hidden items-center gap-1 xl:flex">
-          <NavDropdown label={t("nav.forEmployers")} items={EMPLOYER_ITEMS} />
-          <NavDropdown label={t("nav.forCandidates")} items={CANDIDATE_ITEMS} />
+          {!session && <NavDropdown label={t("nav.forEmployers")} items={EMPLOYER_ITEMS} />}
+          {!session && <NavDropdown label={t("nav.forCandidates")} items={CANDIDATE_ITEMS} />}
           <NavDropdown label={t("nav.solutions")} items={SOLUTIONS_ITEMS} />
           <Link href="/about-us" className="rounded px-4 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
             {t("nav.aboutUs")}
@@ -104,15 +140,21 @@ export default function Header() {
         <div className="hidden items-center gap-3 xl:flex">
           <ThemeToggle />
           <LanguageSwitcher />
-          <Link href="/login" className="rounded-xl px-4 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
-            {t("nav.login")}
-          </Link>
-          <Link
-            href="/register"
-            className="rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
-          >
-            {t("nav.register")}
-          </Link>
+          {session ? (
+            <UserMenu session={session} onLogout={handleLogout} />
+          ) : (
+            <>
+              <Link href="/login" className="rounded-xl px-4 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
+                {t("nav.login")}
+              </Link>
+              <Link
+                href="/register"
+                className="rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
+              >
+                {t("nav.register")}
+              </Link>
+            </>
+          )}
         </div>
 
         <button
@@ -130,8 +172,12 @@ export default function Header() {
         <div className="max-h-[calc(100vh-64px)] overflow-y-auto border-t border-jz-border bg-jz-blue-900 px-4 py-4 xl:hidden">
           <nav className="flex flex-col gap-4">
             {[
-              { title: t("nav.forEmployers"), items: EMPLOYER_ITEMS },
-              { title: t("nav.forCandidates"), items: CANDIDATE_ITEMS },
+              ...(!session
+                ? [
+                    { title: t("nav.forEmployers"), items: EMPLOYER_ITEMS },
+                    { title: t("nav.forCandidates"), items: CANDIDATE_ITEMS },
+                  ]
+                : []),
               { title: t("nav.solutions"), items: SOLUTIONS_ITEMS },
               { title: t("nav.resources"), items: RESOURCES_ITEMS },
             ].map((group) => (
@@ -172,18 +218,55 @@ export default function Header() {
             <LanguageSwitcher />
           </div>
           <div className="mt-3 flex flex-col gap-2">
-            <Link
-              href="/login"
-              className="rounded-xl border border-jz-white-600 px-4 py-2.5 text-center text-sm text-jz-white-100 hover:opacity-90"
-            >
-              {t("nav.login")}
-            </Link>
-            <Link
-              href="/register"
-              className="rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-center text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
-            >
-              {t("nav.register")}
-            </Link>
+            {session ? (
+              <>
+                <div className="mb-1 flex items-center gap-3 rounded-xl bg-white/5 px-3 py-2.5">
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-jz-yellow-300 to-jz-yellow-500 text-xs font-extrabold text-jz-ink-on-accent">
+                    {session.candidate.full_name.charAt(0).toUpperCase()}
+                  </span>
+                  <div className="min-w-0">
+                    <div className="truncate text-sm font-semibold text-jz-white-50">{session.candidate.full_name}</div>
+                    <div className="truncate text-xs text-jz-white-600">{session.candidate.email}</div>
+                  </div>
+                </div>
+                {[
+                  { label: "My Journey", href: "/journey" },
+                  { label: "My Profile", href: "/profile" },
+                  { label: "Job Matches", href: "/matches" },
+                  { label: "Subscription", href: "/subscription" },
+                ].map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="rounded-xl border border-jz-white-600 px-4 py-2.5 text-center text-sm text-jz-white-100 hover:opacity-90"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="rounded-xl px-4 py-2.5 text-center text-sm text-red-400 hover:opacity-90"
+                >
+                  {t("dashboard.nav.logout")}
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="rounded-xl border border-jz-white-600 px-4 py-2.5 text-center text-sm text-jz-white-100 hover:opacity-90"
+                >
+                  {t("nav.login")}
+                </Link>
+                <Link
+                  href="/register"
+                  className="rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-center text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
+                >
+                  {t("nav.register")}
+                </Link>
+              </>
+            )}
           </div>
         </div>
       ) : null}

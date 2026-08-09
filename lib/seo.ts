@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ROUTES } from "./routes";
 
 // Public origin this app is served from. Production is the candidate app at the
 // root of the domain (the employer app sits under /hire, admin under /admin —
@@ -68,51 +69,51 @@ export const PUBLIC_ROUTES: {
   changeFrequency: "weekly" | "monthly" | "yearly";
   priority: number;
 }[] = [
-  { path: "/", label: "Home", group: "Platform", changeFrequency: "weekly", priority: 1 },
-  { path: "/about-us", label: "About Us", group: "Platform", changeFrequency: "monthly", priority: 0.7 },
-  { path: "/contact-us", label: "Contact Us", group: "Platform", changeFrequency: "monthly", priority: 0.6 },
-  { path: "/pricing", label: "Pricing", group: "Platform", changeFrequency: "monthly", priority: 0.9 },
-  { path: "/register", label: "Create a GCC Workforce Profile", group: "Platform", changeFrequency: "monthly", priority: 0.9 },
-  { path: "/success-stories", label: "Success Stories", group: "Platform", changeFrequency: "weekly", priority: 0.8 },
-  { path: "/status", label: "System Status", group: "Platform", changeFrequency: "weekly", priority: 0.3 },
-  { path: "/blog", label: "Blog", group: "Platform", changeFrequency: "weekly", priority: 0.8 },
-  { path: "/faq", label: "FAQs", group: "Platform", changeFrequency: "monthly", priority: 0.6 },
-  { path: "/login", label: "Candidate Login", group: "Platform", changeFrequency: "yearly", priority: 0.4 },
-  { path: "/sitemap", label: "Sitemap", group: "Platform", changeFrequency: "monthly", priority: 0.3 },
-  { path: "/solutions", label: "Solutions", group: "Solutions", changeFrequency: "monthly", priority: 0.7 },
+  { path: ROUTES.home, label: "Home", group: "Platform", changeFrequency: "weekly", priority: 1 },
+  { path: ROUTES.aboutUs, label: "About Us", group: "Platform", changeFrequency: "monthly", priority: 0.7 },
+  { path: ROUTES.contactUs, label: "Contact Us", group: "Platform", changeFrequency: "monthly", priority: 0.6 },
+  { path: ROUTES.pricing, label: "Pricing", group: "Platform", changeFrequency: "monthly", priority: 0.9 },
+  { path: ROUTES.register, label: "Create a GCC Workforce Profile", group: "Platform", changeFrequency: "monthly", priority: 0.9 },
+  { path: ROUTES.successStories, label: "Success Stories", group: "Platform", changeFrequency: "weekly", priority: 0.8 },
+  { path: ROUTES.status, label: "System Status", group: "Platform", changeFrequency: "weekly", priority: 0.3 },
+  { path: ROUTES.blog, label: "Blog", group: "Platform", changeFrequency: "weekly", priority: 0.8 },
+  { path: ROUTES.faq, label: "FAQs", group: "Platform", changeFrequency: "monthly", priority: 0.6 },
+  { path: ROUTES.login, label: "Candidate Login", group: "Platform", changeFrequency: "yearly", priority: 0.4 },
+  { path: ROUTES.sitemap, label: "Sitemap", group: "Platform", changeFrequency: "monthly", priority: 0.3 },
+  { path: ROUTES.solutions, label: "Solutions", group: "Solutions", changeFrequency: "monthly", priority: 0.7 },
   {
-    path: "/solutions/recruitment-solutions",
+    path: ROUTES.solutionsRecruitment,
     label: "Recruitment Solutions",
     group: "Solutions",
     changeFrequency: "monthly",
     priority: 0.7,
   },
   {
-    path: "/solutions/workforce-infrastructure",
+    path: ROUTES.solutionsWorkforceInfrastructure,
     label: "Workforce Infrastructure",
     group: "Solutions",
     changeFrequency: "monthly",
     priority: 0.7,
   },
-  { path: "/solutions/ai-matching", label: "AI Matching", group: "Solutions", changeFrequency: "monthly", priority: 0.7 },
+  { path: ROUTES.solutionsAiMatching, label: "AI Matching", group: "Solutions", changeFrequency: "monthly", priority: 0.7 },
   {
-    path: "/solutions/candidate-verification",
+    path: ROUTES.solutionsCandidateVerification,
     label: "Candidate Verification",
     group: "Solutions",
     changeFrequency: "monthly",
     priority: 0.7,
   },
   {
-    path: "/solutions/visa-assistance",
+    path: ROUTES.solutionsVisaAssistance,
     label: "Visa Assistance",
     group: "Solutions",
     changeFrequency: "monthly",
     priority: 0.7,
   },
-  { path: "/privacy-policy", label: "Privacy Policy", group: "Legal", changeFrequency: "yearly", priority: 0.3 },
-  { path: "/terms-conditions", label: "Terms & Conditions", group: "Legal", changeFrequency: "yearly", priority: 0.3 },
-  { path: "/refund-policy", label: "Refund Policy", group: "Legal", changeFrequency: "yearly", priority: 0.3 },
-  { path: "/cookie-policy", label: "Cookie Policy", group: "Legal", changeFrequency: "yearly", priority: 0.3 },
+  { path: ROUTES.privacyPolicy, label: "Privacy Policy", group: "Legal", changeFrequency: "yearly", priority: 0.3 },
+  { path: ROUTES.termsConditions, label: "Terms & Conditions", group: "Legal", changeFrequency: "yearly", priority: 0.3 },
+  { path: ROUTES.refundPolicy, label: "Refund Policy", group: "Legal", changeFrequency: "yearly", priority: 0.3 },
+  { path: ROUTES.cookiePolicy, label: "Cookie Policy", group: "Legal", changeFrequency: "yearly", priority: 0.3 },
 ];
 
 type PageMetadataInput = {

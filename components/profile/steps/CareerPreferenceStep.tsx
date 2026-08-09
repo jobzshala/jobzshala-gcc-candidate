@@ -150,6 +150,28 @@ export default function CareerPreferenceStep({ profile, onSaved, saveLabel, comp
       )}
 
       <div className="grid gap-4 sm:grid-cols-2">
+        {/* Cascade order matches the actual parent -> child data relationship
+            (industry filters functional area, functional area filters both
+            department and job title) — each select's own options depend on
+            the one(s) rendered before it, so the visual order should too. */}
+        {!compact && (
+          <FormSelect
+            label={t("profile.careerPreference.jobIndustryLabel")}
+            placeholder={t("profile.careerPreference.jobIndustryPlaceholder")}
+            options={jobIndustryOptions}
+            value={form.job_industry_id}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                job_industry_id: e.target.value,
+                job_functional_area_id: "",
+                job_department_id: "",
+                job_title_id: "",
+              })
+            }
+            error={errors.job_industry_id}
+          />
+        )}
         <FormSelect
           label={t("profile.careerPreference.jobFunctionalAreaLabel")}
           placeholder={t("profile.careerPreference.jobFunctionalAreaPlaceholder")}
@@ -158,36 +180,10 @@ export default function CareerPreferenceStep({ profile, onSaved, saveLabel, comp
           onChange={(e) =>
             setForm({ ...form, job_functional_area_id: e.target.value, job_department_id: "", job_title_id: "" })
           }
-          disabled={!form.job_industry_id}
           error={errors.job_functional_area_id}
         />
-        <FormSelect
-          label={t("profile.careerPreference.preferredCountryLabel")}
-          placeholder={t("profile.careerPreference.preferredCountryPlaceholder")}
-          options={countryOptions}
-          value={form.preferred_country_id}
-          onChange={(e) => setForm({ ...form, preferred_country_id: e.target.value })}
-          error={errors.preferred_country_id}
-        />
-
         {!compact && (
           <>
-            <FormSelect
-              label={t("profile.careerPreference.jobIndustryLabel")}
-              placeholder={t("profile.careerPreference.jobIndustryPlaceholder")}
-              options={jobIndustryOptions}
-              value={form.job_industry_id}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  job_industry_id: e.target.value,
-                  job_functional_area_id: "",
-                  job_department_id: "",
-                  job_title_id: "",
-                })
-              }
-              error={errors.job_industry_id}
-            />
             <FormSelect
               label={t("profile.careerPreference.jobDepartmentLabel")}
               placeholder={t("profile.careerPreference.jobDepartmentPlaceholder")}
@@ -206,6 +202,20 @@ export default function CareerPreferenceStep({ profile, onSaved, saveLabel, comp
               disabled={!form.job_functional_area_id}
               error={errors.job_title_id}
             />
+          </>
+        )}
+
+        <FormSelect
+          label={t("profile.careerPreference.preferredCountryLabel")}
+          placeholder={t("profile.careerPreference.preferredCountryPlaceholder")}
+          options={countryOptions}
+          value={form.preferred_country_id}
+          onChange={(e) => setForm({ ...form, preferred_country_id: e.target.value })}
+          error={errors.preferred_country_id}
+        />
+
+        {!compact && (
+          <>
             <FormInput
               label={t("profile.careerPreference.experienceYearsLabel")}
               type="number"

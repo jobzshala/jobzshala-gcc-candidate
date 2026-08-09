@@ -19,6 +19,7 @@ export default function CareerProfileCard({ profile, onSaved }: CareerProfileCar
 
   return (
     <DetailCard
+      id="career-preference"
       icon={TargetIcon}
       title="Career Profile"
       onEdit={() => setEditing((e) => !e)}
@@ -44,7 +45,7 @@ export default function CareerProfileCard({ profile, onSaved }: CareerProfileCar
             value={profile.has_gcc_experience === null ? "Not set" : profile.has_gcc_experience ? "Yes" : "No"}
           />
           <Field label="Preferred Country" value={profile.preferred_country?.name ?? "Not set"} />
-          <Field label="Expected Salary" value={profile.expected_salary !== null ? String(profile.expected_salary) : "Not set"} />
+          <Field label="Expected Salary" value={profile.expected_salary !== null ? `${profile.expected_salary} AED` : "Not set"} />
         </div>
       )}
     </DetailCard>
