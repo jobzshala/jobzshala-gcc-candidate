@@ -10,6 +10,7 @@ import Logo from "./ui/Logo";
 import UserMenu from "./UserMenu";
 import { STORAGE_KEY, clearSession, type CandidateSession } from "@/lib/auth/session";
 import { logout } from "@/lib/api/auth";
+import { ROUTES } from "@/lib/routes";
 import {
   BriefcaseIcon,
   CloseIcon,
@@ -33,13 +34,13 @@ import {
 const EMPLOYER_ITEMS: NavDropdownItem[] = [
   { label: "Employer portal", href: "/hire", icon: BriefcaseIcon, external: true },
   { label: "Register as an employer", href: "/hire/register", icon: DocumentIcon, external: true },
-  { label: "Employer login", href: "/hire/login", icon: UserIcon, external: true },
+  { label: "Employer login", href: ROUTES.employerLogin, icon: UserIcon, external: true },
   { label: "Pricing", href: "/pricing", icon: TargetIcon },
 ];
 
 const CANDIDATE_ITEMS: NavDropdownItem[] = [
   { label: "Create a GCC Workforce Profile", href: "/register?role=candidate", icon: UserIcon },
-  { label: "Candidate login", href: "/login", icon: ShieldCheckIcon },
+  { label: "Candidate login", href: ROUTES.login, icon: ShieldCheckIcon },
   { label: "Success stories", href: "/success-stories", icon: SparkleIcon },
   { label: "Blog", href: "/blog", icon: DocumentIcon },
 ];
@@ -144,11 +145,11 @@ export default function Header() {
             <UserMenu session={session} onLogout={handleLogout} />
           ) : (
             <>
-              <Link href="/login" className="rounded-xl px-4 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
+              <Link href={ROUTES.login} className="rounded-xl px-4 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
                 {t("nav.login")}
               </Link>
               <Link
-                href="/register"
+                href={ROUTES.register}
                 className="rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
               >
                 {t("nav.register")}
@@ -230,10 +231,10 @@ export default function Header() {
                   </div>
                 </div>
                 {[
-                  { label: "My Journey", href: "/journey" },
-                  { label: "My Profile", href: "/profile" },
-                  { label: "Job Matches", href: "/matches" },
-                  { label: "Subscription", href: "/subscription" },
+                  { label: "My Journey", href: ROUTES.journey },
+                  { label: "My Profile", href: ROUTES.profile },
+                  { label: "Job Matches", href: ROUTES.matches },
+                  { label: "Subscription", href: ROUTES.subscription },
                 ].map((item) => (
                   <Link
                     key={item.href}
@@ -254,13 +255,13 @@ export default function Header() {
             ) : (
               <>
                 <Link
-                  href="/login"
+                  href={ROUTES.login}
                   className="rounded-xl border border-jz-white-600 px-4 py-2.5 text-center text-sm text-jz-white-100 hover:opacity-90"
                 >
                   {t("nav.login")}
                 </Link>
                 <Link
-                  href="/register"
+                  href={ROUTES.register}
                   className="rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-center text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
                 >
                   {t("nav.register")}

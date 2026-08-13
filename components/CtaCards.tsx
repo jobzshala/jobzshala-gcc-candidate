@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import Button from "./ui/Button";
+import { ROUTES } from "@/lib/routes";
 
 export default function CtaCards() {
   const { t } = useTranslation();
@@ -39,7 +40,7 @@ export default function CtaCards() {
             <h3 className="font-serif text-2xl font-bold text-jz-grey-800 sm:whitespace-nowrap">{t("cta.findWork.title")}</h3>
             <p className="text-sm leading-6 text-jz-grey-900">{t("cta.findWork.body")}</p>
             <a
-              href="/register"
+              href={ROUTES.register}
               className="mt-1 inline-flex items-center justify-center gap-1.5 self-start rounded-xl border border-jz-grey-900 px-4 py-2 text-sm font-bold whitespace-nowrap text-jz-grey-900 transition-opacity hover:opacity-90"
             >
               {t("cta.findWork.button")}

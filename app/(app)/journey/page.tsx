@@ -3,8 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ChevronRightIcon, IdCardIcon } from "@/components/ui/icons";
+import { ROUTES } from "@/lib/routes";
 import ProfileTopBar from "@/components/profile/ProfileTopBar";
-import JobApplicationsPreview from "@/components/dashboard/JobApplicationsPreview";
+import JobApplicationsSummary from "@/components/dashboard/JobApplicationsSummary";
 import VerifiedStrip from "@/components/dashboard/VerifiedStrip";
 import TrustStrip from "@/components/dashboard/TrustStrip";
 import DashboardSkeleton from "@/components/dashboard/DashboardSkeleton";
@@ -110,7 +111,7 @@ export default function DashboardJourneyPage() {
           a confirmation strip and stays down by TrustStrip where it was. */}
       {!isVerified && <VerifiedStrip kycStatus={profile.kyc_status} />}
 
-      <JobApplicationsPreview />
+      <JobApplicationsSummary />
 
       <div className="card">
         <div className="card-body">
@@ -126,7 +127,7 @@ export default function DashboardJourneyPage() {
             Personal info, career, documents and more — manage all of it from <strong>My Profile</strong>.
           </p>
           <Link
-            href="/profile"
+            href={ROUTES.profile}
             className="btn-solid"
             style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 12 }}
           >

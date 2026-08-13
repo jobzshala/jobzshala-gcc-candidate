@@ -28,13 +28,15 @@ import { clearSession as clearReduxSession } from "@/lib/store/authSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { logout } from "@/lib/api/auth";
 import { getSupportSettings } from "@/lib/api/candidate";
+import { ROUTES } from "@/lib/routes";
 
 const PAGE_TITLES: { match: (path: string) => boolean; titleKey: string; subKey: string }[] = [
-  { match: (p) => p === "/journey", titleKey: "dashboard.nav.myJourney", subKey: "dashboard.topbar.journeySub" },
-  { match: (p) => p.startsWith("/profile"), titleKey: "dashboard.nav.profile", subKey: "dashboard.topbar.profileSub" },
-  { match: (p) => p.startsWith("/matches"), titleKey: "dashboard.nav.matches", subKey: "dashboard.topbar.matchesSub" },
-  { match: (p) => p.startsWith("/subscription"), titleKey: "dashboard.nav.subscription", subKey: "dashboard.topbar.subscriptionSub" },
-  { match: (p) => p.startsWith("/documents"), titleKey: "dashboard.nav.documents", subKey: "dashboard.topbar.documentsSub" },
+  { match: (p) => p === ROUTES.journey, titleKey: "dashboard.nav.myJourney", subKey: "dashboard.topbar.journeySub" },
+  { match: (p) => p.startsWith(ROUTES.profile), titleKey: "dashboard.nav.profile", subKey: "dashboard.topbar.profileSub" },
+  { match: (p) => p.startsWith(ROUTES.matches), titleKey: "dashboard.nav.matches", subKey: "dashboard.topbar.matchesSub" },
+  { match: (p) => p.startsWith(ROUTES.applications), titleKey: "dashboard.nav.applications", subKey: "dashboard.topbar.applicationsSub" },
+  { match: (p) => p.startsWith(ROUTES.subscription), titleKey: "dashboard.nav.subscription", subKey: "dashboard.topbar.subscriptionSub" },
+  { match: (p) => p.startsWith(ROUTES.documents), titleKey: "dashboard.nav.documents", subKey: "dashboard.topbar.documentsSub" },
 ];
 
 function ThemeIconPill() {
@@ -125,11 +127,11 @@ function UserChipMenu({ name, onLogout }: { name: string; onLogout: () => void }
   }, []);
 
   const menuItems = [
-    { label: t("dashboard.nav.myJourney"), href: "/journey", icon: GridIcon },
-    { label: t("dashboard.nav.profile"), href: "/profile", icon: UserIcon },
-    { label: t("dashboard.nav.matches"), href: "/matches", icon: TargetIcon },
-    { label: t("dashboard.nav.subscription"), href: "/subscription", icon: CreditCardIcon },
-    { label: t("dashboard.nav.changePassword"), href: "/change-password", icon: LockIcon },
+    { label: t("dashboard.nav.myJourney"), href: ROUTES.journey, icon: GridIcon },
+    { label: t("dashboard.nav.profile"), href: ROUTES.profile, icon: UserIcon },
+    { label: t("dashboard.nav.matches"), href: ROUTES.matches, icon: TargetIcon },
+    { label: t("dashboard.nav.subscription"), href: ROUTES.subscription, icon: CreditCardIcon },
+    { label: t("dashboard.nav.changePassword"), href: ROUTES.changePassword, icon: LockIcon },
   ];
 
   return (
@@ -222,11 +224,11 @@ export default function DashboardShell({ children }: { children: React.ReactNode
 
   useEffect(() => {
     if (!session.accessToken) {
-      window.location.href = "/login";
+      window.location.href = ROUTES.login;
     } else if (session.candidate?.must_change_password) {
       // Still on the emailed temporary password — nothing in the dashboard
       // is reachable until they set their own.
-      window.location.href = "/change-password";
+      window.location.href = ROUTES.changePassword;
     }
   }, [session.accessToken, session.candidate?.must_change_password]);
 
@@ -240,7 +242,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
     }
     clearRawSession();
     dispatch(clearReduxSession());
-    window.location.href = "/login";
+    window.location.href = ROUTES.login;
   };
 
   if (!session.accessToken || !session.candidate || session.candidate.must_change_password) {

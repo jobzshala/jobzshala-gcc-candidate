@@ -8,6 +8,7 @@ import VerifiedBadge from "@/components/profile/VerifiedBadge";
 import ProfileImageUploader from "@/components/profile/ProfileImageUploader";
 import CompletionRing from "@/components/ui/CompletionRing";
 import { ShieldCheckIcon, PhoneIcon, MailIcon, PinIcon } from "@/components/ui/icons";
+import { ROUTES } from "@/lib/routes";
 
 type ProfileTopBarProps = {
   profile: CandidateProfile;
@@ -174,7 +175,7 @@ export default function ProfileTopBar({ profile, completionPercent, onImageChang
           </div>
           <div>
             <div className="msg">{message}</div>
-            <Link href="/profile" className="btn-white">
+            <Link href={ROUTES.profile} className="btn-white">
               Complete Profile
             </Link>
           </div>

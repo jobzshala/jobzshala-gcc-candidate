@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import Button from "./ui/Button";
 import { SparkleIcon } from "./ui/icons";
 import { splitHighlight } from "@/lib/utils";
+import { ROUTES } from "@/lib/routes";
 
 export default function Hero() {
   const { t } = useTranslation();
@@ -44,7 +45,7 @@ export default function Hero() {
               <Button variant="primary" href="/hire/login">
                 {t("hero.primaryCta")}
               </Button>
-              <Button variant="secondary" href="/register">
+              <Button variant="secondary" href={ROUTES.register}>
                 {t("hero.secondaryCta")}
               </Button>
             </div>

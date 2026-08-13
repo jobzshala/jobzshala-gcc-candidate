@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { SubscriptionPlan, SubscriptionUserType } from "@/lib/api/subscription-plans";
+import { ROUTES } from "@/lib/routes";
 
 const billingCycleLabel: Record<SubscriptionPlan["billing_cycle"], string> = {
   MONTHLY: "month",
@@ -11,8 +12,8 @@ const billingCycleLabel: Record<SubscriptionPlan["billing_cycle"], string> = {
 };
 
 const ctaHrefByAudience: Record<SubscriptionUserType, string> = {
-  CANDIDATE: "/register",
-  EMPLOYER: "/hire/register",
+  CANDIDATE: ROUTES.register,
+  EMPLOYER: ROUTES.employerRegister,
 };
 
 // Freeform admin-authored JSON — rendered best-effort as bullet lines rather

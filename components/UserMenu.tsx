@@ -4,14 +4,15 @@ import { useEffect, useRef, useState, type ComponentType } from "react";
 import Link from "next/link";
 import { CompassIcon, LogoutIcon, TargetIcon, UserIcon, ChevronDownIcon, CreditCardIcon } from "./ui/icons";
 import type { CandidateSession } from "@/lib/auth/session";
+import { ROUTES } from "@/lib/routes";
 
 type IconComponent = ComponentType<{ className?: string }>;
 
 const MENU_ITEMS: { label: string; href: string; icon: IconComponent }[] = [
-  { label: "My Journey", href: "/journey", icon: CompassIcon },
-  { label: "My Profile", href: "/profile", icon: UserIcon },
-  { label: "Job Matches", href: "/matches", icon: TargetIcon },
-  { label: "Subscription", href: "/subscription", icon: CreditCardIcon },
+  { label: "My Journey", href: ROUTES.journey, icon: CompassIcon },
+  { label: "My Profile", href: ROUTES.profile, icon: UserIcon },
+  { label: "Job Matches", href: ROUTES.matches, icon: TargetIcon },
+  { label: "Subscription", href: ROUTES.subscription, icon: CreditCardIcon },
 ];
 
 // The public header's counterpart to (app)/DashboardShell.tsx's UserChipMenu

@@ -33,9 +33,21 @@ export const ROUTES = {
   // (app) route group's layout/shell, see app/(app)/layout.tsx.
   journey: "/journey",
   profile: "/profile",
+  // #hash anchors into My Profile's sections — every one of DetailCard's
+  // section `id`s (PersonalInfoCard.tsx, CareerProfileCard.tsx, etc.) has a
+  // matching entry here so nothing links to a hash with no matching id.
+  profilePersonalDetails: "/profile#personal-details",
+  profileSummary: "/profile#profile-summary",
+  profileCareerPreference: "/profile#career-preference",
+  profileEmployment: "/profile#employment",
+  profileEducation: "/profile#education",
+  profileLanguages: "/profile#languages",
   profileResume: "/profile#resume",
   profileVideo: "/profile#video",
+  profileDocuments: "/profile#documents",
   matches: "/matches",
+  applications: "/applications",
+  interviews: "/interviews",
   subscription: "/subscription",
   documents: "/documents",
 

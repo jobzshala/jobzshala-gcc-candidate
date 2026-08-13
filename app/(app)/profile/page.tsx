@@ -20,6 +20,7 @@ import PersonalInfoCard from "@/components/dashboard/PersonalInfoCard";
 import CareerProfileCard from "@/components/dashboard/CareerProfileCard";
 import ProfileSummaryCard from "@/components/dashboard/ProfileSummaryCard";
 import RecruiterCard from "@/components/dashboard/RecruiterCard";
+import MyInterviewsCard from "@/components/dashboard/MyInterviewsCard";
 import ReadinessScoreCard from "@/components/dashboard/ReadinessScoreCard";
 import ActivityCard from "@/components/dashboard/ActivityCard";
 import VerifiedStrip from "@/components/dashboard/VerifiedStrip";
@@ -38,7 +39,9 @@ import {
   type DocumentRecord,
 } from "@/lib/api/candidate";
 import { getMatches } from "@/lib/api/matches";
+import { getMyInterviews } from "@/lib/api/interviews";
 import { getProfileCompletion } from "@/lib/profileCompletion";
+import { ROUTES } from "@/lib/routes";
 
 function formatDate(value: string | null): string {
   if (!value) return "Not set";
@@ -62,12 +65,13 @@ export default function DashboardProfilePage() {
   const [languages, setLanguages] = useState<CandidateLanguageRecord[]>([]);
   const [documents, setDocuments] = useState<DocumentRecord[]>([]);
   const [matchesTotal, setMatchesTotal] = useState<number | null>(null);
+  const [interviewsTotal, setInterviewsTotal] = useState<number | null>(null);
 
   const load = async () => {
     setLoading(true);
     setLoadError(false);
     try {
-      const [profileData, employmentData, educationData, languagesData, documentsData, matchesData] = await Promise.all([
+      const [profileData, employmentData, educationData, languagesData, documentsData, matchesData, interviewsData] = await Promise.all([
         getProfile(),
         getEmploymentHistory(),
         getEducationHistory(),
@@ -75,6 +79,7 @@ export default function DashboardProfilePage() {
         getDocuments(),
         // limit: 1 — this card only needs pagination.total, not the rows.
         getMatches({ limit: 1 }).catch(() => null),
+        getMyInterviews().catch(() => null),
       ]);
       setProfile(profileData);
       setEmployment(employmentData);
@@ -82,6 +87,7 @@ export default function DashboardProfilePage() {
       setLanguages(languagesData);
       setDocuments(documentsData);
       setMatchesTotal(matchesData?.pagination.total ?? null);
+      setInterviewsTotal(interviewsData?.length ?? null);
     } catch {
       setLoadError(true);
     } finally {
@@ -156,7 +162,7 @@ export default function DashboardProfilePage() {
             id="employment"
             icon={BriefcaseIcon}
             title="Employment History"
-            editHref="/profile#employment"
+            editHref={ROUTES.profileEmployment}
             editLabel="Manage"
             complete={employment.length > 0}
             footerLabel={`${employment.length} added`}
@@ -182,7 +188,7 @@ export default function DashboardProfilePage() {
             id="education"
             icon={GraduationCapIcon}
             title="Education"
-            editHref="/profile#education"
+            editHref={ROUTES.profileEducation}
             editLabel="Manage"
             complete={education.length > 0}
             footerLabel={`${education.length} added`}
@@ -209,7 +215,7 @@ export default function DashboardProfilePage() {
             id="languages"
             icon={GlobeIcon}
             title="Languages"
-            editHref="/profile#languages"
+            editHref={ROUTES.profileLanguages}
             editLabel="Manage"
             complete={languages.length > 0}
             footerLabel={`${languages.length} added`}
@@ -241,7 +247,7 @@ export default function DashboardProfilePage() {
                   <a href={profile.resume_url} target="_blank" rel="noreferrer" className="btn-outline">
                     View Resume
                   </a>
-                  <Link href="/profile#resume" className="btn-solid">
+                  <Link href={ROUTES.profileResume} className="btn-solid">
                     Replace
                   </Link>
                 </div>
@@ -249,7 +255,7 @@ export default function DashboardProfilePage() {
             ) : (
               <div className="resume-row">
                 <p style={{ fontSize: 12, color: "var(--ink-faint)" }}>No resume uploaded yet.</p>
-                <Link href="/profile#resume" className="btn-solid">
+                <Link href={ROUTES.profileResume} className="btn-solid">
                   Upload Resume
                 </Link>
               </div>
@@ -268,7 +274,7 @@ export default function DashboardProfilePage() {
                   <a href={profile.video_url} target="_blank" rel="noreferrer" className="btn-outline">
                     Preview
                   </a>
-                  <Link href="/profile#video" className="btn-solid">
+                  <Link href={ROUTES.profileVideo} className="btn-solid">
                     Replace
                   </Link>
                 </div>
@@ -278,7 +284,7 @@ export default function DashboardProfilePage() {
                 <p style={{ fontSize: 12, color: "var(--ink-faint)" }}>
                   A short video helps you stand out to employers — not uploaded yet.
                 </p>
-                <Link href="/profile#video" className="btn-solid">
+                <Link href={ROUTES.profileVideo} className="btn-solid">
                   Upload Video
                 </Link>
               </div>
@@ -290,7 +296,7 @@ export default function DashboardProfilePage() {
             id="documents"
             icon={FolderIcon}
             title="Documents"
-            editHref="/documents"
+            editHref={ROUTES.documents}
             editLabel="View All"
             complete={documents.length > 0}
             footerLabel={`${documents.length} uploaded`}
@@ -323,6 +329,8 @@ export default function DashboardProfilePage() {
           <div className="col">
             <RecruiterCard recruiter={profile.assigned_recruiter} />
 
+            <MyInterviewsCard />
+
             <ReadinessScoreCard
               profile={profile}
               videoUploaded={!!profile.video_url}
@@ -330,7 +338,7 @@ export default function DashboardProfilePage() {
               languagesCount={counts.languagesCount}
             />
 
-            <ActivityCard matchesTotal={matchesTotal} />
+            <ActivityCard matchesTotal={matchesTotal} interviewsTotal={interviewsTotal} />
 
             <div className="card">
               <div className="card-body">

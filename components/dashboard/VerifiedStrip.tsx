@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Modal from "@/components/ui/Modal";
 import { ShieldCheckIcon, AlertIcon, CheckIcon } from "@/components/ui/icons";
+import { ROUTES } from "@/lib/routes";
 
 const VERIFICATION_BENEFITS = [
   "Your profile becomes visible to GCC employers — unverified profiles aren't shown to them at all.",
@@ -71,7 +72,7 @@ export default function VerifiedStrip({ kycStatus }: { kycStatus: string }) {
 
           {!verified && (
             <Link
-              href="/documents"
+              href={ROUTES.documents}
               onClick={() => setShowHelp(false)}
               className="btn-solid"
               style={{ display: "inline-flex", marginTop: 20 }}

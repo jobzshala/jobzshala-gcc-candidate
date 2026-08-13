@@ -13,6 +13,7 @@ import { CloseIcon, DocumentIcon, GoogleIcon, ShieldCheckIcon, TickIcon, UploadI
 import { registerCandidate, sendRegistrationOtp, verifyRegistrationOtp } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
 import { COUNTRY_DIAL_CODES, DEFAULT_COUNTRY_DIAL_CODE, getFlagEmoji } from "@/lib/countryDialCodes";
+import { ROUTES } from "@/lib/routes";
 
 const MOBILE_PATTERN = /^[0-9]{10}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -116,6 +117,13 @@ export default function RegisterPage() {
     setResumeName("");
     setResumeSize(0);
     setFieldErrors((prev) => ({ ...prev, resume: "" }));
+  };
+
+  // Live-clears a field's error as soon as the visitor edits it, rather than
+  // leaving a stale message up until the next full submit (CW-8).
+  const updateField = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+    setFieldErrors((prev) => (prev[key] ? { ...prev, [key]: "" } : prev));
   };
 
   const handleFormSubmit = async (e: FormEvent) => {
@@ -306,7 +314,10 @@ export default function RegisterPage() {
                   <FormInput
                     label={t("register.fullNameLabel")}
                     value={form.full_name}
-                    onChange={(e) => setForm((prev) => ({ ...prev, full_name: e.target.value }))}
+                    // Matches the backend's Joi max(100) (registerCandidateValidation)
+                    // so an over-length name can never reach it and bounce back as
+                    // a raw validation-library error string (CW-7).
+                    onChange={(e) => updateField("full_name", e.target.value.slice(0, 100))}
                     placeholder={t("register.fullNamePlaceholder")}
                     error={fieldErrors.full_name}
                   />
@@ -315,7 +326,7 @@ export default function RegisterPage() {
                     <FormInput
                       label={t("register.ageLabel")}
                       value={form.age}
-                      onChange={(e) => setForm((prev) => ({ ...prev, age: e.target.value.replace(/\D/g, "").slice(0, 2) }))}
+                      onChange={(e) => updateField("age", e.target.value.replace(/\D/g, "").slice(0, 2))}
                       placeholder={t("register.agePlaceholder")}
                       inputMode="numeric"
                       error={fieldErrors.age}
@@ -323,7 +334,7 @@ export default function RegisterPage() {
                     <FormSelect
                       label={t("register.genderLabel")}
                       value={form.gender}
-                      onChange={(e) => setForm((prev) => ({ ...prev, gender: e.target.value }))}
+                      onChange={(e) => updateField("gender", e.target.value)}
                       placeholder={t("register.genderPlaceholder")}
                       options={genderOptions}
                       error={fieldErrors.gender}
@@ -335,7 +346,7 @@ export default function RegisterPage() {
                     <div className="flex gap-2">
                       <FormSelect
                         value={form.country_code}
-                        onChange={(e) => setForm((prev) => ({ ...prev, country_code: e.target.value }))}
+                        onChange={(e) => updateField("country_code", e.target.value)}
                         options={countryCodeOptions}
                         className={`!w-20 shrink-0 ${fieldErrors.country_code ? "border-jz-red-600" : ""}`}
                         aria-label={t("register.countryCodeLabel")}
@@ -343,9 +354,7 @@ export default function RegisterPage() {
                       <div className="min-w-0 flex-1">
                         <FormInput
                           value={form.mobile_number}
-                          onChange={(e) =>
-                            setForm((prev) => ({ ...prev, mobile_number: e.target.value.replace(/\D/g, "").slice(0, 10) }))
-                          }
+                          onChange={(e) => updateField("mobile_number", e.target.value.replace(/\D/g, "").slice(0, 10))}
                           placeholder={t("register.mobilePlaceholder")}
                           inputMode="numeric"
                           className={fieldErrors.mobile_number ? "border-jz-red-600" : ""}
@@ -363,7 +372,7 @@ export default function RegisterPage() {
                     label={t("register.emailLabel")}
                     type="email"
                     value={form.email}
-                    onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value }))}
+                    onChange={(e) => updateField("email", e.target.value)}
                     placeholder={t("register.emailPlaceholder")}
                     hint={t("register.emailHint")}
                     error={fieldErrors.email}
@@ -424,7 +433,10 @@ export default function RegisterPage() {
                     <Checkbox
                       label={t("register.acceptTerms")}
                       checked={acceptedTerms}
-                      onChange={(e) => setAcceptedTerms(e.target.checked)}
+                      onChange={(e) => {
+                        setAcceptedTerms(e.target.checked);
+                        setFieldErrors((prev) => (prev.acceptedTerms ? { ...prev, acceptedTerms: "" } : prev));
+                      }}
                     />
                     {fieldErrors.acceptedTerms && <p className="mt-1 text-xs text-jz-red-600">{fieldErrors.acceptedTerms}</p>}
                   </div>
@@ -473,7 +485,7 @@ export default function RegisterPage() {
                 <div className="mt-6 flex flex-col items-center gap-3">
                   <p className="text-sm text-jz-white-400">{t("register.haveAccount")}</p>
                   <Link
-                    href="/login"
+                    href={ROUTES.login}
                     className="inline-flex w-full items-center justify-center rounded-xl border border-jz-white-600 px-4 py-2.5 text-sm font-semibold text-jz-white-100 transition-opacity hover:opacity-90"
                   >
                     {t("register.loginLink")}
@@ -537,7 +549,7 @@ export default function RegisterPage() {
                 <p className="mt-3 text-sm text-jz-white-400">{t("register.doneBody", { email: form.email.trim() })}</p>
                 <p className="mt-2 text-xs text-jz-white-600">{t("register.doneNote")}</p>
                 <Link
-                  href="/login"
+                  href={ROUTES.login}
                   className="mt-6 inline-flex items-center justify-center rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-5 py-2.5 text-sm font-semibold text-jz-ink-on-accent"
                 >
                   {t("register.goToLogin")}

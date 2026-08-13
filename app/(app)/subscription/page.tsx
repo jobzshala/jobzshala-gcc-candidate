@@ -1,14 +1,14 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import { CheckIcon, SparkleIcon } from "@/components/ui/icons";
 import { ApiError } from "@/lib/api/client";
+import { openRazorpayCheckout } from "@/lib/payments/razorpay";
 import {
   getCandidatePlans,
   getMySubscription,
   startCheckout,
-  verifyPayment,
+  verifyRazorpayPayment,
   type CandidatePlan,
   type Entitlement,
 } from "@/lib/api/subscription";
@@ -55,9 +55,7 @@ function CurrentPlan({ entitlement }: { entitlement: Entitlement }) {
   );
 }
 
-function SubscriptionInner() {
-  const searchParams = useSearchParams();
-
+export default function SubscriptionPage() {
   const [entitlement, setEntitlement] = useState<Entitlement | null>(null);
   const [plans, setPlans] = useState<CandidatePlan[]>([]);
   const [loading, setLoading] = useState(true);
@@ -86,45 +84,45 @@ function SubscriptionInner() {
     void load();
   }, [load]);
 
-  // PhonePe sends the candidate back here after payment. Verifying is what
-  // activates the subscription on the PENDING -> PAID edge; the webhook does
-  // the same thing, and whichever arrives first wins — the server claims the
-  // transition with a guarded update, so activation happens exactly once.
-  useEffect(() => {
-    const orderId = searchParams.get("order");
-    if (!orderId) return;
-
-    let cancelled = false;
-
-    (async () => {
-      try {
-        const result = await verifyPayment(orderId);
-        if (cancelled) return;
-
-        if (result.payment_status === "PAID") {
-          setNotice("Payment received — your subscription is active.");
-          await load();
-        } else if (result.payment_status === "FAILED") {
-          setError("That payment did not go through. Nothing has been charged.");
-        } else {
-          setNotice("Your payment is still processing. This page will reflect it once it settles.");
-        }
-      } catch {
-        if (!cancelled) setError("We couldn't confirm that payment. Please check back shortly.");
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [searchParams, load]);
-
+  // Standard Web Checkout: an order is created server-side, checkout.js opens
+  // a modal against it, and the success handler's razorpay_* fields are sent
+  // back to the server, which is the only place that can verify the HMAC
+  // signature (it alone holds the key secret) and activate the subscription.
   const subscribe = async (plan: CandidatePlan) => {
     setError("");
     setStartingPlanId(plan.id);
     try {
-      const session = await startCheckout({ plan_id: plan.id });
-      window.location.href = session.checkout_url;
+      const checkout = await startCheckout({ plan_id: plan.id });
+
+      await openRazorpayCheckout({
+        key: checkout.razorpay_key_id,
+        amount: checkout.amount,
+        currency: checkout.currency,
+        order_id: checkout.razorpay_order_id,
+        name: "Jobzshala",
+        description: `${plan.name} subscription`,
+        theme: { color: "#008DD2" },
+        handler: (response) => {
+          void (async () => {
+            try {
+              const result = await verifyRazorpayPayment(response);
+              if (result.payment_status === "PAID") {
+                setNotice("Payment received — your subscription is active.");
+                await load();
+              } else {
+                setError("That payment did not go through. Nothing has been charged.");
+              }
+            } catch {
+              setError("We couldn't confirm that payment. Please check back shortly.");
+            } finally {
+              setStartingPlanId(null);
+            }
+          })();
+        },
+        modal: {
+          ondismiss: () => setStartingPlanId(null),
+        },
+      });
     } catch (err) {
       setError(
         err instanceof ApiError ? err.message : "We couldn't start the payment. Please try again."
@@ -215,7 +213,7 @@ function SubscriptionInner() {
                   {isCurrent
                     ? "Current plan"
                     : startingPlanId === plan.id
-                      ? "Redirecting…"
+                      ? "Opening checkout…"
                       : entitlement?.state === "LAPSED_READONLY"
                         ? "Renew"
                         : "Subscribe"}
@@ -227,18 +225,8 @@ function SubscriptionInner() {
       )}
 
       <p className="text-xs text-jz-white-600">
-        Payments are handled by PhonePe. Jobzshala never sees or stores your card details.
+        Payments are handled by Razorpay. Jobzshala never sees or stores your card details.
       </p>
     </div>
-  );
-}
-
-export default function SubscriptionPage() {
-  // useSearchParams needs a Suspense boundary — the page reads the ?order
-  // parameter PhonePe appends on redirect back.
-  return (
-    <Suspense fallback={<p className="text-sm text-jz-white-400">Loading…</p>}>
-      <SubscriptionInner />
-    </Suspense>
   );
 }

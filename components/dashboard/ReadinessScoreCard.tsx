@@ -2,6 +2,7 @@ import Link from "next/link";
 import CompletionRing from "@/components/ui/CompletionRing";
 import { CheckIcon, AlertIcon, StarIcon } from "@/components/ui/icons";
 import type { CandidateProfile } from "@/lib/api/candidate";
+import { ROUTES } from "@/lib/routes";
 
 type ReadinessScoreCardProps = {
   profile: CandidateProfile;
@@ -21,10 +22,10 @@ export default function ReadinessScoreCard({
   const kycVerified = profile.status === "VERIFIED";
 
   const improveItems = [
-    { label: "Upload Video Resume", done: videoUploaded, href: "/profile#video" },
-    { label: "Add Education Details", done: educationCount > 0, href: "/profile#education" },
-    { label: "Add Language Skills", done: languagesCount > 0, href: "/profile#languages" },
-    { label: "Complete KYC Verification", done: kycVerified, href: "/profile#documents" },
+    { label: "Upload Video Resume", done: videoUploaded, href: ROUTES.profileVideo },
+    { label: "Add Education Details", done: educationCount > 0, href: ROUTES.profileEducation },
+    { label: "Add Language Skills", done: languagesCount > 0, href: ROUTES.profileLanguages },
+    { label: "Complete KYC Verification", done: kycVerified, href: ROUTES.profileDocuments },
   ];
 
   const message =

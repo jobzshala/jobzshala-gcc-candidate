@@ -12,6 +12,7 @@ import {
   TargetIcon,
 } from "@/components/ui/icons";
 import { getMatches, type Match, type MatchesPage, type UnlockedMatch } from "@/lib/api/matches";
+import { ROUTES } from "@/lib/routes";
 
 const PAGE_SIZE = 20;
 
@@ -115,7 +116,7 @@ function Paywall({ access }: { access: MatchesPage["access"] }) {
           </div>
 
           <Link
-            href="/profile"
+            href={ROUTES.profile}
             className="inline-flex items-center gap-1.5 rounded-xl bg-jz-blue-800/60 px-4 py-2 text-sm font-semibold text-jz-white-100 transition-opacity hover:opacity-90"
           >
             View profile
@@ -139,7 +140,7 @@ function Paywall({ access }: { access: MatchesPage["access"] }) {
         </div>
 
         <Link
-          href="/subscription"
+          href={ROUTES.subscription}
           className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
         >
           {expired ? "Renew" : "See plans"}
@@ -183,7 +184,7 @@ function EmptyMatchesState({ notVerified }: { notVerified: boolean }) {
       </div>
 
       <Link
-        href="/profile"
+        href={ROUTES.profile}
         className="mt-6 inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-5 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
       >
         {notVerified ? "Review your profile" : "Strengthen your profile"}

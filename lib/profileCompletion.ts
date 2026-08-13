@@ -1,4 +1,5 @@
 import type { CandidateProfile } from "./api/candidate";
+import { ROUTES } from "./routes";
 
 export interface CompletionItem {
   key: string;
@@ -30,24 +31,24 @@ export function getProfileCompletion({
   documentsCount,
 }: ProfileCompletionInput): ProfileCompletion {
   const items: CompletionItem[] = [
-    { key: "email", label: "Email address", href: "/profile#personal-details", done: !!profile.email },
-    { key: "gender", label: "Gender", href: "/profile#personal-details", done: !!profile.gender },
-    { key: "dob", label: "Date of birth", href: "/profile#personal-details", done: !!profile.date_of_birth },
-    { key: "location", label: "Current location", href: "/profile#personal-details", done: !!profile.current_country },
-    { key: "summary", label: "Profile summary", href: "/profile#profile-summary", done: !!profile.summary?.trim() },
-    { key: "job_title", label: "Career preference", href: "/profile#career-preference", done: !!profile.job_title },
+    { key: "email", label: "Email address", href: ROUTES.profilePersonalDetails, done: !!profile.email },
+    { key: "gender", label: "Gender", href: ROUTES.profilePersonalDetails, done: !!profile.gender },
+    { key: "dob", label: "Date of birth", href: ROUTES.profilePersonalDetails, done: !!profile.date_of_birth },
+    { key: "location", label: "Current location", href: ROUTES.profilePersonalDetails, done: !!profile.current_country },
+    { key: "summary", label: "Profile summary", href: ROUTES.profileSummary, done: !!profile.summary?.trim() },
+    { key: "job_title", label: "Career preference", href: ROUTES.profileCareerPreference, done: !!profile.job_title },
     {
       key: "experience",
       label: "Experience details",
-      href: "/profile#career-preference",
+      href: ROUTES.profileCareerPreference,
       done: profile.experience_years !== null,
     },
-    { key: "employment", label: "Employment history", href: "/profile#employment", done: employmentCount > 0 },
-    { key: "education", label: "Education history", href: "/profile#education", done: educationCount > 0 },
-    { key: "languages", label: "Languages", href: "/profile#languages", done: languagesCount > 0 },
-    { key: "resume", label: "Resume", href: "/profile#resume", done: !!profile.resume_url },
-    { key: "video", label: "Video profile", href: "/profile#video", done: !!profile.video_url },
-    { key: "documents", label: "Documents", href: "/profile#documents", done: documentsCount > 0 },
+    { key: "employment", label: "Employment history", href: ROUTES.profileEmployment, done: employmentCount > 0 },
+    { key: "education", label: "Education history", href: ROUTES.profileEducation, done: educationCount > 0 },
+    { key: "languages", label: "Languages", href: ROUTES.profileLanguages, done: languagesCount > 0 },
+    { key: "resume", label: "Resume", href: ROUTES.profileResume, done: !!profile.resume_url },
+    { key: "video", label: "Video profile", href: ROUTES.profileVideo, done: !!profile.video_url },
+    { key: "documents", label: "Documents", href: ROUTES.profileDocuments, done: documentsCount > 0 },
   ];
 
   const doneCount = items.filter((item) => item.done).length;

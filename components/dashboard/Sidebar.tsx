@@ -16,7 +16,9 @@ import {
   QuestionIcon,
   CloseIcon,
   ChatIcon,
+  CalendarIcon,
 } from "@/components/ui/icons";
+import { ROUTES } from "@/lib/routes";
 
 type NavItem = {
   key: string;
@@ -40,24 +42,27 @@ export default function Sidebar({ onClose, whatsappNumber, whatsappMessage }: Si
   const pathname = usePathname();
 
   const items: NavItem[] = [
-    { key: "profile", label: t("dashboard.nav.profile"), href: "/profile", icon: UserIcon },
-    { key: "overview", label: t("dashboard.nav.myJourney"), href: "/journey", icon: CompassIcon },
-    { key: "matches", label: t("dashboard.nav.matches"), href: "/matches", icon: TargetIcon },
-    // TODO(backend): no Applications/Messages concept exists in the API yet
-    // (confirmed — there's no applications list or messaging endpoint
-    // anywhere in lib/api). These render as disabled placeholders rather
-    // than dead links or invented routes.
-    { key: "applications", label: t("dashboard.nav.applications"), href: null, icon: ClipboardIcon },
+    { key: "profile", label: t("dashboard.nav.profile"), href: ROUTES.profile, icon: UserIcon },
+    { key: "overview", label: t("dashboard.nav.myJourney"), href: ROUTES.journey, icon: CompassIcon },
+    { key: "matches", label: t("dashboard.nav.matches"), href: ROUTES.matches, icon: TargetIcon },
+    // Applications is a real route now (app/(app)/applications/page.tsx) —
+    // still sample data under the hood since GET /candidate/applications
+    // isn't real yet, same as the "Preview · sample data" badge on the page
+    // itself. Messages has no page at all yet, so it stays a placeholder.
+    { key: "applications", label: t("dashboard.nav.applications"), href: ROUTES.applications, icon: ClipboardIcon },
+    { key: "interviews", label: t("dashboard.nav.interviews"), href: ROUTES.interviews, icon: CalendarIcon },
+    // TODO(backend): no messaging endpoint exists anywhere in lib/api —
+    // renders as a disabled placeholder rather than a dead link or invented route.
     { key: "messages", label: t("dashboard.nav.messages"), href: null, icon: MailIcon },
-    { key: "documents", label: t("dashboard.nav.documents"), href: "/documents", icon: FolderIcon },
-    { key: "subscription", label: t("dashboard.nav.subscription"), href: "/subscription", icon: CreditCardIcon },
-    { key: "support", label: t("dashboard.nav.support"), href: "/contact-us", icon: QuestionIcon },
+    { key: "documents", label: t("dashboard.nav.documents"), href: ROUTES.documents, icon: FolderIcon },
+    { key: "subscription", label: t("dashboard.nav.subscription"), href: ROUTES.subscription, icon: CreditCardIcon },
+    { key: "support", label: t("dashboard.nav.support"), href: ROUTES.contactUs, icon: QuestionIcon },
   ];
 
   const isActive = (href: string | null) => {
     if (!href) return false;
     const base = href.split("#")[0];
-    return base === "/journey" ? pathname === "/journey" : pathname.startsWith(base);
+    return base === ROUTES.journey ? pathname === ROUTES.journey : pathname.startsWith(base);
   };
 
   return (

@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { IS_CANONICAL_HOST, absoluteUrl } from "@/lib/seo";
+import { ROUTES } from "@/lib/routes";
 
 // Generated rather than a static file so it can depend on which host this
 // deployment is serving: only jobzshala.ae and www.jobzshala.ae invite crawlers.
@@ -16,14 +17,15 @@ const DISALLOWED = [
   "/api-docs",
   // The old shared "/dashboard" prefix covered these with one entry; now
   // that they're flat top-level routes (see app/(app)/), each needs its own.
-  "/journey",
-  "/profile",
-  "/matches",
-  "/subscription",
-  "/documents",
-  "/change-password",
-  "/reset-password",
-  "/forgot-password",
+  ROUTES.journey,
+  ROUTES.profile,
+  ROUTES.matches,
+  ROUTES.applications,
+  ROUTES.subscription,
+  ROUTES.documents,
+  ROUTES.changePassword,
+  ROUTES.resetPassword,
+  ROUTES.forgotPassword,
   "/hire/dashboard",
   "/hire/change-password",
   "/hire/reset-password",

@@ -57,12 +57,14 @@ export interface CustomOffer {
 export interface CheckoutSession {
   payment_id: number;
   merchant_order_id: string;
-  checkout_url: string;
+  razorpay_order_id: string;
+  razorpay_key_id: string;
+  amount: number;
+  currency: string;
 }
 
 export interface PaymentVerification {
   payment_status: "PENDING" | "PAID" | "FAILED" | "REFUNDED";
-  phonepe_status: string | null;
 }
 
 export const getMySubscription = () => authFetch<Entitlement>("/candidate/subscription/me");
@@ -85,12 +87,15 @@ export const startCheckout = (input: { plan_id: number } | { offer_token: string
     body: JSON.stringify(input),
   });
 
-/**
- * Polls the gateway and activates the subscription on the PENDING -> PAID
- * edge. Safe to call repeatedly: the server claims that transition with a
- * guarded update, so this racing the webhook still activates exactly once.
- */
-export const verifyPayment = (merchantOrderId: string) =>
-  authFetch<PaymentVerification>(
-    `/candidate/subscription/verify/${encodeURIComponent(merchantOrderId)}`
-  );
+export interface RazorpayVerificationInput {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+}
+
+/** Called from checkout.js's success handler — the signature check IS what activates the subscription. */
+export const verifyRazorpayPayment = (input: RazorpayVerificationInput) =>
+  authFetch<PaymentVerification>("/candidate/subscription/razorpay/verify", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });

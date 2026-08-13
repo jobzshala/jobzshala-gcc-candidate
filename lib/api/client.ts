@@ -1,6 +1,7 @@
 import { saveSession, isSessionPersisted, clearSession as clearRawSession } from "../auth/session";
 import { store } from "../store/store";
 import { setSession as setReduxSession, clearSession as clearReduxSession } from "../store/authSlice";
+import { ROUTES } from "../routes";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5000/api/v3";
 
@@ -119,7 +120,7 @@ async function authRequest<R>(
         const newAccessToken = await refreshAccessToken();
         return await run(path, withAuth(newAccessToken));
       } catch {
-        if (typeof window !== "undefined") window.location.href = "/login";
+        if (typeof window !== "undefined") window.location.href = ROUTES.login;
         throw err;
       }
     }

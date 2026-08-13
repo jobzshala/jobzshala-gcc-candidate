@@ -73,7 +73,11 @@ export default function StatusBoard({ initialData }: { initialData: SystemStatus
           <div>
             <p className="text-base font-semibold text-jz-white-50">{OVERALL_LABEL[data.overallStatus]}</p>
             <p className="mt-0.5 text-xs text-jz-white-600">
-              Last updated {new Date(data.generatedAt).toLocaleString()}
+              {/* Explicit locale — an implicit toLocaleString() picks up the
+                  server's locale during SSR and the browser's during
+                  hydration, which disagree often enough to throw a hydration
+                  mismatch (CW-9). */}
+              Last updated {new Date(data.generatedAt).toLocaleString("en-US")}
             </p>
           </div>
         </div>

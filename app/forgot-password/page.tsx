@@ -9,6 +9,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import FormInput from "@/components/ui/FormInput";
 import { forgotPassword } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
+import { ROUTES } from "@/lib/routes";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -59,7 +60,7 @@ export default function ForgotPasswordPage() {
             <div className="text-center">
               <h1 className="font-serif text-2xl font-semibold text-jz-white-50">{t("forgotPassword.sentTitle")}</h1>
               <p className="mt-3 text-sm text-jz-white-400">{t("forgotPassword.sentBody")}</p>
-              <Link href="/login" className="mt-6 inline-block text-sm text-jz-yellow-400 hover:underline">
+              <Link href={ROUTES.login} className="mt-6 inline-block text-sm text-jz-yellow-400 hover:underline">
                 {t("forgotPassword.backToLogin")}
               </Link>
             </div>
@@ -94,7 +95,7 @@ export default function ForgotPasswordPage() {
               </form>
 
               <p className="mt-6 text-center text-sm text-jz-white-400">
-                <Link href="/login" className="text-jz-yellow-400 hover:underline">
+                <Link href={ROUTES.login} className="text-jz-yellow-400 hover:underline">
                   {t("forgotPassword.backToLogin")}
                 </Link>
               </p>

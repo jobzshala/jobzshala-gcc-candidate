@@ -10,6 +10,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import FormInput from "@/components/ui/FormInput";
 import { resetPassword } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
+import { ROUTES } from "@/lib/routes";
 
 const PASSWORD_PATTERN = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
@@ -51,7 +52,7 @@ function ResetPasswordForm() {
     try {
       await resetPassword({ token, password, confirmPassword });
       setDone(true);
-      setTimeout(() => router.push("/login"), 1500);
+      setTimeout(() => router.push(ROUTES.login), 1500);
     } catch (err) {
       if (err instanceof ApiError) {
         setFieldErrors(err.fieldErrors ?? {});
@@ -112,7 +113,7 @@ function ResetPasswordForm() {
           </form>
 
           <p className="mt-6 text-center text-sm text-jz-white-400">
-            <Link href="/login" className="text-jz-yellow-400 hover:underline">
+            <Link href={ROUTES.login} className="text-jz-yellow-400 hover:underline">
               {t("resetPassword.backToLogin")}
             </Link>
           </p>

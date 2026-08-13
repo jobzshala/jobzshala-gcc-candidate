@@ -1,11 +1,11 @@
 import { TargetIcon, EyeIcon, ChatIcon, ClipboardIcon } from "@/components/ui/icons";
 
-// TODO(backend): profile-views / interviews / applications still aren't
-// tracked anywhere in the API (confirmed — no analytics or applications
-// endpoints exist; Interviews is Sprint 5, not yet shipped). Those three
-// keep rendering "—" rather than a fabricated count; wire each up once its
-// backing endpoint exists. Jobs Matched is real — pagination.total from
-// GET /candidate/jobs/matches, passed down from the dashboard pages.
+// TODO(backend): profile-views / applications still aren't tracked anywhere
+// in the API (no analytics or applications endpoints exist). Those two keep
+// rendering "—" rather than a fabricated count; wire each up once its
+// backing endpoint exists. Jobs Matched and Interviews are both real now —
+// pagination.total from GET /candidate/jobs/matches and the length of
+// GET /candidates/me/interviews, both passed down from the dashboard pages.
 const ROWS = [
   { icon: TargetIcon, label: "Jobs Matched", key: "matched" as const },
   { icon: EyeIcon, label: "Profile Views", key: "views" as const },
@@ -17,13 +17,18 @@ interface ActivityCardProps {
   /** null while loading or if the matches call failed — renders "—", same as
    *  the still-untracked metrics, rather than a misleading 0. */
   matchesTotal: number | null;
+  /** Same null-means-unknown convention as matchesTotal. */
+  interviewsTotal: number | null;
 }
 
-export default function ActivityCard({ matchesTotal }: ActivityCardProps) {
-  const valueFor = (key: (typeof ROWS)[number]["key"]): string =>
-    key === "matched" && matchesTotal !== null ? String(matchesTotal) : "—";
+export default function ActivityCard({ matchesTotal, interviewsTotal }: ActivityCardProps) {
+  const valueFor = (key: (typeof ROWS)[number]["key"]): string => {
+    if (key === "matched" && matchesTotal !== null) return String(matchesTotal);
+    if (key === "interviews" && interviewsTotal !== null) return String(interviewsTotal);
+    return "—";
+  };
 
-  const stillPending = ROWS.some((row) => row.key !== "matched");
+  const stillPending = ROWS.some((row) => row.key === "views" || row.key === "applications");
 
   return (
     <div className="card">
@@ -47,7 +52,7 @@ export default function ActivityCard({ matchesTotal }: ActivityCardProps) {
         })}
         {stillPending && (
           <p style={{ fontSize: 11, color: "var(--ink-faint)", marginTop: 10 }}>
-            Profile views, interviews and applications tracking is coming soon.
+            Profile views and applications tracking is coming soon.
           </p>
         )}
       </div>

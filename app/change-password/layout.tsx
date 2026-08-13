@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import SessionGate from "@/lib/store/SessionGate";
 import { pageMetadata } from "@/lib/seo";
+import { ROUTES } from "@/lib/routes";
 
 // noIndex: account-only page with no content worth surfacing in search.
 export const metadata: Metadata = pageMetadata({
   title: "Change Password",
   description: "Set a new password for your Jobzshala candidate account.",
-  path: "/change-password",
+  path: ROUTES.changePassword,
   noIndex: true,
 });
 

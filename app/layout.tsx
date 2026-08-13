@@ -4,6 +4,7 @@ import LanguageProvider from "@/lib/i18n/LanguageProvider";
 import ThemeProvider from "@/lib/theme/ThemeProvider";
 import StoreProvider from "@/lib/store/StoreProvider";
 import JsonLd from "@/components/JsonLd";
+import { ROUTES } from "@/lib/routes";
 import {
   IS_CANONICAL_HOST,
   SITE_DESCRIPTION,
@@ -34,7 +35,7 @@ const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem('jobzshala
 // reached from an emailed link tied to a specific account, independent of
 // whatever session happens to already be active in this browser, so a valid
 // token must always be allowed through even for a logged-in visitor.
-const REDIRECT_IF_AUTHED_SCRIPT = `(function(){try{var p=location.pathname;var guestOnly=p==='/'||p==='/login'||p==='/register'||p==='/forgot-password'||(p==='/reset-password'&&location.search.indexOf('token=')===-1);if(guestOnly){var raw=localStorage.getItem('jobzshala-candidate-session')||sessionStorage.getItem('jobzshala-candidate-session');if(raw){var target='/journey';try{var s=JSON.parse(raw);if(s&&s.candidate&&s.candidate.must_change_password){target='/change-password';}}catch(e){}location.replace(target);}}}catch(e){}})();`;
+const REDIRECT_IF_AUTHED_SCRIPT = `(function(){try{var p=location.pathname;var guestOnly=p==='${ROUTES.home}'||p==='${ROUTES.login}'||p==='${ROUTES.register}'||p==='${ROUTES.forgotPassword}'||(p==='${ROUTES.resetPassword}'&&location.search.indexOf('token=')===-1);if(guestOnly){var raw=localStorage.getItem('jobzshala-candidate-session')||sessionStorage.getItem('jobzshala-candidate-session');if(raw){var target='${ROUTES.profile}';try{var s=JSON.parse(raw);if(s&&s.candidate&&s.candidate.must_change_password){target='${ROUTES.changePassword}';}}catch(e){}location.replace(target);}}}catch(e){}})();`;
 
 const inter = Inter({
   variable: "--font-inter",

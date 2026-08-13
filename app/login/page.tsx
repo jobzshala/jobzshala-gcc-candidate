@@ -17,6 +17,7 @@ import { setPersistMode } from "@/lib/store/dualStorage";
 import { setSession } from "@/lib/store/authSlice";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { ApiError } from "@/lib/api/client";
+import { ROUTES } from "@/lib/routes";
 
 // Only same-origin relative paths are honoured as a post-login destination.
 // Anything else — a protocol, a host, a protocol-relative "//evil.com" — is
@@ -78,8 +79,8 @@ function LoginForm() {
       const next = safeReturnPath(searchParams.get("next"));
 
       window.location.href = result.candidate.must_change_password
-        ? "/change-password"
-        : (next ?? "/journey");
+        ? ROUTES.changePassword
+        : (next ?? ROUTES.profile);
     } catch (err) {
       if (err instanceof ApiError) {
         setFieldErrors(err.fieldErrors ?? {});
@@ -163,7 +164,7 @@ function LoginForm() {
                   checked={keepSignedIn}
                   onChange={(e) => setKeepSignedIn(e.target.checked)}
                 />
-                <Link href="/forgot-password" className="text-sm text-jz-yellow-400 hover:underline">
+                <Link href={ROUTES.forgotPassword} className="text-sm text-jz-yellow-400 hover:underline">
                   {t("login.forgotPassword")}
                 </Link>
               </div>
@@ -205,7 +206,7 @@ function LoginForm() {
 
             <p className="mt-6 text-center text-sm text-jz-white-400">
               {t("login.noAccount")}{" "}
-              <Link href="/register" className="text-jz-yellow-400 hover:underline">
+              <Link href={ROUTES.register} className="text-jz-yellow-400 hover:underline">
                 {t("login.registerLink")}
               </Link>
             </p>

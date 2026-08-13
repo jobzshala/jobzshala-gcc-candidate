@@ -5,7 +5,14 @@ import Link from "next/link";
 import { CheckIcon, SparkleIcon } from "@/components/ui/icons";
 import { ApiError } from "@/lib/api/client";
 import { useAppSelector } from "@/lib/store/hooks";
-import { resolveOffer, startCheckout, type CustomOffer } from "@/lib/api/subscription";
+import { openRazorpayCheckout } from "@/lib/payments/razorpay";
+import {
+  resolveOffer,
+  startCheckout,
+  verifyRazorpayPayment,
+  type CustomOffer,
+} from "@/lib/api/subscription";
+import { ROUTES } from "@/lib/routes";
 
 export default function CustomOfferView({ token }: { token: string }) {
   // This page is outside DashboardShell, which is where the dashboard's
@@ -19,7 +26,8 @@ export default function CustomOfferView({ token }: { token: string }) {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [error, setError] = useState("");
-  const [redirecting, setRedirecting] = useState(false);
+  const [paying, setPaying] = useState(false);
+  const [paid, setPaid] = useState(false);
 
   const load = useCallback(async () => {
     if (!session.accessToken) {
@@ -48,17 +56,45 @@ export default function CustomOfferView({ token }: { token: string }) {
 
   const accept = async () => {
     setError("");
-    setRedirecting(true);
+    setPaying(true);
     try {
       // The token goes to the server, not an amount — the price is read off
       // the offer row there.
       const checkout = await startCheckout({ offer_token: token });
-      window.location.href = checkout.checkout_url;
+
+      await openRazorpayCheckout({
+        key: checkout.razorpay_key_id,
+        amount: checkout.amount,
+        currency: checkout.currency,
+        order_id: checkout.razorpay_order_id,
+        name: "Jobzshala",
+        description: "Custom offer",
+        theme: { color: "#008DD2" },
+        handler: (response) => {
+          void (async () => {
+            try {
+              const result = await verifyRazorpayPayment(response);
+              if (result.payment_status === "PAID") {
+                setPaid(true);
+              } else {
+                setError("That payment did not go through. Nothing has been charged.");
+              }
+            } catch {
+              setError("We couldn't confirm that payment. Please check back shortly.");
+            } finally {
+              setPaying(false);
+            }
+          })();
+        },
+        modal: {
+          ondismiss: () => setPaying(false),
+        },
+      });
     } catch (err) {
       setError(
         err instanceof ApiError ? err.message : "We couldn't start the payment. Please try again."
       );
-      setRedirecting(false);
+      setPaying(false);
     }
   };
 
@@ -66,6 +102,25 @@ export default function CustomOfferView({ token }: { token: string }) {
     return (
       <main className="mx-auto flex min-h-[60vh] w-full max-w-lg items-center justify-center px-4">
         <p className="text-sm text-jz-white-400">Loading your offer…</p>
+      </main>
+    );
+  }
+
+  if (paid) {
+    return (
+      <main className="mx-auto flex min-h-[60vh] w-full max-w-lg items-center px-4">
+        <div className="w-full rounded-2xl border border-jz-green-500/30 bg-jz-green-500/10 p-8 text-center">
+          <p className="text-lg font-semibold text-jz-white-100">Payment received</p>
+          <p className="mx-auto mt-2 max-w-sm text-sm text-jz-white-400">
+            Your subscription is active.
+          </p>
+          <Link
+            href={ROUTES.subscription}
+            className="mt-5 inline-flex rounded-xl border border-jz-white-600 px-4 py-2 text-sm text-jz-white-100 hover:opacity-90"
+          >
+            Go to subscription
+          </Link>
+        </div>
       </main>
     );
   }
@@ -80,7 +135,7 @@ export default function CustomOfferView({ token }: { token: string }) {
             If you were expecting an offer, please contact whoever sent it to you.
           </p>
           <Link
-            href="/subscription"
+            href={ROUTES.subscription}
             className="mt-5 inline-flex rounded-xl border border-jz-white-600 px-4 py-2 text-sm text-jz-white-100 hover:opacity-90"
           >
             See standard plans
@@ -144,11 +199,11 @@ export default function CustomOfferView({ token }: { token: string }) {
 
         <button
           type="button"
-          disabled={redirecting}
+          disabled={paying}
           onClick={() => void accept()}
           className="mt-6 w-full rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-3 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90 disabled:opacity-50"
         >
-          {redirecting ? "Redirecting to payment…" : "Accept and pay"}
+          {paying ? "Opening checkout…" : "Accept and pay"}
         </button>
 
         <p className="mt-3 text-center text-xs text-jz-white-600">
@@ -158,7 +213,7 @@ export default function CustomOfferView({ token }: { token: string }) {
       </div>
 
       <p className="mt-4 text-center text-xs text-jz-white-600">
-        Payments are handled by PhonePe. Jobzshala never sees or stores your card details.
+        Payments are handled by Razorpay. Jobzshala never sees or stores your card details.
       </p>
     </main>
   );

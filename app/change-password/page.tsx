@@ -12,6 +12,7 @@ import { saveSession, isSessionPersisted, clearSession as clearRawSession } from
 import { setSession, clearSession as clearReduxSession } from "@/lib/store/authSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { ApiError } from "@/lib/api/client";
+import { ROUTES } from "@/lib/routes";
 
 const PASSWORD_PATTERN = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
@@ -29,7 +30,7 @@ export default function ChangePasswordPage() {
 
   useEffect(() => {
     if (!session.accessToken) {
-      window.location.href = "/login";
+      window.location.href = ROUTES.login;
     }
   }, [session.accessToken]);
 
@@ -61,7 +62,7 @@ export default function ChangePasswordPage() {
       // to the profile the first-login flow was gating.
       saveSession(result, isSessionPersisted());
       dispatch(setSession(result));
-      window.location.href = "/journey";
+      window.location.href = ROUTES.profile;
     } catch (err) {
       if (err instanceof ApiError) {
         setFieldErrors(err.fieldErrors ?? {});
@@ -83,7 +84,7 @@ export default function ChangePasswordPage() {
     }
     clearRawSession();
     dispatch(clearReduxSession());
-    window.location.href = "/login";
+    window.location.href = ROUTES.login;
   };
 
   if (!session.accessToken || !session.candidate) {

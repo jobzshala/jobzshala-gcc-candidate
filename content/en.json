@@ -448,6 +448,7 @@
       "logout": "Log Out",
       "matches": "Job Matches",
       "applications": "Applications",
+      "interviews": "Interviews",
       "messages": "Messages",
       "documents": "Documents",
       "subscription": "Subscription",
@@ -458,6 +459,7 @@
       "journeySub": "Track your application progress",
       "profileSub": "Manage your workforce profile and documents",
       "matchesSub": "Jobs matched to your profile",
+      "applicationsSub": "Every job you've applied to, stage by stage",
       "subscriptionSub": "Manage your plan and billing",
       "documentsSub": "Upload and manage your KYC documents"
     }

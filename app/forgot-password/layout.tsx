@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
+import { ROUTES } from "@/lib/routes";
 
 // noIndex: transient account-recovery step, no content worth indexing.
 export const metadata: Metadata = pageMetadata({
   title: "Forgot Password",
   description: "Request a password reset link for your Jobzshala candidate account.",
-  path: "/forgot-password",
+  path: ROUTES.forgotPassword,
   noIndex: true,
 });
 
