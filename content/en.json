@@ -855,7 +855,8 @@
       "stopAria": "Stop recording",
       "recordingLabel": "Speaking… press to stop",
       "idleLabel": "Press to speak",
-      "max": "max {{time}}"
+      "max": "max {{time}}",
+      "listen": "🔊 Listen to the question"
     },
     "recorded": {
       "playAria": "Play recording",
@@ -885,7 +886,10 @@
       "notMentioned": "not mentioned — will stay blank",
       "finish": "✓ Build resume",
       "next": "Next question →",
-      "editTranscript": "‹ Edit transcript"
+      "editTranscript": "‹ Edit transcript",
+      "fullName": "Full name",
+      "location": "City",
+      "expectedSalary": "Expected salary"
     },
     "done": {
       "title": "Your resume is ready! 🎉",
@@ -895,7 +899,11 @@
       "skills": "Skills",
       "madeWithVoice": "Made with voice · {{lang}}",
       "viewProfile": "View profile",
-      "restart": "↻ Start again"
+      "restart": "↻ Start again",
+      "pdfReady": "Resume PDF saved to your profile"
+    },
+    "errors": {
+      "generic": "Something went wrong. Please try again."
     }
   }
 }
