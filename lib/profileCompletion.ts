@@ -13,6 +13,7 @@ export interface ProfileCompletionInput {
   employmentCount: number;
   educationCount: number;
   languagesCount: number;
+  skillsCount: number;
   documentsCount: number;
 }
 
@@ -28,6 +29,7 @@ export function getProfileCompletion({
   employmentCount,
   educationCount,
   languagesCount,
+  skillsCount,
   documentsCount,
 }: ProfileCompletionInput): ProfileCompletion {
   const items: CompletionItem[] = [
@@ -46,6 +48,7 @@ export function getProfileCompletion({
     { key: "employment", label: "Employment history", href: ROUTES.profileEmployment, done: employmentCount > 0 },
     { key: "education", label: "Education history", href: ROUTES.profileEducation, done: educationCount > 0 },
     { key: "languages", label: "Languages", href: ROUTES.profileLanguages, done: languagesCount > 0 },
+    { key: "skills", label: "Skills", href: ROUTES.profileSkills, done: skillsCount > 0 },
     { key: "resume", label: "Resume", href: ROUTES.profileResume, done: !!profile.resume_url },
     { key: "video", label: "Video profile", href: ROUTES.profileVideo, done: !!profile.video_url },
     { key: "documents", label: "Documents", href: ROUTES.profileDocuments, done: documentsCount > 0 },
@@ -57,7 +60,7 @@ export function getProfileCompletion({
   return { items, percent, doneCount, total: items.length };
 }
 
-// The 13 items collapse onto 9 distinct #hash groups (personal-details alone
+// The 14 items collapse onto 10 distinct #hash groups (personal-details alone
 // covers 4 of them). A group counts as done only once every item in it is —
 // used by the wizard's progress dots and the tabs shell's "done" tab badge
 // so both read the same underlying model instead of each inventing its own

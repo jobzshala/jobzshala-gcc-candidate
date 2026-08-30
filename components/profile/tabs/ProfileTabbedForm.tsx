@@ -12,6 +12,7 @@ import CareerPreferenceStep from "@/components/profile/steps/CareerPreferenceSte
 import EmploymentSection from "@/components/profile/EmploymentSection";
 import EducationSection from "@/components/profile/EducationSection";
 import LanguagesSection from "@/components/profile/LanguagesSection";
+import SkillsSection from "@/components/profile/SkillsSection";
 import ResumeSection from "@/components/profile/ResumeSection";
 import VideoSection from "@/components/profile/VideoSection";
 import DocumentsSection from "@/components/profile/DocumentsSection";
@@ -26,6 +27,7 @@ type TabKey =
   | "employment"
   | "education"
   | "languages"
+  | "skills"
   | "resume"
   | "video"
   | "documents";
@@ -37,6 +39,7 @@ const TAB_HASH_IDS: Record<TabKey, string> = {
   employment: "employment",
   education: "education",
   languages: "languages",
+  skills: "skills",
   resume: "resume",
   video: "video",
   documents: "documents",
@@ -51,6 +54,7 @@ interface ProfileTabbedFormProps {
   onEmploymentCountChange: (count: number) => void;
   onEducationCountChange: (count: number) => void;
   onLanguagesCountChange: (count: number) => void;
+  onSkillsCountChange: (count: number) => void;
   onDocumentsCountChange: (count: number) => void;
 }
 
@@ -63,6 +67,7 @@ export default function ProfileTabbedForm({
   onEmploymentCountChange,
   onEducationCountChange,
   onLanguagesCountChange,
+  onSkillsCountChange,
   onDocumentsCountChange,
 }: ProfileTabbedFormProps) {
   const { t } = useTranslation();
@@ -165,6 +170,7 @@ export default function ProfileTabbedForm({
               {activeTab === "employment" && <EmploymentSection onCountChange={onEmploymentCountChange} />}
               {activeTab === "education" && <EducationSection onCountChange={onEducationCountChange} />}
               {activeTab === "languages" && <LanguagesSection onCountChange={onLanguagesCountChange} />}
+              {activeTab === "skills" && <SkillsSection onCountChange={onSkillsCountChange} />}
               {activeTab === "resume" && (
                 <ResumeSection
                   profile={profile}

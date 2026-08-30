@@ -8,14 +8,16 @@ import {
   getResumeHistory,
   updateResume,
   parseResume,
+  regenerateResume,
   type ResumeInfo,
   type ResumeHistoryItem,
   type ParsedResume,
+  type AiResumeResult,
   type CandidateProfile,
 } from "@/lib/api/candidate";
 import Dropzone from "@/components/ui/Dropzone";
 import Modal from "@/components/ui/Modal";
-import { DocumentIcon, DownloadIcon, UploadIcon } from "@/components/ui/icons";
+import { DocumentIcon, DownloadIcon, UploadIcon, SparkleIcon } from "@/components/ui/icons";
 import ParsedResumeReview from "@/components/profile/upload/ParsedResumeReview";
 import DocumentsGallery from "@/components/profile/upload/DocumentsGallery";
 
@@ -58,6 +60,9 @@ export default function ResumeSection({
   const [error, setError] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
   const [parsed, setParsed] = useState<ParsedResume | null>(null);
+  const [aiResume, setAiResume] = useState<AiResumeResult | null>(null);
+  const [generating, setGenerating] = useState(false);
+  const [generateError, setGenerateError] = useState("");
 
   const load = async () => {
     setLoading(true);
@@ -105,6 +110,18 @@ export default function ResumeSection({
       } catch {
         setParsed(null);
       }
+    }
+  };
+
+  const handleGenerate = async () => {
+    setGenerateError("");
+    setGenerating(true);
+    try {
+      setAiResume(await regenerateResume());
+    } catch (err) {
+      setGenerateError(err instanceof ApiError ? err.message : t("profile.saveError"));
+    } finally {
+      setGenerating(false);
     }
   };
 
@@ -161,6 +178,38 @@ export default function ResumeSection({
             label={resume?.resume_url ? t("profile.resume.replace") : t("profile.resume.upload")}
             hint={t("profile.resume.hint", { maxMb: RESUME_MAX_MB })}
           />
+
+          <div className="rounded-xl border border-jz-border bg-jz-blue-900/60 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="flex items-center gap-2 text-sm font-medium text-jz-white-100">
+                  <SparkleIcon className="size-4 text-jz-yellow-400" />
+                  {t("profile.resume.aiGenerate.title")}
+                </p>
+                <p className="mt-0.5 text-xs text-jz-white-400">{t("profile.resume.aiGenerate.subtitle")}</p>
+              </div>
+              <button
+                type="button"
+                onClick={handleGenerate}
+                disabled={generating}
+                className="shrink-0 rounded-xl border border-jz-white-600 px-4 py-2.5 text-sm text-jz-white-100 hover:opacity-90 disabled:opacity-60"
+              >
+                {generating ? t("profile.resume.aiGenerate.generating") : t("profile.resume.aiGenerate.button")}
+              </button>
+            </div>
+            {generateError && <p className="mt-2 text-xs text-jz-red-600">{generateError}</p>}
+            {aiResume && (
+              <a
+                href={aiResume.ai_resume_url}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-jz-yellow-400 hover:underline"
+              >
+                <DownloadIcon className="size-4" />
+                {t("profile.resume.aiGenerate.view")}
+              </a>
+            )}
+          </div>
 
           {parsed && profile && onProfileRefresh && (
             <div className="space-y-4">

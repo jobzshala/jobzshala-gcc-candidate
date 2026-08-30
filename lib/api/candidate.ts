@@ -109,6 +109,19 @@ export function confirmEmailVerificationOtp(otp: string): Promise<unknown> {
   });
 }
 
+export function sendMobileVerificationOtp(): Promise<unknown> {
+  return authFetch<unknown>("/candidate/profile/verify-mobile/send-otp", {
+    method: "POST",
+  });
+}
+
+export function confirmMobileVerificationOtp(otp: string): Promise<unknown> {
+  return authFetch<unknown>("/candidate/profile/verify-mobile/confirm-otp", {
+    method: "POST",
+    body: JSON.stringify({ otp }),
+  });
+}
+
 export interface UpdateCareerPreferencePayload {
   job_title_id?: number | null;
   job_functional_area_id?: number | null;
@@ -191,6 +204,20 @@ export function getJobDepartments(jobFunctionalAreaId: number): Promise<LookupRe
 
 export function getLanguagesMaster(): Promise<LookupRef[]> {
   return authFetch<LookupRef[]>("/candidate/masters/languages");
+}
+
+export function getSkillsMaster(search?: string): Promise<LookupRef[]> {
+  const query = search ? `?search=${encodeURIComponent(search)}` : "";
+  return authFetch<LookupRef[]>(`/candidate/masters/skills${query}`);
+}
+
+// Same "add other" convention job posting uses — matches by name
+// case-insensitively and creates it unverified if nothing matched.
+export function findOrCreateSkill(name: string): Promise<LookupRef> {
+  return authFetch<LookupRef>("/candidate/masters/skills/find-or-create", {
+    method: "POST",
+    body: JSON.stringify({ name }),
+  });
 }
 
 export interface EducationQualificationOption extends LookupRef {
@@ -365,6 +392,33 @@ export function deleteLanguage(id: number): Promise<void> {
 }
 
 // ---------------------------------------------------------------------------
+// Skills
+// ---------------------------------------------------------------------------
+
+export interface CandidateSkillRecord {
+  id: number;
+  candidate_id: number;
+  skill_id: number;
+  created_at: string;
+  skill: LookupRef;
+}
+
+export function getSkills(): Promise<CandidateSkillRecord[]> {
+  return authFetch<CandidateSkillRecord[]>("/candidate/profile/skills");
+}
+
+export function addSkill(skill_id: number): Promise<CandidateSkillRecord> {
+  return authFetch<CandidateSkillRecord>("/candidate/profile/skills", {
+    method: "POST",
+    body: JSON.stringify({ skill_id }),
+  });
+}
+
+export function deleteSkill(id: number): Promise<void> {
+  return authFetch<void>(`/candidate/profile/skills/${id}`, { method: "DELETE" });
+}
+
+// ---------------------------------------------------------------------------
 // Resume
 // ---------------------------------------------------------------------------
 
@@ -393,6 +447,17 @@ export function updateResume(file: File): Promise<ResumeInfo> {
   const formData = new FormData();
   formData.set("resume", file);
   return authFetch<ResumeInfo>("/candidate/profile/resume", { method: "PUT", body: formData });
+}
+
+export interface AiResumeResult {
+  ai_resume_url: string;
+}
+
+// Builds a fresh resume PDF from the candidate's current employment/
+// education/skills/languages plus an AI-written summary — stored separately
+// (ai_resume_url), never overwrites the candidate's own uploaded resume.
+export function regenerateResume(): Promise<AiResumeResult> {
+  return authFetch<AiResumeResult>("/candidate/profile/resume/generate", { method: "POST" });
 }
 
 // ---------------------------------------------------------------------------

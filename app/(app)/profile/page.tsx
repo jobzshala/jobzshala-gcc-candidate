@@ -12,6 +12,7 @@ import {
   BriefcaseIcon,
   GraduationCapIcon,
   GlobeIcon,
+  AwardIcon,
 } from "@/components/ui/icons";
 import ProfileTopBar from "@/components/profile/ProfileTopBar";
 import JourneyStepper from "@/components/dashboard/JourneyStepper";
@@ -23,6 +24,7 @@ import RecruiterCard from "@/components/dashboard/RecruiterCard";
 import MyInterviewsCard from "@/components/dashboard/MyInterviewsCard";
 import ReadinessScoreCard from "@/components/dashboard/ReadinessScoreCard";
 import ActivityCard from "@/components/dashboard/ActivityCard";
+import SkillsSection from "@/components/profile/SkillsSection";
 import VerifiedStrip from "@/components/dashboard/VerifiedStrip";
 import DashboardSkeleton from "@/components/dashboard/DashboardSkeleton";
 import { getDocumentIcon } from "@/lib/documentIcon";
@@ -31,11 +33,13 @@ import {
   getEmploymentHistory,
   getEducationHistory,
   getLanguages,
+  getSkills,
   getDocuments,
   type CandidateProfile,
   type EmploymentRecord,
   type EducationRecord,
   type CandidateLanguageRecord,
+  type CandidateSkillRecord,
   type DocumentRecord,
 } from "@/lib/api/candidate";
 import { getMatches } from "@/lib/api/matches";
@@ -63,19 +67,22 @@ export default function DashboardProfilePage() {
   const [employment, setEmployment] = useState<EmploymentRecord[]>([]);
   const [education, setEducation] = useState<EducationRecord[]>([]);
   const [languages, setLanguages] = useState<CandidateLanguageRecord[]>([]);
+  const [skills, setSkills] = useState<CandidateSkillRecord[]>([]);
   const [documents, setDocuments] = useState<DocumentRecord[]>([]);
   const [matchesTotal, setMatchesTotal] = useState<number | null>(null);
   const [interviewsTotal, setInterviewsTotal] = useState<number | null>(null);
+  const [editingSkills, setEditingSkills] = useState(false);
 
   const load = async () => {
     setLoading(true);
     setLoadError(false);
     try {
-      const [profileData, employmentData, educationData, languagesData, documentsData, matchesData, interviewsData] = await Promise.all([
+      const [profileData, employmentData, educationData, languagesData, skillsData, documentsData, matchesData, interviewsData] = await Promise.all([
         getProfile(),
         getEmploymentHistory(),
         getEducationHistory(),
         getLanguages(),
+        getSkills(),
         getDocuments(),
         // limit: 1 — this card only needs pagination.total, not the rows.
         getMatches({ limit: 1 }).catch(() => null),
@@ -85,6 +92,7 @@ export default function DashboardProfilePage() {
       setEmployment(employmentData);
       setEducation(educationData);
       setLanguages(languagesData);
+      setSkills(skillsData);
       setDocuments(documentsData);
       setMatchesTotal(matchesData?.pagination.total ?? null);
       setInterviewsTotal(interviewsData?.length ?? null);
@@ -106,6 +114,17 @@ export default function DashboardProfilePage() {
     }
   };
 
+  // Same idea for skills — SkillsSection manages its own add/remove calls
+  // and reports the new count, but this page keeps its own read-only copy
+  // for the collapsed (non-editing) pill display, which needs a refetch too.
+  const refreshSkills = async () => {
+    try {
+      setSkills(await getSkills());
+    } catch {
+      // Keep showing the last known-good list.
+    }
+  };
+
   useEffect(() => {
     // Fetch-on-mount — load()'s setState calls happen inside its own async
     // continuation, not synchronously in this effect body.
@@ -118,9 +137,10 @@ export default function DashboardProfilePage() {
       employmentCount: employment.length,
       educationCount: education.length,
       languagesCount: languages.length,
+      skillsCount: skills.length,
       documentsCount: documents.length,
     }),
-    [employment, education, languages, documents]
+    [employment, education, languages, skills, documents]
   );
 
   const completion = useMemo(() => (profile ? getProfileCompletion({ profile, ...counts }) : null), [profile, counts]);
@@ -230,6 +250,31 @@ export default function DashboardProfilePage() {
               </div>
             ) : (
               <p style={{ fontSize: 12, color: "var(--ink-faint)" }}>No languages added yet.</p>
+            )}
+          </DetailCard>
+
+          {/* SKILLS */}
+          <DetailCard
+            id="skills"
+            icon={AwardIcon}
+            title="Skills"
+            onEdit={() => setEditingSkills((e) => !e)}
+            editLabel={editingSkills ? "Cancel" : "Manage"}
+            complete={skills.length > 0}
+            footerLabel={`${skills.length} added`}
+          >
+            {editingSkills ? (
+              <SkillsSection onCountChange={() => refreshSkills()} />
+            ) : skills.length > 0 ? (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {skills.map((s) => (
+                  <span key={s.id} className="status-pill" style={{ background: "var(--paper-soft)", color: "var(--ink)" }}>
+                    {s.skill.name}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p style={{ fontSize: 12, color: "var(--ink-faint)" }}>No skills added yet.</p>
             )}
           </DetailCard>
 

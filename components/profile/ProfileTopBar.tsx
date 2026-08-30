@@ -2,7 +2,12 @@ import { useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import type { CandidateProfile } from "@/lib/api/candidate";
-import { sendEmailVerificationOtp, confirmEmailVerificationOtp } from "@/lib/api/candidate";
+import {
+  sendEmailVerificationOtp,
+  confirmEmailVerificationOtp,
+  sendMobileVerificationOtp,
+  confirmMobileVerificationOtp,
+} from "@/lib/api/candidate";
 import { ApiError } from "@/lib/api/client";
 import VerifiedBadge from "@/components/profile/VerifiedBadge";
 import ProfileImageUploader from "@/components/profile/ProfileImageUploader";
@@ -27,6 +32,12 @@ export default function ProfileTopBar({ profile, completionPercent, onImageChang
   const [otp, setOtp] = useState("");
   const [verifyError, setVerifyError] = useState("");
   const [verifyNotice, setVerifyNotice] = useState("");
+
+  const [mobileVerified, setMobileVerified] = useState(profile.is_mobile_verified);
+  const [mobileVerifyStage, setMobileVerifyStage] = useState<VerifyStage>("idle");
+  const [mobileOtp, setMobileOtp] = useState("");
+  const [mobileVerifyError, setMobileVerifyError] = useState("");
+  const [mobileVerifyNotice, setMobileVerifyNotice] = useState("");
 
   const locationLine = [profile.city?.name, profile.current_country?.name].filter(Boolean).join(", ");
   const ageGenderLine = [
@@ -72,6 +83,35 @@ export default function ProfileTopBar({ profile, completionPercent, onImageChang
     }
   };
 
+  const handleSendMobileOtp = async () => {
+    setMobileVerifyError("");
+    setMobileVerifyNotice("");
+    setMobileVerifyStage("sending");
+    try {
+      await sendMobileVerificationOtp();
+      setMobileVerifyStage("otp");
+      setMobileVerifyNotice("Verification code sent to your WhatsApp.");
+    } catch (err) {
+      setMobileVerifyError(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
+      setMobileVerifyStage("idle");
+    }
+  };
+
+  const handleConfirmMobileOtp = async () => {
+    setMobileVerifyError("");
+    setMobileVerifyStage("confirming");
+    try {
+      await confirmMobileVerificationOtp(mobileOtp);
+      setMobileVerified(true);
+      setMobileVerifyStage("idle");
+      setMobileOtp("");
+      setMobileVerifyNotice("");
+    } catch (err) {
+      setMobileVerifyError(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
+      setMobileVerifyStage("otp");
+    }
+  };
+
   return (
     <div className="hero">
       <div className="hero-row">
@@ -102,9 +142,15 @@ export default function ProfileTopBar({ profile, completionPercent, onImageChang
                 <PhoneIcon className="icon" />
                 {profile.mobile_number}
                 <VerifiedBadge
-                  verified={profile.is_mobile_verified}
-                  label={profile.is_mobile_verified ? t("profile.personalDetails.verifiedLabel") : t("profile.personalDetails.notVerifiedLabel")}
+                  verified={mobileVerified}
+                  label={mobileVerified ? t("profile.personalDetails.verifiedLabel") : t("profile.personalDetails.notVerifiedLabel")}
                 />
+                {!mobileVerified && mobileVerifyStage === "idle" && (
+                  <button type="button" onClick={handleSendMobileOtp} className="text-xs font-medium underline underline-offset-2 hover:opacity-80">
+                    Verify via WhatsApp
+                  </button>
+                )}
+                {!mobileVerified && mobileVerifyStage === "sending" && <span className="text-xs opacity-70">Sending…</span>}
               </span>
             )}
             {profile.email && (
@@ -151,6 +197,34 @@ export default function ProfileTopBar({ profile, completionPercent, onImageChang
           )}
           {verifyNotice && <p className="mt-1 text-xs opacity-80">{verifyNotice}</p>}
           {verifyError && <p className="mt-1 text-xs text-red-200">{verifyError}</p>}
+
+          {!mobileVerified && (mobileVerifyStage === "otp" || mobileVerifyStage === "confirming") && (
+            <div className="mt-1.5 flex flex-wrap items-center gap-2">
+              <input
+                type="text"
+                inputMode="numeric"
+                maxLength={6}
+                value={mobileOtp}
+                onChange={(e) => setMobileOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                placeholder="6-digit code"
+                className="w-28 rounded-lg border border-white/25 bg-white/10 px-2.5 py-1.5 text-sm text-white placeholder:text-white/40 focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={handleConfirmMobileOtp}
+                disabled={mobileOtp.length !== 6 || mobileVerifyStage === "confirming"}
+                className="btn-white"
+                style={{ opacity: mobileOtp.length !== 6 || mobileVerifyStage === "confirming" ? 0.6 : 1 }}
+              >
+                {mobileVerifyStage === "confirming" ? "Verifying…" : "Confirm"}
+              </button>
+              <button type="button" onClick={handleSendMobileOtp} className="text-xs font-medium underline underline-offset-2 opacity-80 hover:opacity-100">
+                Resend
+              </button>
+            </div>
+          )}
+          {mobileVerifyNotice && <p className="mt-1 text-xs opacity-80">{mobileVerifyNotice}</p>}
+          {mobileVerifyError && <p className="mt-1 text-xs text-red-200">{mobileVerifyError}</p>}
 
           <div className="contact-line" style={{ marginBottom: 0 }}>
             {locationLine && (

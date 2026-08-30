@@ -6,6 +6,7 @@ import {
   getEmploymentHistory,
   getEducationHistory,
   getLanguages,
+  getSkills,
   getDocuments,
   type CandidateProfile,
 } from "@/lib/api/candidate";
@@ -14,6 +15,7 @@ export interface CompletionCounts {
   employmentCount: number;
   educationCount: number;
   languagesCount: number;
+  skillsCount: number;
   documentsCount: number;
 }
 
@@ -28,6 +30,7 @@ export function useCandidateProfileData() {
     employmentCount: 0,
     educationCount: 0,
     languagesCount: 0,
+    skillsCount: 0,
     documentsCount: 0,
   });
 
@@ -35,11 +38,12 @@ export function useCandidateProfileData() {
     setLoading(true);
     setLoadError(false);
     try {
-      const [profileData, employment, education, languages, documents] = await Promise.all([
+      const [profileData, employment, education, languages, skills, documents] = await Promise.all([
         getProfile(),
         getEmploymentHistory(),
         getEducationHistory(),
         getLanguages(),
+        getSkills(),
         getDocuments(),
       ]);
       setProfile(profileData);
@@ -47,6 +51,7 @@ export function useCandidateProfileData() {
         employmentCount: employment.length,
         educationCount: education.length,
         languagesCount: languages.length,
+        skillsCount: skills.length,
         documentsCount: documents.length,
       });
     } catch {
@@ -83,6 +88,7 @@ export function useCandidateProfileData() {
     onEmploymentCountChange: setCount("employmentCount"),
     onEducationCountChange: setCount("educationCount"),
     onLanguagesCountChange: setCount("languagesCount"),
+    onSkillsCountChange: setCount("skillsCount"),
     onDocumentsCountChange: setCount("documentsCount"),
   };
 }

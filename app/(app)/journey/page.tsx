@@ -14,11 +14,13 @@ import {
   getEmploymentHistory,
   getEducationHistory,
   getLanguages,
+  getSkills,
   getDocuments,
   type CandidateProfile,
   type EmploymentRecord,
   type EducationRecord,
   type CandidateLanguageRecord,
+  type CandidateSkillRecord,
   type DocumentRecord,
 } from "@/lib/api/candidate";
 import { getProfileCompletion } from "@/lib/profileCompletion";
@@ -38,23 +40,26 @@ export default function DashboardJourneyPage() {
   const [employment, setEmployment] = useState<EmploymentRecord[]>([]);
   const [education, setEducation] = useState<EducationRecord[]>([]);
   const [languages, setLanguages] = useState<CandidateLanguageRecord[]>([]);
+  const [skills, setSkills] = useState<CandidateSkillRecord[]>([]);
   const [documents, setDocuments] = useState<DocumentRecord[]>([]);
 
   const load = async () => {
     setLoading(true);
     setLoadError(false);
     try {
-      const [profileData, employmentData, educationData, languagesData, documentsData] = await Promise.all([
+      const [profileData, employmentData, educationData, languagesData, skillsData, documentsData] = await Promise.all([
         getProfile(),
         getEmploymentHistory(),
         getEducationHistory(),
         getLanguages(),
+        getSkills(),
         getDocuments(),
       ]);
       setProfile(profileData);
       setEmployment(employmentData);
       setEducation(educationData);
       setLanguages(languagesData);
+      setSkills(skillsData);
       setDocuments(documentsData);
     } catch {
       setLoadError(true);
@@ -75,9 +80,10 @@ export default function DashboardJourneyPage() {
       employmentCount: employment.length,
       educationCount: education.length,
       languagesCount: languages.length,
+      skillsCount: skills.length,
       documentsCount: documents.length,
     }),
-    [employment, education, languages, documents]
+    [employment, education, languages, skills, documents]
   );
 
   const completion = useMemo(() => (profile ? getProfileCompletion({ profile, ...counts }) : null), [profile, counts]);
