@@ -17,6 +17,8 @@ import {
   CloseIcon,
   ChatIcon,
   CalendarIcon,
+  SettingsIcon,
+  MicIcon,
 } from "@/components/ui/icons";
 import { ROUTES } from "@/lib/routes";
 
@@ -44,6 +46,9 @@ export default function Sidebar({ onClose, whatsappNumber, whatsappMessage }: Si
   const items: NavItem[] = [
     { key: "profile", label: t("dashboard.nav.profile"), href: ROUTES.profile, icon: UserIcon },
     { key: "overview", label: t("dashboard.nav.myJourney"), href: ROUTES.journey, icon: CompassIcon },
+    // Static UI only for now — the flow runs on dummy data until the
+    // voice-resume backend lands (see VOICE-RESUME-BUILDER-SPRINT-PLAN.md).
+    { key: "voiceResume", label: t("dashboard.nav.voiceResume"), href: ROUTES.voiceResume, icon: MicIcon },
     { key: "matches", label: t("dashboard.nav.matches"), href: ROUTES.matches, icon: TargetIcon },
     // Applications is a real route now (app/(app)/applications/page.tsx) —
     // still sample data under the hood since GET /candidate/applications
@@ -56,7 +61,8 @@ export default function Sidebar({ onClose, whatsappNumber, whatsappMessage }: Si
     { key: "messages", label: t("dashboard.nav.messages"), href: null, icon: MailIcon },
     { key: "documents", label: t("dashboard.nav.documents"), href: ROUTES.documents, icon: FolderIcon },
     { key: "subscription", label: t("dashboard.nav.subscription"), href: ROUTES.subscription, icon: CreditCardIcon },
-    { key: "support", label: t("dashboard.nav.support"), href: ROUTES.contactUs, icon: QuestionIcon },
+    { key: "support", label: t("dashboard.nav.support"), href: ROUTES.support, icon: QuestionIcon },
+    { key: "settings", label: t("dashboard.nav.settings"), href: ROUTES.settings, icon: SettingsIcon },
   ];
 
   const isActive = (href: string | null) => {

@@ -1,9 +1,10 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import FormInput from "@/components/ui/FormInput";
 import FormTextarea from "@/components/ui/FormTextarea";
 import { ContactFormError, submitContactLead } from "@/lib/api/contact";
+import { useClientSession } from "@/lib/auth/useClientSession";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -13,11 +14,25 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const TOPICS = ["Hiring workforce", "Registering as a candidate", "Partnership", "Something else"];
 
 export default function ContactForm() {
+  const session = useClientSession();
   const [form, setForm] = useState({ name: "", email: "", phone: "", subject: TOPICS[0], message: "" });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  // Session resolves a moment after mount (see useClientSession). Fill the
+  // identity fields once, from whatever the candidate already told us at
+  // registration — never overwrite something they've since typed themselves.
+  useEffect(() => {
+    if (!session) return;
+    setForm((prev) => ({
+      ...prev,
+      name: prev.name || session.candidate.full_name,
+      email: prev.email || session.candidate.email,
+      phone: prev.phone || session.candidate.mobile_number,
+    }));
+  }, [session]);
 
   const handleChange = (field: keyof typeof form) => (e: { target: { value: string } }) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -68,7 +83,9 @@ export default function ContactForm() {
       <div className="rounded-2xl border border-jz-grey-400 bg-jz-bg-primary p-8 text-center">
         <h3 className="font-serif text-xl font-semibold text-jz-white-50">Thanks for reaching out</h3>
         <p className="mt-2 text-sm text-jz-white-400">
-          We&apos;ve received your message and will get back to you shortly.
+          {session
+            ? `We've received your message and will get back to you at ${form.email} shortly.`
+            : "We've received your message and will get back to you shortly."}
         </p>
       </div>
     );
@@ -76,6 +93,13 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="rounded-2xl border border-jz-grey-400 bg-jz-bg-primary p-6 sm:p-8">
+      {session && (
+        <p className="mb-5 text-sm text-jz-white-400">
+          Hi <span className="font-medium text-jz-white-100">{session.candidate.full_name.split(" ")[0]}</span>
+          {" "}— we&apos;ve filled in your details below, so you can go straight to your message.
+        </p>
+      )}
+
       {error && (
         <div className="mb-5 rounded-xl border border-jz-red-600/40 bg-jz-red-600/10 px-3.5 py-2.5 text-sm text-jz-red-600">
           {error}

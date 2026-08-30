@@ -1,9 +1,15 @@
+"use client";
+
 import Link from "next/link";
 import { MailIcon, QuestionIcon } from "@/components/ui/icons";
+import { useClientSession } from "@/lib/auth/useClientSession";
+import { ROUTES } from "@/lib/routes";
 
 const GCC_COUNTRIES = ["UAE", "Saudi Arabia", "Qatar", "Oman", "Kuwait", "Bahrain"];
 
 export default function ContactInfo() {
+  const session = useClientSession();
+
   return (
     <div className="flex flex-col gap-6">
       <div className="rounded-2xl border border-jz-grey-400 bg-jz-bg-primary p-6">
@@ -54,20 +60,38 @@ export default function ContactInfo() {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-jz-grey-400 bg-jz-bg-primary p-6">
-        <h3 className="font-serif text-lg font-semibold text-jz-white-50">Already looking for a job or hire?</h3>
-        <p className="mt-2 text-sm text-jz-white-400">
-          Skip the queue — register directly and our team will follow up as part of your onboarding.
-        </p>
-        <div className="mt-4 flex flex-col gap-2 text-sm">
-          <Link href="/register?role=candidate" className="font-medium text-jz-yellow-400 hover:underline">
-            Register as a candidate →
-          </Link>
-          <Link href="/pricing" className="font-medium text-jz-yellow-400 hover:underline">
-            View employer plans →
-          </Link>
+      {session ? (
+        <div className="rounded-2xl border border-jz-grey-400 bg-jz-bg-primary p-6">
+          <h3 className="font-serif text-lg font-semibold text-jz-white-50">Already have an account</h3>
+          <p className="mt-2 text-sm text-jz-white-400">
+            For faster help on an active application or your profile, your dashboard has more context on your case
+            than this form does.
+          </p>
+          <div className="mt-4 flex flex-col gap-2 text-sm">
+            <Link href={ROUTES.journey} className="font-medium text-jz-yellow-400 hover:underline">
+              Go to My Journey →
+            </Link>
+            <Link href={ROUTES.applications} className="font-medium text-jz-yellow-400 hover:underline">
+              View my applications →
+            </Link>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="rounded-2xl border border-jz-grey-400 bg-jz-bg-primary p-6">
+          <h3 className="font-serif text-lg font-semibold text-jz-white-50">Already looking for a job or hire?</h3>
+          <p className="mt-2 text-sm text-jz-white-400">
+            Skip the queue — register directly and our team will follow up as part of your onboarding.
+          </p>
+          <div className="mt-4 flex flex-col gap-2 text-sm">
+            <Link href="/register?role=candidate" className="font-medium text-jz-yellow-400 hover:underline">
+              Register as a candidate →
+            </Link>
+            <Link href="/pricing" className="font-medium text-jz-yellow-400 hover:underline">
+              View employer plans →
+            </Link>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

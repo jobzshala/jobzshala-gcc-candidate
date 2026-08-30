@@ -22,6 +22,7 @@ import {
   SunIcon,
   MoonIcon,
   ChatIcon,
+  SettingsIcon,
 } from "@/components/ui/icons";
 import { clearSession as clearRawSession } from "@/lib/auth/session";
 import { clearSession as clearReduxSession } from "@/lib/store/authSlice";
@@ -37,6 +38,9 @@ const PAGE_TITLES: { match: (path: string) => boolean; titleKey: string; subKey:
   { match: (p) => p.startsWith(ROUTES.applications), titleKey: "dashboard.nav.applications", subKey: "dashboard.topbar.applicationsSub" },
   { match: (p) => p.startsWith(ROUTES.subscription), titleKey: "dashboard.nav.subscription", subKey: "dashboard.topbar.subscriptionSub" },
   { match: (p) => p.startsWith(ROUTES.documents), titleKey: "dashboard.nav.documents", subKey: "dashboard.topbar.documentsSub" },
+  { match: (p) => p.startsWith(ROUTES.support), titleKey: "dashboard.nav.support", subKey: "dashboard.topbar.supportSub" },
+  { match: (p) => p.startsWith(ROUTES.settings), titleKey: "dashboard.nav.settings", subKey: "dashboard.topbar.settingsSub" },
+  { match: (p) => p.startsWith(ROUTES.voiceResume), titleKey: "dashboard.nav.voiceResume", subKey: "dashboard.topbar.voiceResumeSub" },
 ];
 
 function ThemeIconPill() {
@@ -132,6 +136,7 @@ function UserChipMenu({ name, onLogout }: { name: string; onLogout: () => void }
     { label: t("dashboard.nav.matches"), href: ROUTES.matches, icon: TargetIcon },
     { label: t("dashboard.nav.subscription"), href: ROUTES.subscription, icon: CreditCardIcon },
     { label: t("dashboard.nav.changePassword"), href: ROUTES.changePassword, icon: LockIcon },
+    { label: t("dashboard.nav.settings"), href: ROUTES.settings, icon: SettingsIcon },
   ];
 
   return (

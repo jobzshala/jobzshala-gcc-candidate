@@ -28,6 +28,7 @@ export const ROUTES = {
   forgotPassword: "/forgot-password",
   resetPassword: "/reset-password",
   changePassword: "/change-password",
+  settings: "/settings",
 
   // Flat top-level paths (no shared /dashboard prefix) — all share the
   // (app) route group's layout/shell, see app/(app)/layout.tsx.
@@ -42,6 +43,7 @@ export const ROUTES = {
   profileEmployment: "/profile#employment",
   profileEducation: "/profile#education",
   profileLanguages: "/profile#languages",
+  profileSkills: "/profile#skills",
   profileResume: "/profile#resume",
   profileVideo: "/profile#video",
   profileDocuments: "/profile#documents",
@@ -50,6 +52,8 @@ export const ROUTES = {
   interviews: "/interviews",
   subscription: "/subscription",
   documents: "/documents",
+  support: "/support",
+  voiceResume: "/voice-resume",
 
   privacyPolicy: "/privacy-policy",
   termsConditions: "/terms-conditions",
