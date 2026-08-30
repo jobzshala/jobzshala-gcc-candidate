@@ -55,7 +55,7 @@ function InterviewCard({ interview }: { interview: MyInterview }) {
           href={interview.meeting_link}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 inline-flex items-center justify-center rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
+          className="mt-4 inline-flex items-center justify-center rounded-xl bg-gradient-to-b from-jz-yellow-300 to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
         >
           Join interview
         </a>

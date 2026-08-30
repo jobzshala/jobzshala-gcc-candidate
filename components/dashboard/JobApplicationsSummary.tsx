@@ -1,81 +1,69 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AlertIcon } from "@/components/ui/icons";
 import { ROUTES } from "@/lib/routes";
-import { SAMPLE_APPLICATIONS } from "./jobApplicationsData";
+import { getMyInterests, type JobInterest } from "@/lib/api/jobs";
+import { formatLocation } from "./jobApplicationsData";
+
+const PREVIEW_COUNT = 4;
 
 // The condensed counterpart to the full /applications workspace — Journey
-// only needs to answer "how many, and does anything need me right now,"
-// not re-render every card with its full timeline (that duplicated the
-// Applications page one-for-one, which is what "journey aur applications
-// same lag raha hai" was about). The one application whose statusKind is
-// "action" (an offer waiting on a response) surfaces as the highlighted
-// card; everything else is a plain row.
+// only needs "how many jobs have you shown interest in," not every card
+// re-rendered here (that duplicated the Applications page one-for-one,
+// which is what "journey aur applications same lag raha hai" was about).
 export default function JobApplicationsSummary() {
-  const urgent = SAMPLE_APPLICATIONS.find((app) => app.statusKind === "action");
-  const rest = SAMPLE_APPLICATIONS.filter((app) => app.id !== urgent?.id);
-  const activeCount = SAMPLE_APPLICATIONS.filter((app) => app.statusKind !== "closed").length;
+  const [interests, setInterests] = useState<JobInterest[] | null>(null);
+
+  useEffect(() => {
+    getMyInterests({ status: "INTERESTED", limit: PREVIEW_COUNT })
+      .then((page) => setInterests(page.data))
+      .catch(() => setInterests([]));
+  }, []);
+
+  if (interests === null) {
+    return (
+      <div className="card">
+        <div className="card-body">
+          <h3>Your Job Applications</h3>
+        </div>
+      </div>
+    );
+  }
+
+  if (interests.length === 0) {
+    return (
+      <div className="card">
+        <div className="card-body">
+          <h3>Your Job Applications</h3>
+          <p className="card-note" style={{ marginTop: 8 }}>
+            No applications yet — express interest in a job from Job Matches to see it here.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="card">
       <div className="card-body">
         <div className="card-head">
           <h3>Your Job Applications</h3>
-          <span className="jbadge jbadge-preview">Preview · sample data</span>
         </div>
         <p className="card-note">
-          <strong style={{ color: "var(--ink)" }}>{activeCount} active applications</strong>
-          {urgent && (
-            <>
-              {" · "}
-              <strong style={{ color: "var(--amber)" }}>1 needs your attention</strong>
-            </>
-          )}
+          <strong style={{ color: "var(--ink)" }}>{interests.length} active application{interests.length === 1 ? "" : "s"}</strong>
         </p>
 
-        {urgent && (
-          <div className="urgent-jcard">
-            <div className="urgent-badge">
-              <AlertIcon className="icon" />
-              Needs your response
-            </div>
-            <div className="jcard-head" style={{ marginTop: 8 }}>
-              <div className="jcard-title">
-                <h4>{urgent.title}</h4>
-                <div className="meta">
-                  <span>{urgent.employer}</span>
-                  <span>·</span>
-                  <span>{urgent.location}</span>
-                  <span>·</span>
-                  <span className="sal">{urgent.salary}</span>
-                </div>
-              </div>
-              <span className={`jbadge jbadge-${urgent.statusKind}`}>{urgent.statusLabel}</span>
-            </div>
-            <div className="urgent-actions">
-              <button type="button" className="btn-outline" disabled title="Coming soon">
-                {urgent.actionLabel}
-              </button>
-              {urgent.primaryAction && (
-                <button type="button" className="btn-solid" disabled title="Coming soon">
-                  {urgent.primaryAction}
-                </button>
-              )}
-            </div>
-          </div>
-        )}
-
         <div className="jrow-list">
-          {rest.map((app) => (
+          {interests.map((app) => (
             <div key={app.id} className="jrow">
               <div className="jrow-main">
-                <span className="jrow-title" style={app.statusKind === "closed" ? { color: "var(--ink-soft)" } : undefined}>
-                  {app.title}
-                </span>
+                <span className="jrow-title">{app.job.job_title.name}</span>
                 <span className="jrow-meta">
-                  {app.employer} · {app.location}
+                  {app.job.employer.company_name} · {formatLocation(app)}
                 </span>
               </div>
-              <span className={`jbadge jbadge-${app.statusKind}`}>{app.statusLabel}</span>
+              <span className="jbadge jbadge-progress">Interested</span>
             </div>
           ))}
         </div>

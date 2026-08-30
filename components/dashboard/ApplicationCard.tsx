@@ -1,110 +1,35 @@
-"use client";
+import type { JobInterest } from "@/lib/api/jobs";
+import { formatAppliedDate, formatLocation, formatSalary } from "./jobApplicationsData";
 
-import { useState } from "react";
-import { STAGES, stagePercent, type JobApplication } from "./jobApplicationsData";
-
-export function StageTrack({ stageIndex, rejectedAt }: { stageIndex: number; rejectedAt?: number }) {
-  const total = STAGES.length;
-  const trackStart = stagePercent(0, total);
-
-  const segments =
-    rejectedAt === undefined
-      ? [{ left: trackStart, width: stagePercent(stageIndex, total) - trackStart, kind: "done" as const }]
-      : [
-          ...(rejectedAt > 0
-            ? [{ left: trackStart, width: stagePercent(rejectedAt - 1, total) - trackStart, kind: "done" as const }]
-            : []),
-          {
-            left: rejectedAt > 0 ? stagePercent(rejectedAt - 1, total) : trackStart,
-            width: stagePercent(rejectedAt, total) - (rejectedAt > 0 ? stagePercent(rejectedAt - 1, total) : trackStart),
-            kind: "rejected" as const,
-          },
-        ];
+// No stage timeline here — GET /candidate/jobs/interest only carries a
+// binary INTERESTED/NOT_INTERESTED flag per job (job_applications.status),
+// not a multi-stage pipeline. A recruiter following up happens off-platform
+// today, so this card shows what's actually known: the job, when interest
+// was recorded, and the current flag.
+export default function ApplicationCard({ app }: { app: JobInterest }) {
+  const interested = app.status === "INTERESTED";
 
   return (
-    <div className="mtrack">
-      {segments.map((seg, i) => (
-        <div
-          key={i}
-          className={`fill${seg.kind === "rejected" ? " rejected" : ""}`}
-          style={{ left: `${seg.left}%`, width: `${seg.width}%` }}
-        />
-      ))}
-      {STAGES.map((label, i) => {
-        const done = rejectedAt === undefined ? i < stageIndex : i < rejectedAt;
-        const current = rejectedAt === undefined && i === stageIndex;
-        const stopped = rejectedAt === i;
-        const reached = done || current || stopped;
-        return (
-          <div key={label} className={`mnode${done ? " done" : ""}${current ? " current" : ""}${stopped ? " stopped" : ""}`}>
-            <span className="c">{stopped ? "✕" : done ? "✓" : current ? "●" : "○"}</span>
-            <span className="l" style={reached ? undefined : { color: "var(--ink-faint)" }}>
-              {label}
-            </span>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-export default function ApplicationCard({ app, defaultOpen }: { app: JobApplication; defaultOpen: boolean }) {
-  const [open, setOpen] = useState(defaultOpen);
-
-  return (
-    <div className={`jcard${app.statusKind === "closed" ? " rejected" : ""}`}>
+    <div className={`jcard${interested ? "" : " rejected"}`}>
       <div className="jcard-head">
         <div className="jcard-title">
-          <h4>{app.title}</h4>
+          <h4>{app.job.job_title.name}</h4>
           <div className="meta">
-            <span>{app.employer}</span>
+            <span>{app.job.employer.company_name}</span>
             <span>·</span>
-            <span>{app.location}</span>
+            <span>{formatLocation(app)}</span>
             <span>·</span>
-            <span className="sal">{app.salary}</span>
+            <span className="sal">{formatSalary(app)}</span>
           </div>
         </div>
-        <span className={`jbadge jbadge-${app.statusKind}`}>{app.statusLabel}</span>
+        <span className={`jbadge jbadge-${interested ? "progress" : "closed"}`}>
+          {interested ? "Interested" : "Not interested"}
+        </span>
       </div>
 
-      <StageTrack stageIndex={app.stageIndex} rejectedAt={app.rejectedAt} />
-
-      {open && (
-        <div className="tl">
-          {app.timeline.map((entry, i) => {
-            const reachedIndex = app.rejectedAt !== undefined ? app.rejectedAt : app.stageIndex;
-            const state = i < reachedIndex ? "done" : i === reachedIndex ? "current" : "pending";
-            return (
-              <div key={entry.label} className={`tl-row ${state}`}>
-                <span className="dot" />
-                <div className="body">
-                  <div className="head">
-                    <h5>{entry.label}</h5>
-                    <span className="when">{entry.when}</span>
-                  </div>
-                  <p>{entry.description}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      <div className="jcard-foot">
-        <button type="button" className="toggle" onClick={() => setOpen((v) => !v)}>
-          {open ? "▾ Hide timeline" : "▸ Show full timeline"}
-        </button>
-        <div className="actions">
-          <button type="button" className="btn-outline" disabled title="Coming soon">
-            {app.actionLabel}
-          </button>
-          {app.primaryAction && (
-            <button type="button" className="btn-solid" disabled title="Coming soon">
-              {app.primaryAction}
-            </button>
-          )}
-        </div>
-      </div>
+      <p className="card-note" style={{ marginTop: 10 }}>
+        Marked {formatAppliedDate(app.applied_at)} · your recruiter will follow up here once they review it.
+      </p>
     </div>
   );
 }

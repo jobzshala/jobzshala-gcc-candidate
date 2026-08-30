@@ -29,6 +29,11 @@ export interface MatchJob {
   visa_type: { id: number; name: string } | null;
   employer: { id: number; company_name: string; company_logo_url: string | null; slug: string };
   skills: { id: number; name: string }[];
+  // Backend now batch-looks-up job_applications for the visible page and
+  // returns this — see matches.service.ts's getMatches/getMatch. Still
+  // optional/nullable: null means "no interest recorded yet", not a missing
+  // field.
+  interest_status?: "INTERESTED" | "NOT_INTERESTED" | null;
 }
 
 export interface UnlockedMatch {

@@ -12,7 +12,10 @@ import {
   TargetIcon,
 } from "@/components/ui/icons";
 import { getMatches, type Match, type MatchesPage, type UnlockedMatch } from "@/lib/api/matches";
+import { markJobInterest } from "@/lib/api/jobs";
 import { ROUTES } from "@/lib/routes";
+
+type InterestState = "idle" | "saving" | "interested" | "not_interested" | "error";
 
 const PAGE_SIZE = 20;
 
@@ -23,6 +26,62 @@ function formatSalary(match: UnlockedMatch): string {
   // string, but several GCC currency symbols are right-to-left so the code is
   // used when there is no symbol rather than concatenating blindly.
   return `${currency?.symbol ?? `${currency?.code ?? ""} `}${Number(salary).toLocaleString()}`;
+}
+
+// initialStatus comes from match.job.interest_status — undefined today
+// (the backend doesn't return it yet, see lib/api/matches.ts), so this
+// falls back to "idle" exactly like before until that field ships. Once it
+// does, a candidate who already marked interest sees that reflected on
+// load instead of a blank button pair every time they revisit Job Matches.
+function InterestAction({ jobId, initialStatus }: { jobId: number; initialStatus?: "INTERESTED" | "NOT_INTERESTED" | null }) {
+  const [state, setState] = useState<InterestState>(
+    initialStatus === "INTERESTED" ? "interested" : initialStatus === "NOT_INTERESTED" ? "not_interested" : "idle"
+  );
+
+  const act = async (interested: boolean) => {
+    setState("saving");
+    try {
+      await markJobInterest(jobId, interested);
+      setState(interested ? "interested" : "not_interested");
+    } catch {
+      setState("error");
+    }
+  };
+
+  if (state === "interested") {
+    return (
+      <span className="inline-flex items-center gap-1.5 rounded-xl bg-jz-green-500/10 px-4 py-2 text-sm font-semibold text-jz-green-500">
+        <CheckIcon className="size-4" />
+        Interested — your recruiter will follow up
+      </span>
+    );
+  }
+
+  if (state === "not_interested") {
+    return <span className="text-sm text-jz-white-400">Marked not interested</span>;
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      {state === "error" && <span className="text-xs text-jz-red-600">Couldn&apos;t save — try again.</span>}
+      <button
+        type="button"
+        disabled={state === "saving"}
+        onClick={() => act(false)}
+        className="rounded-xl border border-jz-white-600 px-3.5 py-2 text-sm text-jz-white-200 transition-colors hover:bg-jz-blue-950/60 disabled:opacity-50"
+      >
+        Not interested
+      </button>
+      <button
+        type="button"
+        disabled={state === "saving"}
+        onClick={() => act(true)}
+        className="rounded-xl bg-gradient-to-b from-jz-yellow-300 to-jz-yellow-400 px-4 py-2 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90 disabled:opacity-60"
+      >
+        {state === "saving" ? "Saving…" : "I'm interested"}
+      </button>
+    </div>
+  );
 }
 
 function UnlockedCard({ match }: { match: UnlockedMatch }) {
@@ -75,6 +134,10 @@ function UnlockedCard({ match }: { match: UnlockedMatch }) {
           <span>{match.reason}</span>
         </p>
       )}
+
+      <div className="mt-4 border-t border-jz-white-800/40 pt-4">
+        <InterestAction jobId={job.id} initialStatus={job.interest_status} />
+      </div>
     </li>
   );
 }
@@ -141,7 +204,7 @@ function Paywall({ access }: { access: MatchesPage["access"] }) {
 
         <Link
           href={ROUTES.subscription}
-          className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-b from-jz-yellow-300 to-jz-yellow-400 px-4 py-2 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
         >
           {expired ? "Renew" : "See plans"}
           <ChevronRightIcon className="size-4" />
@@ -185,7 +248,7 @@ function EmptyMatchesState({ notVerified }: { notVerified: boolean }) {
 
       <Link
         href={ROUTES.profile}
-        className="mt-6 inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-5 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
+        className="mt-6 inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-b from-jz-yellow-300 to-jz-yellow-400 px-5 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
       >
         {notVerified ? "Review your profile" : "Strengthen your profile"}
         <ChevronRightIcon className="size-4" />

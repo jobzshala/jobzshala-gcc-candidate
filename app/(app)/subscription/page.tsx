@@ -208,7 +208,7 @@ export default function SubscriptionPage() {
                   type="button"
                   disabled={isCurrent || startingPlanId !== null}
                   onClick={() => void subscribe(plan)}
-                  className="mt-5 w-full rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90 disabled:opacity-50"
+                  className="mt-5 w-full rounded-xl bg-gradient-to-b from-jz-yellow-300 to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90 disabled:opacity-50"
                 >
                   {isCurrent
                     ? "Current plan"
