@@ -305,6 +305,18 @@
       "incorrectPassword": "Incorrect password. Please try again.",
       "tooManyAttempts": "Too many attempts. Please try again in a few minutes.",
       "generic": "Something went wrong. Please try again."
+    },
+    "reactivate": {
+      "title": "Reactivate Your Account",
+      "subtitle": "Enter the 6-digit code we emailed you to turn your account back on.",
+      "otpLabel": "Verification Code",
+      "otpPlaceholder": "6-digit code",
+      "submit": "Reactivate Account",
+      "submitting": "Reactivating...",
+      "resend": "Didn't get a code? Resend",
+      "resendSent": "A new code has been sent to your email.",
+      "invalidOtp": "Enter the 6-digit code we emailed you.",
+      "back": "Back to login"
     }
   },
   "register": {
@@ -423,8 +435,11 @@
   "changePassword": {
     "title": "Set your new password",
     "subtitle": "For security, change the temporary password we emailed to {{email}} before continuing.",
+    "subtitleVoluntary": "Choose a new password to keep your account secure.",
     "oldPasswordLabel": "Temporary password",
     "oldPasswordHint": "The password we sent to your email.",
+    "currentPasswordLabel": "Current password",
+    "currentPasswordHint": "The password you currently sign in with.",
     "newPasswordLabel": "New password",
     "newPasswordHint": "At least 8 characters, with a letter, a number and a special character.",
     "confirmPasswordLabel": "Confirm new password",
@@ -433,6 +448,7 @@
     "logout": "Log out",
     "errors": {
       "oldPassword": "Enter the temporary password from your email.",
+      "currentPassword": "Enter your current password.",
       "newPassword": "Password must be at least 8 characters, with a letter, a number and a special character.",
       "confirmPassword": "Passwords do not match.",
       "generic": "Something went wrong. Please try again."
@@ -453,15 +469,20 @@
       "documents": "Documents",
       "subscription": "Subscription",
       "support": "Support",
+      "settings": "Settings",
+      "voiceResume": "Voice Resume",
       "comingSoon": "Coming soon"
     },
     "topbar": {
       "journeySub": "Track your application progress",
       "profileSub": "Manage your workforce profile and documents",
+      "settingsSub": "Manage your account",
       "matchesSub": "Jobs matched to your profile",
       "applicationsSub": "Every job you've applied to, stage by stage",
       "subscriptionSub": "Manage your plan and billing",
-      "documentsSub": "Upload and manage your KYC documents"
+      "documentsSub": "Upload and manage your KYC documents",
+      "supportSub": "Raise an issue and track its status",
+      "voiceResumeSub": "Build your resume by speaking — no typing"
     }
   },
   "profile": {
@@ -610,6 +631,15 @@
       "canWrite": "Write",
       "canSpeak": "Speak"
     },
+    "skills": {
+      "heading": "Skills",
+      "skillLabel": "Skill",
+      "skillPlaceholder": "Select a skill",
+      "add": "Add",
+      "notFound": "Can't find your skill?",
+      "addOtherPlaceholder": "Type a skill name",
+      "addOther": "Add"
+    },
     "resume": {
       "heading": "Resume",
       "notUploaded": "No resume uploaded yet.",
@@ -631,6 +661,13 @@
         "dismiss": "Not now",
         "note": "We'll only fill in details you haven't already added — nothing gets overwritten.",
         "applied": "Applied — check the sections below and add anything we missed."
+      },
+      "aiGenerate": {
+        "title": "AI-polished resume",
+        "subtitle": "Builds a fresh PDF from your current profile — employment, education, skills, and an AI-written summary.",
+        "button": "Generate",
+        "generating": "Generating…",
+        "view": "View generated resume"
       }
     },
     "video": {
@@ -767,6 +804,7 @@
         "employment": "Employment",
         "education": "Education",
         "languages": "Languages",
+        "skills": "Skills",
         "resume": "Resume",
         "video": "Video",
         "documents": "Documents"

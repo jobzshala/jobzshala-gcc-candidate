@@ -98,3 +98,35 @@ export function changePassword(payload: ChangePasswordPayload): Promise<LoginRes
     body: JSON.stringify(payload),
   });
 }
+
+// Self-service deactivation — reversible via reactivateAccount() below
+// (email OTP). Logs the candidate out everywhere server-side, same as the
+// mobile app's flow.
+export function deactivateAccount(reason: string): Promise<void> {
+  return authFetch<void>("/auth/deactivate-account", {
+    method: "POST",
+    body: JSON.stringify({ reason }),
+  });
+}
+
+// Self-service soft delete (Play Store/App Store policy, applied here for
+// parity with the mobile app). No self-service undo — restoring requires
+// contacting support@jobzshala.ae.
+export function deleteAccount(reason: string): Promise<void> {
+  return authFetch<void>("/auth/delete-account", {
+    method: "POST",
+    body: JSON.stringify({ reason }),
+  });
+}
+
+// Completes the OTP challenge login() throws (ApiError.code ===
+// "ACCOUNT_DEACTIVATED") for a deactivated account — the server already
+// emailed the code as a side effect of that failed login attempt, so this is
+// unauthenticated (apiFetch, not authFetch) and logs the candidate straight
+// back in on success, same response shape as login().
+export function reactivateAccount(identifier: string, otp: string): Promise<LoginResult> {
+  return apiFetch<LoginResult>("/auth/reactivate-account", {
+    method: "POST",
+    body: JSON.stringify({ identifier, otp }),
+  });
+}

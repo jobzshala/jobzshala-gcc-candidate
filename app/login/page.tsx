@@ -11,7 +11,7 @@ import FormInput from "@/components/ui/FormInput";
 import Checkbox from "@/components/ui/Checkbox";
 import RoleToggle from "@/components/ui/RoleToggle";
 import { GoogleIcon, ShieldCheckIcon, WhatsAppIcon } from "@/components/ui/icons";
-import { login } from "@/lib/api/auth";
+import { login, reactivateAccount } from "@/lib/api/auth";
 import { saveSession } from "@/lib/auth/session";
 import { setPersistMode } from "@/lib/store/dualStorage";
 import { setSession } from "@/lib/store/authSlice";
@@ -43,6 +43,19 @@ function LoginForm() {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [socialNotice, setSocialNotice] = useState("");
+
+  // Set when login() throws ApiError.code === "ACCOUNT_DEACTIVATED" — the
+  // server has already emailed a reactivation code at that point (see
+  // auth.service.ts's login()), so this just switches to the code-entry
+  // step rather than sending anything itself. ACCOUNT_DEACTIVATED_NO_EMAIL
+  // (no email on file) has no self-service path — reactivationBlocked shows
+  // that message instead of the OTP form.
+  const [needsReactivation, setNeedsReactivation] = useState(false);
+  const [reactivationBlocked, setReactivationBlocked] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpError, setOtpError] = useState("");
+  const [otpNotice, setOtpNotice] = useState("");
+  const [otpSubmitting, setOtpSubmitting] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -83,13 +96,62 @@ function LoginForm() {
         : (next ?? ROUTES.profile);
     } catch (err) {
       if (err instanceof ApiError) {
-        setFieldErrors(err.fieldErrors ?? {});
-        setError(err.message);
+        if (err.code === "ACCOUNT_DEACTIVATED") {
+          setNeedsReactivation(true);
+          setError("");
+        } else if (err.code === "ACCOUNT_DEACTIVATED_NO_EMAIL") {
+          setReactivationBlocked(err.message);
+          setError("");
+        } else {
+          setFieldErrors(err.fieldErrors ?? {});
+          setError(err.message);
+        }
       } else {
         setError(t("login.errors.generic"));
       }
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleReactivateSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setOtpError("");
+    setOtpNotice("");
+
+    if (!/^[0-9]{6}$/.test(otp)) {
+      setOtpError(t("login.reactivate.invalidOtp"));
+      return;
+    }
+
+    setOtpSubmitting(true);
+    try {
+      const result = await reactivateAccount(identifier, otp);
+      saveSession(result, keepSignedIn);
+      setPersistMode(keepSignedIn);
+      dispatch(setSession(result));
+      const next = safeReturnPath(searchParams.get("next"));
+      window.location.href = result.candidate.must_change_password ? ROUTES.changePassword : (next ?? ROUTES.profile);
+    } catch (err) {
+      setOtpError(err instanceof ApiError ? err.message : t("login.errors.generic"));
+      setOtpSubmitting(false);
+    }
+  };
+
+  const handleResendReactivationOtp = async () => {
+    setOtpError("");
+    setOtpNotice("");
+    try {
+      // login() re-sends the code as a side effect while the account is
+      // still deactivated — this just doesn't act on the tokens it would
+      // otherwise return.
+      await login({ identifier, password });
+    } catch (err) {
+      if (err instanceof ApiError && err.code === "ACCOUNT_DEACTIVATED") {
+        setOtpNotice(t("login.reactivate.resendSent"));
+        return;
+      }
+      setOtpError(err instanceof ApiError ? err.message : t("login.errors.generic"));
     }
   };
 
@@ -125,91 +187,172 @@ function LoginForm() {
           </div>
 
           <div className="w-full rounded-2xl border border-jz-border bg-jz-blue-900/40 p-8">
-            <RoleToggle
-              candidateLabel={t("login.roleCandidate")}
-              employerLabel={t("login.roleEmployer")}
-              employerHref="/hire/login"
-            />
+            {needsReactivation ? (
+              <>
+                <h2 className="font-serif text-2xl font-semibold text-jz-white-50">{t("login.reactivate.title")}</h2>
+                <p className="mt-2 text-sm text-jz-white-400">{t("login.reactivate.subtitle")}</p>
 
-            <h2 className="mt-6 font-serif text-2xl font-semibold text-jz-white-50">{t("login.title")}</h2>
-            <p className="mt-2 text-sm text-jz-white-400">{t("login.subtitle")}</p>
+                <form onSubmit={handleReactivateSubmit} className="mt-6 space-y-4">
+                  {otpError && (
+                    <div className="rounded-lg border border-jz-red-600/40 bg-jz-red-600/10 px-3.5 py-2.5 text-sm text-jz-white-100">
+                      {otpError}
+                    </div>
+                  )}
+                  {otpNotice && (
+                    <div className="rounded-lg border border-jz-green-500/40 bg-jz-green-500/10 px-3.5 py-2.5 text-sm text-jz-white-100">
+                      {otpNotice}
+                    </div>
+                  )}
 
-            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-              {error && (
-                <div className="rounded-lg border border-jz-red-600/40 bg-jz-red-600/10 px-3.5 py-2.5 text-sm text-jz-white-100">
-                  {error}
+                  <FormInput
+                    label={t("login.reactivate.otpLabel")}
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                    placeholder={t("login.reactivate.otpPlaceholder")}
+                    inputMode="numeric"
+                    maxLength={6}
+                    className="text-center tracking-[0.5em]"
+                  />
+
+                  <button
+                    type="submit"
+                    disabled={otpSubmitting}
+                    className="w-full rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90 disabled:opacity-60"
+                  >
+                    {otpSubmitting ? t("login.reactivate.submitting") : t("login.reactivate.submit")}
+                  </button>
+                </form>
+
+                <p className="mt-4 text-center text-sm text-jz-white-400">
+                  <button
+                    type="button"
+                    onClick={() => void handleResendReactivationOtp()}
+                    className="text-jz-yellow-400 hover:underline"
+                  >
+                    {t("login.reactivate.resend")}
+                  </button>
+                </p>
+
+                <p className="mt-2 text-center text-sm text-jz-white-400">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNeedsReactivation(false);
+                      setOtp("");
+                      setOtpError("");
+                      setOtpNotice("");
+                    }}
+                    className="text-jz-white-200 hover:underline"
+                  >
+                    {t("login.reactivate.back")}
+                  </button>
+                </p>
+              </>
+            ) : reactivationBlocked ? (
+              <>
+                <h2 className="font-serif text-2xl font-semibold text-jz-white-50">{t("login.reactivate.title")}</h2>
+                <div className="mt-4 rounded-lg border border-jz-red-600/40 bg-jz-red-600/10 px-3.5 py-2.5 text-sm text-jz-white-100">
+                  {reactivationBlocked}
                 </div>
-              )}
-
-              <FormInput
-                label={t("login.identifierLabel")}
-                value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
-                placeholder={t("login.identifierPlaceholder")}
-                error={fieldErrors.identifier}
-              />
-
-              <FormInput
-                label={t("login.passwordLabel")}
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder={t("login.passwordPlaceholder")}
-                error={fieldErrors.password}
-              />
-
-              <div className="flex items-center justify-between">
-                <Checkbox
-                  label={t("login.keepSignedIn")}
-                  checked={keepSignedIn}
-                  onChange={(e) => setKeepSignedIn(e.target.checked)}
+                <p className="mt-4 text-center text-sm text-jz-white-400">
+                  <button
+                    type="button"
+                    onClick={() => setReactivationBlocked("")}
+                    className="text-jz-yellow-400 hover:underline"
+                  >
+                    {t("login.reactivate.back")}
+                  </button>
+                </p>
+              </>
+            ) : (
+              <>
+                <RoleToggle
+                  candidateLabel={t("login.roleCandidate")}
+                  employerLabel={t("login.roleEmployer")}
+                  employerHref="/hire/login"
                 />
-                <Link href={ROUTES.forgotPassword} className="text-sm text-jz-yellow-400 hover:underline">
-                  {t("login.forgotPassword")}
-                </Link>
-              </div>
 
-              <button
-                type="submit"
-                disabled={submitting}
-                className="w-full rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90 disabled:opacity-60"
-              >
-                {submitting ? t("login.submitting") : t("login.submit")}
-              </button>
-            </form>
+                <h2 className="mt-6 font-serif text-2xl font-semibold text-jz-white-50">{t("login.title")}</h2>
+                <p className="mt-2 text-sm text-jz-white-400">{t("login.subtitle")}</p>
 
-            <div className="mt-6 flex items-center gap-3">
-              <div className="h-px flex-1 bg-jz-border" />
-              <span className="text-xs text-jz-white-600">{t("login.divider")}</span>
-              <div className="h-px flex-1 bg-jz-border" />
-            </div>
+                <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+                  {error && (
+                    <div className="rounded-lg border border-jz-red-600/40 bg-jz-red-600/10 px-3.5 py-2.5 text-sm text-jz-white-100">
+                      {error}
+                    </div>
+                  )}
 
-            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <button
-                type="button"
-                onClick={() => handleSocialClick("Google")}
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-jz-white-600 px-4 py-2.5 text-sm text-jz-white-100 transition-opacity hover:opacity-90"
-              >
-                <GoogleIcon className="size-4.5" />
-                {t("login.continueWithGoogle")}
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSocialClick("WhatsApp")}
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-jz-white-600 px-4 py-2.5 text-sm text-jz-white-100 transition-opacity hover:opacity-90"
-              >
-                <WhatsAppIcon className="size-4.5" />
-                {t("login.continueWithWhatsApp")}
-              </button>
-            </div>
-            {socialNotice && <p className="mt-3 text-center text-xs text-jz-white-600">{socialNotice}</p>}
+                  <FormInput
+                    label={t("login.identifierLabel")}
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
+                    placeholder={t("login.identifierPlaceholder")}
+                    error={fieldErrors.identifier}
+                  />
 
-            <p className="mt-6 text-center text-sm text-jz-white-400">
-              {t("login.noAccount")}{" "}
-              <Link href={ROUTES.register} className="text-jz-yellow-400 hover:underline">
-                {t("login.registerLink")}
-              </Link>
-            </p>
+                  <FormInput
+                    label={t("login.passwordLabel")}
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder={t("login.passwordPlaceholder")}
+                    error={fieldErrors.password}
+                  />
+
+                  <div className="flex items-center justify-between">
+                    <Checkbox
+                      label={t("login.keepSignedIn")}
+                      checked={keepSignedIn}
+                      onChange={(e) => setKeepSignedIn(e.target.checked)}
+                    />
+                    <Link href={ROUTES.forgotPassword} className="text-sm text-jz-yellow-400 hover:underline">
+                      {t("login.forgotPassword")}
+                    </Link>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90 disabled:opacity-60"
+                  >
+                    {submitting ? t("login.submitting") : t("login.submit")}
+                  </button>
+                </form>
+
+                <div className="mt-6 flex items-center gap-3">
+                  <div className="h-px flex-1 bg-jz-border" />
+                  <span className="text-xs text-jz-white-600">{t("login.divider")}</span>
+                  <div className="h-px flex-1 bg-jz-border" />
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <button
+                    type="button"
+                    onClick={() => handleSocialClick("Google")}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-jz-white-600 px-4 py-2.5 text-sm text-jz-white-100 transition-opacity hover:opacity-90"
+                  >
+                    <GoogleIcon className="size-4.5" />
+                    {t("login.continueWithGoogle")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSocialClick("WhatsApp")}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-jz-white-600 px-4 py-2.5 text-sm text-jz-white-100 transition-opacity hover:opacity-90"
+                  >
+                    <WhatsAppIcon className="size-4.5" />
+                    {t("login.continueWithWhatsApp")}
+                  </button>
+                </div>
+                {socialNotice && <p className="mt-3 text-center text-xs text-jz-white-600">{socialNotice}</p>}
+
+                <p className="mt-6 text-center text-sm text-jz-white-400">
+                  {t("login.noAccount")}{" "}
+                  <Link href={ROUTES.register} className="text-jz-yellow-400 hover:underline">
+                    {t("login.registerLink")}
+                  </Link>
+                </p>
+              </>
+            )}
           </div>
         </div>
 

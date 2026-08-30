@@ -8,12 +8,18 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5
 export class ApiError extends Error {
   fieldErrors?: Record<string, string>;
   status?: number;
+  // Machine-readable reason a handful of endpoints attach alongside message —
+  // e.g. login()'s ACCOUNT_DEACTIVATED/ACCOUNT_DEACTIVATED_NO_EMAIL, which the
+  // login form uses to switch to the reactivation-code step instead of just
+  // showing the message as a generic error.
+  code?: string;
 
-  constructor(message: string, fieldErrors?: Record<string, string>, status?: number) {
+  constructor(message: string, fieldErrors?: Record<string, string>, status?: number, code?: string) {
     super(message);
     this.name = "ApiError";
     this.fieldErrors = fieldErrors;
     this.status = status;
+    this.code = code;
   }
 }
 
@@ -22,6 +28,7 @@ export interface ApiEnvelope<T> {
   message?: string | string[];
   result?: T;
   errors?: Record<string, string>;
+  code?: string;
 }
 
 // Returns the whole envelope. Most endpoints only need `result`, which is
@@ -44,7 +51,7 @@ async function fetchEnvelope<T>(path: string, options: RequestInit = {}): Promis
   if (!response.ok || !data?.status) {
     const rawMessage = data?.message;
     const message = Array.isArray(rawMessage) ? rawMessage[0] : rawMessage;
-    throw new ApiError(message || "Something went wrong. Please try again.", data?.errors, response.status);
+    throw new ApiError(message || "Something went wrong. Please try again.", data?.errors, response.status, data?.code);
   }
 
   return data;

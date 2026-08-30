@@ -21,6 +21,14 @@ export default function ChangePasswordPage() {
   const dispatch = useAppDispatch();
   const session = useAppSelector((state) => state.auth);
 
+  // Two very different reasons to be on this page: forced here on the
+  // emailed temporary password (must_change_password), or arriving
+  // voluntarily from Settings/My Profile to change an already-chosen
+  // password. The copy for the first field has to match which one it is —
+  // "Temporary password" makes no sense to someone entering their own
+  // current password.
+  const isForced = Boolean(session.candidate?.must_change_password);
+
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -41,7 +49,9 @@ export default function ChangePasswordPage() {
 
     const errors: Record<string, string> = {};
     if (!oldPassword) {
-      errors.oldPassword = t("changePassword.errors.oldPassword");
+      errors.oldPassword = isForced
+        ? t("changePassword.errors.oldPassword")
+        : t("changePassword.errors.currentPassword");
     }
     if (!PASSWORD_PATTERN.test(newPassword)) {
       errors.newPassword = t("changePassword.errors.newPassword");
@@ -108,7 +118,9 @@ export default function ChangePasswordPage() {
         <div className="w-full max-w-md rounded-2xl border border-jz-border bg-jz-blue-900/40 p-8">
           <h1 className="font-serif text-2xl font-semibold text-jz-white-50">{t("changePassword.title")}</h1>
           <p className="mt-2 text-sm text-jz-white-400">
-            {t("changePassword.subtitle", { email: session.candidate.email })}
+            {isForced
+              ? t("changePassword.subtitle", { email: session.candidate.email })
+              : t("changePassword.subtitleVoluntary")}
           </p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -119,12 +131,12 @@ export default function ChangePasswordPage() {
             )}
 
             <FormInput
-              label={t("changePassword.oldPasswordLabel")}
+              label={isForced ? t("changePassword.oldPasswordLabel") : t("changePassword.currentPasswordLabel")}
               type="password"
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
               placeholder="••••••••"
-              hint={t("changePassword.oldPasswordHint")}
+              hint={isForced ? t("changePassword.oldPasswordHint") : t("changePassword.currentPasswordHint")}
               error={fieldErrors.oldPassword}
             />
 
