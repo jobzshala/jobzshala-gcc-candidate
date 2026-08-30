@@ -812,5 +812,90 @@
       "rewardCount": "{{count}}+ jobs match so far",
       "rewardSubtitle": "Keep your profile updated and the list keeps growing."
     }
+  },
+  "voiceResume": {
+    "staticNote": "⚠ Static preview — dummy data, no real recording/upload yet",
+    "entry": {
+      "heading": "Build your resume with your voice?",
+      "subtitle": "Just answer 6 questions out loud — no typing needed. Your resume is ready in 2 minutes.",
+      "point1": "Speak in your own language — Hindi, English, Tamil, Telugu…",
+      "point2": "Both your profile and a PDF resume get created",
+      "point3": "You'll get a chance to fix any mistakes",
+      "start": "🎤 Get started",
+      "skip": "Skip for now"
+    },
+    "lang": {
+      "title": "Which language can you speak in?",
+      "subtitle": "Choose the language you're most comfortable speaking. It can be different from the site's language.",
+      "listen": "🔊 Listen",
+      "listening": "🔊 …",
+      "continue": "Continue →"
+    },
+    "perm": {
+      "heading": "We need microphone permission",
+      "subtitle": "We need your phone's mic to record your answers.",
+      "consent": "Your voice recording will only be used to build your resume. Recordings are stored securely.",
+      "allow": "Allow microphone",
+      "denySimulate": "Deny (simulate)"
+    },
+    "denied": {
+      "title": "No problem!",
+      "subtitle": "Mic permission wasn't given — you can still build your profile by typing, or allow the mic from settings.",
+      "step1": "Open your browser settings",
+      "step2": "Site permissions → Microphone → Allow",
+      "step3": "Reload the page and try again",
+      "retry": "🎤 Try again",
+      "typeInstead": "✏️ Build by typing"
+    },
+    "question": {
+      "count": "Question {{current}} of {{total}}",
+      "hint": "🎤 Press record and speak · then press Stop",
+      "changeLang": "🌐 {{lang}} · change",
+      "startAria": "Start recording",
+      "stopAria": "Stop recording",
+      "recordingLabel": "Speaking… press to stop",
+      "idleLabel": "Press to speak",
+      "max": "max {{time}}"
+    },
+    "recorded": {
+      "playAria": "Play recording",
+      "confirm": "✓ Looks good, continue",
+      "reRecord": "↻ Record again"
+    },
+    "processing": {
+      "uploadingTitle": "Uploading…",
+      "uploadingBody": "Sending your recording",
+      "transcribingTitle": "Listening…",
+      "transcribingBody": "Understanding your answer",
+      "committingTitle": "Building your resume…",
+      "committingBody": "Updating your profile and generating the PDF"
+    },
+    "review": {
+      "heard": "👂 Here's what we heard — is this right?",
+      "transcriptAria": "Transcript",
+      "editHint": "Did we hear something wrong? Tap the text to fix it directly.",
+      "confirm": "✓ That's right",
+      "reRecord": "🎙️ Record again"
+    },
+    "extract": {
+      "heading": "✨ This info will go into your profile",
+      "company": "Company",
+      "roleYears": "Role · How many years",
+      "skills": "Skills",
+      "notMentioned": "not mentioned — will stay blank",
+      "finish": "✓ Build resume",
+      "next": "Next question →",
+      "editTranscript": "‹ Edit transcript"
+    },
+    "done": {
+      "title": "Your resume is ready! 🎉",
+      "subtitle": "Your profile is updated — all from your voice.",
+      "jobs": "Jobs",
+      "education": "Education",
+      "skills": "Skills",
+      "madeWithVoice": "Made with voice · {{lang}}",
+      "viewProfile": "View profile",
+      "restart": "↻ Start again"
+    }
   }
 }

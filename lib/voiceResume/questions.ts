@@ -21,6 +21,10 @@ export interface VoiceResumeLanguage {
   native: string;
   roman: string;
   rtl?: boolean;
+  /** BCP-47 tag for the Web Speech API (SpeechSynthesisUtterance.lang). */
+  speechLang: string;
+  /** "You can speak in [language]" sample line the 🔊 Listen button reads aloud. */
+  previewText: string;
 }
 
 export interface VoiceResumeQuestion {
@@ -30,14 +34,19 @@ export interface VoiceResumeQuestion {
   text: Record<string, string>;
 }
 
+// No pre-recorded audio files — the 🔊 Listen button speaks previewText live
+// via the browser's built-in SpeechSynthesis API (see previewLanguage() in
+// app/(app)/voice-resume/page.tsx). Voice quality/availability depends on
+// what the visitor's OS/browser ships, but it needs no audio assets, no
+// backend, and no per-language recording to maintain.
 export const VOICE_RESUME_LANGUAGES: VoiceResumeLanguage[] = [
-  { code: "hi", native: "हिन्दी", roman: "Hindi" },
-  { code: "en", native: "English", roman: "English" },
-  { code: "ta", native: "தமிழ்", roman: "Tamil" },
-  { code: "te", native: "తెలుగు", roman: "Telugu" },
-  { code: "kn", native: "ಕನ್ನಡ", roman: "Kannada" },
-  { code: "ml", native: "മലയാളം", roman: "Malayalam" },
-  { code: "ar", native: "العربية", roman: "Arabic", rtl: true },
+  { code: "hi", native: "हिन्दी", roman: "Hindi", speechLang: "hi-IN", previewText: "आप हिंदी में बोल सकते हैं" },
+  { code: "en", native: "English", roman: "English", speechLang: "en-IN", previewText: "You can speak in English" },
+  { code: "ta", native: "தமிழ்", roman: "Tamil", speechLang: "ta-IN", previewText: "நீங்கள் தமிழில் பேசலாம்" },
+  { code: "te", native: "తెలుగు", roman: "Telugu", speechLang: "te-IN", previewText: "మీరు తెలుగులో మాట్లాడవచ్చు" },
+  { code: "kn", native: "ಕನ್ನಡ", roman: "Kannada", speechLang: "kn-IN", previewText: "ನೀವು ಕನ್ನಡದಲ್ಲಿ ಮಾತನಾಡಬಹುದು" },
+  { code: "ml", native: "മലയാളം", roman: "Malayalam", speechLang: "ml-IN", previewText: "നിങ്ങൾക്ക് മലയാളത്തിൽ സംസാരിക്കാം" },
+  { code: "ar", native: "العربية", roman: "Arabic", rtl: true, speechLang: "ar-SA", previewText: "يمكنك التحدث بالعربية" },
 ];
 
 export const VOICE_RESUME_QUESTIONS: VoiceResumeQuestion[] = [

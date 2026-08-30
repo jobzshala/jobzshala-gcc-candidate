@@ -20,6 +20,7 @@
 import "./voice-resume.css";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import { ROUTES } from "@/lib/routes";
 import {
   VOICE_RESUME_LANGUAGES,
@@ -57,10 +58,12 @@ function ProgressRow({ qIndex }: { qIndex: number }) {
 }
 
 function StaticNote() {
-  return <div className="vr-static-note">⚠ Static preview — dummy data, no real recording/upload yet</div>;
+  const { t } = useTranslation();
+  return <div className="vr-static-note">{t("voiceResume.staticNote")}</div>;
 }
 
 export default function VoiceResumePage() {
+  const { t } = useTranslation();
   const [step, setStep] = useState<FlowStep>("entry");
   const [lang, setLang] = useState("hi");
   const [qIndex, setQIndex] = useState(0);
@@ -143,9 +146,28 @@ export default function VoiceResumePage() {
     }
   };
 
+  // Speaks a short "you can speak in this language" line live via the
+  // browser's built-in SpeechSynthesis API — no audio files to record or
+  // host. Falls back to a bare 1.4s "🔊 …" pulse (same as the original
+  // static-preview placeholder) when the browser has no speech synthesis
+  // support or no voice installed for that language, so nothing breaks.
   const previewLanguage = (code: string) => {
     setPreviewingLang(code);
-    setTimeout(() => setPreviewingLang(null), 1400);
+    const stop = () => setPreviewingLang((cur) => (cur === code ? null : cur));
+    const previewLang = VOICE_RESUME_LANGUAGES.find((l) => l.code === code);
+    if (!previewLang || typeof window === "undefined" || !window.speechSynthesis) {
+      setTimeout(stop, 1400);
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(previewLang.previewText);
+    utterance.lang = previewLang.speechLang;
+    utterance.onend = stop;
+    utterance.onerror = stop;
+    window.speechSynthesis.speak(utterance);
+    // Safety net in case neither event fires — caps how long the
+    // "listening" pill can show.
+    setTimeout(stop, 6000);
   };
 
   return (
@@ -155,20 +177,20 @@ export default function VoiceResumePage() {
           <StaticNote />
           <div className="vr-hero">
             <div className="vr-mic-big">🎙️</div>
-            <h2>Banaayein apna resume awaaz se?</h2>
-            <p>Sirf 6 sawaalon ke jawab boliye — typing ki zaroorat nahi. 2 minute mein resume ready.</p>
+            <h2>{t("voiceResume.entry.heading")}</h2>
+            <p>{t("voiceResume.entry.subtitle")}</p>
           </div>
           <ul className="vr-points">
-            <li><span className="vr-tick">✓</span> Apni bhasha mein boliye — Hindi, English, Tamil, Telugu…</li>
-            <li><span className="vr-tick">✓</span> Profile + PDF resume dono ban jaayenge</li>
-            <li><span className="vr-tick">✓</span> Galti hui to sudharne ka mauka milega</li>
+            <li><span className="vr-tick">✓</span> {t("voiceResume.entry.point1")}</li>
+            <li><span className="vr-tick">✓</span> {t("voiceResume.entry.point2")}</li>
+            <li><span className="vr-tick">✓</span> {t("voiceResume.entry.point3")}</li>
           </ul>
           <div className="vr-btn-row">
             <button type="button" className="btn-solid" onClick={() => setStep("lang")}>
-              🎤 &nbsp;Start karein
+              {t("voiceResume.entry.start")}
             </button>
             <Link href={ROUTES.journey} className="vr-btn-ghost" style={{ textAlign: "center" }}>
-              Skip for now
+              {t("voiceResume.entry.skip")}
             </Link>
           </div>
         </>
@@ -176,8 +198,8 @@ export default function VoiceResumePage() {
 
       {step === "lang" && (
         <>
-          <h1 className="vr-title">Aap kis bhasha mein bol sakte hain?</h1>
-          <p className="vr-sub">Jo bhasha aap aaraam se bolte hain, woh chuniye. Site ki bhasha se alag ho sakti hai.</p>
+          <h1 className="vr-title">{t("voiceResume.lang.title")}</h1>
+          <p className="vr-sub">{t("voiceResume.lang.subtitle")}</p>
           <div className="vr-lang-grid">
             {VOICE_RESUME_LANGUAGES.map((l) => (
               <button
@@ -196,14 +218,14 @@ export default function VoiceResumePage() {
                     previewLanguage(l.code);
                   }}
                 >
-                  {previewingLang === l.code ? "🔊 …" : "🔊 Suniye"}
+                  {previewingLang === l.code ? t("voiceResume.lang.listening") : t("voiceResume.lang.listen")}
                 </span>
               </button>
             ))}
           </div>
           <div className="vr-btn-row">
             <button type="button" className="btn-solid" onClick={() => setStep("perm")}>
-              Aage badhein →
+              {t("voiceResume.lang.continue")}
             </button>
           </div>
         </>
@@ -213,19 +235,17 @@ export default function VoiceResumePage() {
         <>
           <div className="vr-perm-card">
             <div className="vr-mic-ring">🎤</div>
-            <h2>Microphone ki permission chahiye</h2>
-            <p>Aapke jawab record karne ke liye phone ke mic ki zaroorat hai.</p>
+            <h2>{t("voiceResume.perm.heading")}</h2>
+            <p>{t("voiceResume.perm.subtitle")}</p>
             {/* Draft consent copy — pending legal review, see sprint plan */}
-            <p className="vr-consent">
-              Aapki voice recording sirf resume banane ke liye process hogi. Recording surakshit rakhi jaati hai.
-            </p>
+            <p className="vr-consent">{t("voiceResume.perm.consent")}</p>
           </div>
           <div className="vr-btn-row">
             <button type="button" className="btn-solid" onClick={() => goToQuestion(0)}>
-              Allow microphone
+              {t("voiceResume.perm.allow")}
             </button>
             <button type="button" className="vr-btn-ghost" onClick={() => setStep("denied")}>
-              Deny (simulate)
+              {t("voiceResume.perm.denySimulate")}
             </button>
           </div>
         </>
@@ -233,22 +253,19 @@ export default function VoiceResumePage() {
 
       {step === "denied" && (
         <>
-          <h1 className="vr-title">Koi baat nahi!</h1>
-          <p className="vr-sub">
-            Mic ki permission nahi mili — aap apna profile type karke bhi bana sakte hain, ya settings se mic allow kar
-            sakte hain.
-          </p>
+          <h1 className="vr-title">{t("voiceResume.denied.title")}</h1>
+          <p className="vr-sub">{t("voiceResume.denied.subtitle")}</p>
           <ul className="vr-denied-list">
-            <li><span className="vr-n">1</span> Browser settings kholiye</li>
-            <li><span className="vr-n">2</span> Site permissions → Microphone → Allow</li>
-            <li><span className="vr-n">3</span> Page reload karke dobara try kariye</li>
+            <li><span className="vr-n">1</span> {t("voiceResume.denied.step1")}</li>
+            <li><span className="vr-n">2</span> {t("voiceResume.denied.step2")}</li>
+            <li><span className="vr-n">3</span> {t("voiceResume.denied.step3")}</li>
           </ul>
           <div className="vr-btn-row">
             <button type="button" className="btn-solid" onClick={() => setStep("perm")}>
-              🎤 &nbsp;Dobara try karein
+              {t("voiceResume.denied.retry")}
             </button>
             <Link href={ROUTES.profile} className="btn-outline" style={{ textAlign: "center" }}>
-              ✏️ &nbsp;Type karke banayein
+              {t("voiceResume.denied.typeInstead")}
             </Link>
           </div>
         </>
@@ -257,18 +274,20 @@ export default function VoiceResumePage() {
       {step === "question" && (
         <>
           <ProgressRow qIndex={qIndex} />
-          <div className="vr-q-count">Sawaal {qIndex + 1} / {VOICE_RESUME_QUESTIONS.length}</div>
+          <div className="vr-q-count">
+            {t("voiceResume.question.count", { current: qIndex + 1, total: VOICE_RESUME_QUESTIONS.length })}
+          </div>
           <p className="vr-q-text" dir={currentLang.rtl ? "rtl" : "ltr"}>{questionText}</p>
-          <p className="vr-q-hint">🎤 Record dabakar boliye · phir Stop dabaiye</p>
+          <p className="vr-q-hint">{t("voiceResume.question.hint")}</p>
           <button type="button" className="vr-lang-chip" onClick={() => setStep("lang")}>
-            🌐 {currentLang.native} · badlein
+            {t("voiceResume.question.changeLang", { lang: currentLang.native })}
           </button>
           <div className="vr-rec-zone">
             <button
               type="button"
               className={`vr-rec-btn ${recording ? "vr-recording" : ""}`}
               onClick={toggleRecording}
-              aria-label={recording ? "Stop recording" : "Start recording"}
+              aria-label={recording ? t("voiceResume.question.stopAria") : t("voiceResume.question.startAria")}
             >
               {recording ? "⏹" : "🎙️"}
             </button>
@@ -276,10 +295,10 @@ export default function VoiceResumePage() {
               {Array.from({ length: 9 }, (_, i) => <i key={i} />)}
             </div>
             <div className="vr-rec-label">
-              {recording ? "Bol rahe hain… rukne ke liye dabaiye" : "Bolne ke liye dabaiye"}
+              {recording ? t("voiceResume.question.recordingLabel") : t("voiceResume.question.idleLabel")}
             </div>
             <div className="vr-rec-timer">{fmtSec(seconds)}</div>
-            <div className="vr-rec-cap">max {fmtSec(question.maxDurationSec)}</div>
+            <div className="vr-rec-cap">{t("voiceResume.question.max", { time: fmtSec(question.maxDurationSec) })}</div>
           </div>
         </>
       )}
@@ -287,10 +306,18 @@ export default function VoiceResumePage() {
       {step === "recorded" && (
         <>
           <ProgressRow qIndex={qIndex} />
-          <div className="vr-q-count">Sawaal {qIndex + 1} / {VOICE_RESUME_QUESTIONS.length}</div>
+          <div className="vr-q-count">
+            {t("voiceResume.question.count", { current: qIndex + 1, total: VOICE_RESUME_QUESTIONS.length })}
+          </div>
           <p className="vr-q-text" dir={currentLang.rtl ? "rtl" : "ltr"}>{questionText}</p>
           <div className="vr-playback">
-            <button type="button" className="vr-play" aria-label="Play recording" disabled title="Static preview">
+            <button
+              type="button"
+              className="vr-play"
+              aria-label={t("voiceResume.recorded.playAria")}
+              disabled
+              title="Static preview"
+            >
               ▶
             </button>
             <div className="vr-bar"><i /></div>
@@ -298,10 +325,10 @@ export default function VoiceResumePage() {
           </div>
           <div className="vr-btn-row">
             <button type="button" className="btn-solid" onClick={startProcessing}>
-              ✓ &nbsp;Theek hai, aage badhein
+              {t("voiceResume.recorded.confirm")}
             </button>
             <button type="button" className="btn-outline" onClick={() => goToQuestion(qIndex)}>
-              ↻ &nbsp;Dobara boliye
+              {t("voiceResume.recorded.reRecord")}
             </button>
           </div>
         </>
@@ -311,14 +338,14 @@ export default function VoiceResumePage() {
         <div className="vr-proc">
           <div className="vr-spinner" />
           <h2>
-            {step === "uploading" && "Upload ho raha hai…"}
-            {step === "transcribing" && "Sun rahe hain…"}
-            {step === "committing" && "Resume ban raha hai…"}
+            {step === "uploading" && t("voiceResume.processing.uploadingTitle")}
+            {step === "transcribing" && t("voiceResume.processing.transcribingTitle")}
+            {step === "committing" && t("voiceResume.processing.committingTitle")}
           </h2>
           <p>
-            {step === "uploading" && "Aapki recording bheji jaa rahi hai"}
-            {step === "transcribing" && "Aapke jawab ko samjha jaa raha hai"}
-            {step === "committing" && "Profile update + PDF generate ho rahi hai"}
+            {step === "uploading" && t("voiceResume.processing.uploadingBody")}
+            {step === "transcribing" && t("voiceResume.processing.transcribingBody")}
+            {step === "committing" && t("voiceResume.processing.committingBody")}
           </p>
         </div>
       )}
@@ -326,22 +353,24 @@ export default function VoiceResumePage() {
       {step === "review" && (
         <>
           <ProgressRow qIndex={qIndex} />
-          <div className="vr-q-count">Sawaal {qIndex + 1} / {VOICE_RESUME_QUESTIONS.length}</div>
-          <div className="vr-heard">👂 Humne yeh suna — yeh sahi hai?</div>
+          <div className="vr-q-count">
+            {t("voiceResume.question.count", { current: qIndex + 1, total: VOICE_RESUME_QUESTIONS.length })}
+          </div>
+          <div className="vr-heard">{t("voiceResume.review.heard")}</div>
           <div className="vr-review-box">
             <textarea
               value={transcript}
               onChange={(e) => setTranscript(e.target.value)}
-              aria-label="Transcript"
+              aria-label={t("voiceResume.review.transcriptAria")}
             />
           </div>
-          <p className="vr-edit-hint">Kuch galat suna? Text par tap karke seedha sudhaar dijiye.</p>
+          <p className="vr-edit-hint">{t("voiceResume.review.editHint")}</p>
           <div className="vr-btn-row">
             <button type="button" className="btn-solid" onClick={handleConfirmTranscript}>
-              ✓ &nbsp;Sahi hai
+              {t("voiceResume.review.confirm")}
             </button>
             <button type="button" className="btn-outline" onClick={() => goToQuestion(qIndex)}>
-              🎙️ &nbsp;Dobara record karein
+              {t("voiceResume.review.reRecord")}
             </button>
           </div>
         </>
@@ -350,20 +379,22 @@ export default function VoiceResumePage() {
       {step === "extract" && (
         <>
           <ProgressRow qIndex={qIndex} />
-          <div className="vr-q-count">Sawaal {qIndex + 1} / {VOICE_RESUME_QUESTIONS.length}</div>
-          <div className="vr-heard">✨ Yeh jaankari profile mein jayegi</div>
+          <div className="vr-q-count">
+            {t("voiceResume.question.count", { current: qIndex + 1, total: VOICE_RESUME_QUESTIONS.length })}
+          </div>
+          <div className="vr-heard">{t("voiceResume.extract.heading")}</div>
           <div className="vr-ext-card">
             {dummy.jobs?.map((job) => (
               <div key={job.company} className="vr-job-row">
-                <div className="vr-k">Company</div>
+                <div className="vr-k">{t("voiceResume.extract.company")}</div>
                 <div className="vr-v">{job.company}</div>
-                <div className="vr-k" style={{ marginTop: 6 }}>Role · Kitne saal</div>
+                <div className="vr-k" style={{ marginTop: 6 }}>{t("voiceResume.extract.roleYears")}</div>
                 <div className="vr-v">{job.role} · {job.years}</div>
               </div>
             ))}
             {dummy.skills && (
               <>
-                <div className="vr-k" style={{ marginBottom: 8 }}>Skills</div>
+                <div className="vr-k" style={{ marginBottom: 8 }}>{t("voiceResume.extract.skills")}</div>
                 <div className="vr-chips">
                   {dummy.skills.map((s) => <span key={s} className="vr-chip">{s}</span>)}
                 </div>
@@ -373,16 +404,16 @@ export default function VoiceResumePage() {
               <div key={f.label}>
                 {i > 0 && <div className="vr-field-gap" />}
                 <div className="vr-k">{f.label}</div>
-                <div className={`vr-v ${f.value ? "" : "vr-na"}`}>{f.value ?? "nahi bataya — khali rahega"}</div>
+                <div className={`vr-v ${f.value ? "" : "vr-na"}`}>{f.value ?? t("voiceResume.extract.notMentioned")}</div>
               </div>
             ))}
           </div>
           <div className="vr-btn-row">
             <button type="button" className="btn-solid" onClick={handleNext}>
-              {isLast ? "✓ Resume banayein" : "Agla sawaal →"}
+              {isLast ? t("voiceResume.extract.finish") : t("voiceResume.extract.next")}
             </button>
             <button type="button" className="vr-btn-ghost" onClick={() => setStep("review")}>
-              ‹ Transcript sudhaarein
+              {t("voiceResume.extract.editTranscript")}
             </button>
           </div>
         </>
@@ -391,23 +422,23 @@ export default function VoiceResumePage() {
       {step === "done" && (
         <div className="vr-done">
           <div className="vr-big-tick">✓</div>
-          <h2>Aapka resume taiyaar hai! 🎉</h2>
-          <p>Profile update ho gaya — sab kuch aapki awaaz se.</p>
+          <h2>{t("voiceResume.done.title")}</h2>
+          <p>{t("voiceResume.done.subtitle")}</p>
           <div className="vr-stats">
-            <div className="vr-stat"><div className="vr-n">2</div><div className="vr-l">Naukriyan</div></div>
-            <div className="vr-stat"><div className="vr-n">1</div><div className="vr-l">Padhai</div></div>
-            <div className="vr-stat"><div className="vr-n">3</div><div className="vr-l">Skills</div></div>
+            <div className="vr-stat"><div className="vr-n">2</div><div className="vr-l">{t("voiceResume.done.jobs")}</div></div>
+            <div className="vr-stat"><div className="vr-n">1</div><div className="vr-l">{t("voiceResume.done.education")}</div></div>
+            <div className="vr-stat"><div className="vr-n">3</div><div className="vr-l">{t("voiceResume.done.skills")}</div></div>
           </div>
           <div className="vr-pdf-row">
             <div className="vr-file-ic">PDF</div>
             <div>
               <div className="vr-name">Ramesh_Kumar_Resume.pdf</div>
-              <div className="vr-subm">Voice se bana · English</div>
+              <div className="vr-subm">{t("voiceResume.done.madeWithVoice", { lang: currentLang.roman })}</div>
             </div>
           </div>
           <div className="vr-btn-row">
             <Link href={ROUTES.profile} className="btn-solid" style={{ textAlign: "center" }}>
-              Profile dekhein
+              {t("voiceResume.done.viewProfile")}
             </Link>
             <button
               type="button"
@@ -417,7 +448,7 @@ export default function VoiceResumePage() {
                 setStep("entry");
               }}
             >
-              ↻ Dobara shuru karein
+              {t("voiceResume.done.restart")}
             </button>
           </div>
         </div>
