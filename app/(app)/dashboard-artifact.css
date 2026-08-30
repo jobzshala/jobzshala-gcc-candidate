@@ -167,6 +167,28 @@ html[data-theme="dark"] .dashboard-artifact {
   flex-direction: column;
   gap: 3px;
   flex: 1;
+  /* min-height: 0 lets this flex child actually shrink below its content
+     size — without it a flex:1 column never scrolls, it just grows the
+     sidebar (and help-card) off the bottom of the viewport. */
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+  margin-right: -4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--green-400) transparent;
+}
+.dashboard-artifact .nav::-webkit-scrollbar {
+  width: 4px;
+}
+.dashboard-artifact .nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+.dashboard-artifact .nav::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--green-400), var(--green-600));
+  border-radius: 999px;
+}
+.dashboard-artifact .nav::-webkit-scrollbar-thumb:hover {
+  background: var(--green-500);
 }
 .dashboard-artifact .nav-item {
   position: relative;
