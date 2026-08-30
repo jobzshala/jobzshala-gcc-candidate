@@ -15,9 +15,9 @@ import {
 } from "@/lib/seo";
 import "./globals.css";
 
-// Dark is the default for a first-time visitor regardless of their OS setting;
+// Light is the default for a first-time visitor regardless of their OS setting;
 // once they toggle, the stored preference wins on every later visit.
-const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem('jobzshala-candidate-theme');if(t!=='light'&&t!=='dark'){t='dark';}document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();`;
+const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem('jobzshala-candidate-theme');if(t!=='light'&&t!=='dark'){t='light';}document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();`;
 
 // Redirects an already-authenticated visitor away from the public landing
 // page and the logged-out-only auth pages (login/register/forgot-password,

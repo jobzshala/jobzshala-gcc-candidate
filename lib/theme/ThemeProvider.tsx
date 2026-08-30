@@ -11,11 +11,11 @@ const STORAGE_KEY = "jobzshala-candidate-theme";
 // truth — this subscribes to it via MutationObserver instead of mirroring
 // it into React state, avoiding a setState-in-effect render cascade.
 function getSnapshot(): Theme {
-  return document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
+  return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
 }
 
 function getServerSnapshot(): Theme {
-  return "dark";
+  return "light";
 }
 
 function subscribe(callback: () => void) {
@@ -25,7 +25,7 @@ function subscribe(callback: () => void) {
 }
 
 const ThemeContext = createContext<{ theme: Theme; toggleTheme: () => void }>({
-  theme: "dark",
+  theme: "light",
   toggleTheme: () => {},
 });
 
