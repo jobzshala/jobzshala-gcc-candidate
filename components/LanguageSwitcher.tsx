@@ -36,7 +36,7 @@ export default function LanguageSwitcher({ className = "" }: { className?: strin
       {open ? (
         <ul
           role="listbox"
-          className="absolute right-0 rtl:right-auto rtl:left-0 z-30 mt-2 w-44 overflow-hidden rounded-xl border border-jz-border bg-jz-blue-900 py-1 shadow-xl"
+          className="absolute right-0 rtl:right-auto rtl:left-0 z-30 mt-2 w-44 overflow-hidden rounded-xl border border-jz-border bg-jz-blue-950 py-1 shadow-xl"
         >
           {languages.map((lang) => (
             <li key={lang.code}>
