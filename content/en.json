@@ -97,7 +97,39 @@
       "title": "Our Mission",
       "body": "Jobzshala bridges this gap by combining AI, technology and human expertise to create trusted workforce connections across the GCC.",
       "cta": "Full breakdown on About Us page"
-    }
+    },
+    "eyebrow": "THE CHALLENGE",
+    "titleLine1": "The GCC Doesn’t Have a Talent Shortage.",
+    "titleLine2": "It Has a Workforce Infrastructure Problem.",
+    "subtitle": "Employers struggle with fragmented hiring, unreliable data, manual processes and lack of visibility — leading to delays, high costs and dropouts.",
+    "journeyTitle": "The Traditional Hiring Journey is Fragmented",
+    "journeySteps": [
+      "Talent Sourcing",
+      "Recruiters & Agents",
+      "Manual Screening",
+      "Employer Shortlisting",
+      "Documentation & Visa",
+      "Travel & Deployment",
+      "Post Joining & Retention"
+    ],
+    "metrics": [
+      {
+        "value": "45–60",
+        "unit": "Days",
+        "note": "Average time to hire"
+      },
+      {
+        "value": "30–40%",
+        "unit": "Higher Cost",
+        "note": "Due to rework, duplication & delays"
+      },
+      {
+        "value": "25–35%",
+        "unit": "Dropout Rate",
+        "note": "During documentation, travel & onboarding"
+      }
+    ],
+    "callout": "What the GCC needs is not another job portal. It needs an end-to-end, AI-native workforce infrastructure."
   },
   "howItWorks": {
     "heading": "How Jobzshala",
