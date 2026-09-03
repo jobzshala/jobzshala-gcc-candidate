@@ -208,6 +208,22 @@
       { "label": "Employer Ready", "desc": "Job-ready & deployment-ready" }
     ]
   },
+  "workforceOps": {
+    "eyebrow": "THE WORKFORCE OPERATIONS CENTER",
+    "headingLine1": "Real-time Visibility.",
+    "headingLine2": "Smarter Decisions.",
+    "headingHighlight": "Better Outcomes.",
+    "body": "Our centralized operations center gives you complete visibility and control across your entire workforce journey.",
+    "imageAlt": "Workforce Operations Center dashboard",
+    "features": [
+      { "label": "Real-time Dashboards", "desc": "Live insights at your fingertips." },
+      { "label": "End-to-End Tracking", "desc": "Track every stage of the workforce journey." },
+      { "label": "Quality Assurance", "desc": "Ensure quality with verified data" },
+      { "label": "Smarter Decisions", "desc": "Data-driven decisions that drive results" },
+      { "label": "Proactive Alerts", "desc": "Stay ahead with smart alerts & notifications" },
+      { "label": "Multi-Region Control", "desc": "Manage operations across borders" }
+    ]
+  },
   "workforceAvailability": {
     "heading": "Immediate Workforce Available Across",
     "headingHighlight": "GCC",
