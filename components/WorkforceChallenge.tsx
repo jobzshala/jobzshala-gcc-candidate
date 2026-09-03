@@ -55,7 +55,7 @@ export default function WorkforceChallenge() {
   const metrics = t("challenge.metrics", { returnObjects: true }) as Metric[];
 
   return (
-    <section className="bg-[#F6F9FA] py-16 sm:py-24">
+    <section className="bg-[#F6F9FA] py-10 sm:py-20">
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10">
         <div className="text-center">
           <p className="text-sm font-medium leading-7.5 tracking-[0.01em] text-[#1A1A1A] sm:text-xl">

@@ -1,50 +1,69 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import SectionHeading from "./ui/SectionHeading";
-import {
-  ArrowRightIcon,
-  BriefcaseIcon,
-  SparkleIcon,
-  SearchIcon,
-  TargetIcon,
-  DocumentIcon,
-  GlobeIcon,
-  TickIcon,
-} from "./ui/icons";
 
-const STEP_ICONS = [BriefcaseIcon, SparkleIcon, SearchIcon, TargetIcon, DocumentIcon, GlobeIcon, TickIcon];
+type Step = { label: string; desc: string };
+
+// Index-matched to howItWorks.steps.
+const STEP_META: { img: string; color: string }[] = [
+  { img: "/images/works/Requirment.webp", color: "#008DD2" },
+  { img: "/images/works/Souring.webp", color: "#E64E4E" },
+  { img: "/images/works/Interview.webp", color: "#32A37D" },
+  { img: "/images/works/Offer_img.webp", color: "#4423CC" },
+  { img: "/images/works/Visa.webp", color: "#EE8F11" },
+  { img: "/images/works/Joining.webp", color: "#2AADCF" },
+];
 
 export default function HowItWorks() {
   const { t } = useTranslation();
-  const steps = t("howItWorks.steps", { returnObjects: true }) as string[];
+  const steps = t("howItWorks.steps", { returnObjects: true }) as Step[];
 
   return (
-    <section id="recruitment-solutions" className="scroll-mt-24 bg-jz-blue-950 py-14 sm:py-20">
-      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10">
-        <SectionHeading heading={t("howItWorks.heading")} highlight={t("howItWorks.headingHighlight")} align="center" />
-
-        <div className="mt-12 flex snap-x items-center gap-2 overflow-x-auto pb-4 lg:overflow-visible">
-          {steps.map((step, i) => {
-            const StepIcon = STEP_ICONS[i % STEP_ICONS.length];
-            return (
-              <div key={step} className="flex min-w-0 shrink-0 items-center gap-1 lg:flex-1">
-                <div className="flex w-36 min-w-0 shrink-0 snap-start flex-col items-center gap-3 rounded-xl border border-jz-grey-400 bg-gradient-to-t from-jz-bg-primary to-jz-blue-900 px-3 pt-6 pb-5 text-center transition-colors hover:border-jz-blue-400 lg:w-auto lg:min-w-0 lg:flex-1">
-                  <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-jz-blue-400 to-jz-blue-800 text-xs font-medium text-jz-white-50">
-                    {i + 1}
-                  </span>
-                  <StepIcon className="size-9 shrink-0 text-jz-blue-400" />
-                  <p className="text-sm text-jz-white-50">{step}</p>
-                </div>
-                {i < steps.length - 1 && (
-                  <ArrowRightIcon className="size-5 shrink-0 text-jz-yellow-400 max-lg:hidden" />
-                )}
-              </div>
-            );
-          })}
+    <section id="how-it-works" className="scroll-mt-24 bg-white py-10">
+      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10">
+        <div className="text-center">
+          <p className="text-lg font-medium leading-7.5 tracking-[0.01em] text-[#1A1A1A] sm:text-2xl">
+            {t("howItWorks.eyebrow")}
+          </p>
+          <h2 className="mx-auto mt-2 max-w-3xl text-2xl font-semibold leading-tight tracking-[0.01em] text-[#1A1A1A] sm:text-3xl md:text-4xl md:leading-11.5">
+            {t("howItWorks.headingLine1")}
+            <br />
+            <span className="text-[#008DD2]">{t("howItWorks.headingLine2")}</span>
+          </h2>
+          <p className="mx-auto mt-4 max-w-3xl text-base font-normal leading-6.5 tracking-[0.01em] text-[#4A4A4A]">
+            {t("howItWorks.subtitle")}
+          </p>
         </div>
 
-        <p className="mt-6 text-center text-sm text-jz-white-600">{t("howItWorks.footnote")}</p>
+        <div className="mt-8 rounded-[20px] border border-[#008DD233] bg-[#EEF3FF] px-6 py-6 sm:px-8.5">
+          <div className="flex flex-col items-stretch gap-6 lg:flex-row lg:items-start lg:gap-12">
+            {steps.map((step, i) => {
+              const { img, color } = STEP_META[i] ?? STEP_META[0];
+              return (
+                <div
+                  key={step.label}
+                  className="flex flex-col items-center gap-5 text-center lg:flex-1 lg:max-w-40"
+                >
+                  <span className="flex size-20 items-center justify-center overflow-hidden rounded-full bg-white shadow-[0_4px_8px_rgba(0,0,0,0.1)]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={img} alt="" className="size-9 object-contain" />
+                  </span>
+                  <div className="flex flex-col items-center gap-1">
+                    <span
+                      className="text-xl font-semibold uppercase leading-none tracking-[0.01em]"
+                      style={{ color }}
+                    >
+                      {step.label}
+                    </span>
+                    <span className="text-sm font-medium leading-5 tracking-[0.01em] text-[#4A4A4A]">
+                      {step.desc}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </section>
   );

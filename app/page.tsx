@@ -3,8 +3,9 @@ import Hero from "@/components/Hero";
 import TrustedBy from "@/components/TrustedBy";
 import WorkforceChallenge from "@/components/WorkforceChallenge";
 import HowItWorks from "@/components/HowItWorks";
+import OurSolution from "@/components/OurSolution";
 import WhyChooseUs from "@/components/WhyChooseUs";
-import TrustVerification from "@/components/TrustVerification";
+import VerifiedTrusted from "@/components/VerifiedTrusted";
 import WorkforceAvailability from "@/components/WorkforceAvailability";
 import WorkforceCorridor from "@/components/WorkforceCorridor";
 import ComparisonSection from "@/components/ComparisonSection";
@@ -28,7 +29,7 @@ export const metadata = {
 
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col bg-jz-blue-950">
+    <div className="flex flex-1 flex-col bg-jz-blue-950 font-poppins">
       {/* Describes the actual offering, so search and AI answer engines can
           state what Jobzshala does and where, rather than inferring it. */}
       <JsonLd schema={serviceSchema()} />
@@ -38,9 +39,10 @@ export default function Home() {
         <Hero />
         {/* <TrustedBy /> */}
         <WorkforceChallenge />
+        <OurSolution />
         <HowItWorks />
-        <WhyChooseUs />
-        <TrustVerification />
+        {/* <WhyChooseUs /> */}
+        <VerifiedTrusted />
         <WorkforceAvailability />
         <WorkforceCorridor />
         <ComparisonSection />

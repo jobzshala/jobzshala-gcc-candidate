@@ -70,6 +70,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
   --font-serif: var(--font-fraunces);
+  --font-poppins: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
 
   --color-jz-blue-950: var(--jz-blue-950);
   --color-jz-blue-900: var(--jz-blue-900);

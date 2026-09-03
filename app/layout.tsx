@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Fraunces } from "next/font/google";
+import { Inter, Fraunces, Poppins } from "next/font/google";
 import LanguageProvider from "@/lib/i18n/LanguageProvider";
 import ThemeProvider from "@/lib/theme/ThemeProvider";
 import StoreProvider from "@/lib/store/StoreProvider";
@@ -40,6 +40,14 @@ const REDIRECT_IF_AUTHED_SCRIPT = `(function(){try{var p=location.pathname;var g
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+});
+
+// Landing page runs on Poppins (per Figma); the rest of the app stays on Inter.
+// Applied via the `font-poppins` utility on the landing page's root element.
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const fraunces = Fraunces({
@@ -118,7 +126,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${fraunces.variable} h-full antialiased`}
+      className={`${inter.variable} ${fraunces.variable} ${poppins.variable} h-full antialiased`}
       // Tells Next.js the smooth scrolling set on `html` in globals.css is
       // intentional, so it skips resetting it to `auto` during route
       // transitions (and stops warning about it).
