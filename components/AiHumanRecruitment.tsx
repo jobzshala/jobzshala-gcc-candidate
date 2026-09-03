@@ -108,8 +108,8 @@ export default function AiHumanRecruitment() {
         className="pointer-events-none absolute inset-0 size-full object-cover opacity-50"
       />
 
-      <div className="relative mx-auto flex max-w-[941px] flex-col gap-8 px-4 sm:px-6 lg:px-10">
-        <div className="mx-auto flex max-w-[874px] flex-col items-center gap-5 text-center">
+      <div className="relative mx-auto flex max-w-235.25 flex-col gap-8">
+        <div className="mx-auto flex max-w-218.5 flex-col items-center gap-5 text-center">
           <p className="text-lg font-medium leading-7.5 tracking-[0.01em] text-[#1A1A1A] sm:text-2xl">
             {t("aiHuman.eyebrow")}
           </p>
@@ -136,9 +136,14 @@ export default function AiHumanRecruitment() {
 
           <span
             aria-hidden="true"
-            className="mx-auto flex size-12 items-center justify-center rounded-full border border-[#DFE6EA] bg-white text-2xl font-semibold text-[#4A4A4A]"
+            className="mx-auto flex size-12 items-center justify-center rounded-full bg-white"
           >
-            +
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/Recuiter/%2B.svg"
+              alt=""
+              className="size-5 object-contain"
+            />
           </span>
 
           <Column

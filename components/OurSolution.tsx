@@ -1,6 +1,5 @@
 "use client";
 
-import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 
 type Step = { label: string; desc: string };
@@ -29,7 +28,7 @@ export default function OurSolution() {
 
   return (
     <section id="recruitment-solutions" className="scroll-mt-24 bg-[#F6F9FA] py-10 font-poppins sm:py-20">
-      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10">
+      <div className="mx-auto max-w-[1200px]">
         <div className="grid items-center gap-10 lg:grid-cols-[434fr_766fr]">
           <div className="flex flex-col gap-5">
             <p className="text-lg font-medium leading-7.5 tracking-[0.01em] text-[#1A1A1A] sm:text-2xl">
@@ -57,36 +56,35 @@ export default function OurSolution() {
           />
         </div>
 
-        <div className="mt-10 rounded-2xl border border-[#008DD233] bg-[#EEF3FF] p-6 sm:p-10">
+        <div className="mt-8 rounded-[20px] border border-[#008DD233] bg-[#EEF3FF] px-6 py-6 sm:px-8.5">
           <p className="text-center text-xl font-medium leading-none tracking-[0.01em] text-[#4A4A4A]">
             {t("ourSolution.panelTitle")}
           </p>
 
-          <div className="mt-8 flex flex-col items-stretch gap-6 lg:flex-row lg:items-start lg:gap-0">
+          <div className="mt-8 flex flex-col items-stretch gap-6 lg:flex-row lg:items-start lg:gap-12">
             {steps.map((step, i) => {
               const { img, color } = STEP_META[i] ?? STEP_META[0];
               return (
-                <Fragment key={step.label}>
-                  {i > 0 && (
-                    <div
-                      aria-hidden="true"
-                      className="hidden self-center border-t border-dashed border-[#4A4A4A] lg:mt-7 lg:block lg:flex-1"
-                    />
-                  )}
-                  <div className="flex flex-col items-center gap-2 text-center lg:w-32 lg:shrink-0">
-                    <span className="flex size-14 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={img} alt="" className="size-7 object-contain" />
-                    </span>
+                <div
+                  key={step.label}
+                  className="flex flex-col items-center gap-5 text-center lg:flex-1 lg:max-w-40"
+                >
+                  <span className="flex size-20 items-center justify-center overflow-hidden rounded-full bg-white shadow-[0_4px_8px_rgba(0,0,0,0.1)]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={img} alt="" className="size-9 object-contain" />
+                  </span>
+                  <div className="flex flex-col items-center gap-1">
                     <span
-                      className="text-sm font-semibold uppercase tracking-wide"
+                      className="text-xl font-semibold uppercase leading-none tracking-[0.01em]"
                       style={{ color }}
                     >
                       {step.label}
                     </span>
-                    <span className="text-xs leading-tight text-[#4A4A4A]">{step.desc}</span>
+                    <span className="text-sm font-medium leading-5 tracking-[0.01em] text-[#4A4A4A]">
+                      {step.desc}
+                    </span>
                   </div>
-                </Fragment>
+                </div>
               );
             })}
           </div>
@@ -105,17 +103,22 @@ export default function OurSolution() {
                 }`}
               >
                 <span
-                  className="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-xl"
+                  className="flex size-18 shrink-0 items-center justify-center overflow-hidden rounded-lg"
                   style={{ backgroundColor: `${color}1A` }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={img} alt="" className="size-6 object-contain" />
+                  <img src={img} alt="" className="size-9 object-contain" />
                 </span>
-                <div>
-                  <p className="text-sm font-semibold" style={{ color }}>
+                <div className="flex flex-col gap-1">
+                  <p
+                    className="text-xl font-semibold uppercase leading-none tracking-[0.01em]"
+                    style={{ color }}
+                  >
                     {f.title}
                   </p>
-                  <p className="text-xs text-[#4A4A4A]">{f.sub}</p>
+                  <p className="text-sm font-medium leading-5 tracking-[0.01em] text-[#4A4A4A]">
+                    {f.sub}
+                  </p>
                 </div>
               </div>
             );

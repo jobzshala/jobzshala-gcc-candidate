@@ -56,7 +56,7 @@ export default function WorkforceChallenge() {
 
   return (
     <section className="bg-[#F6F9FA] py-10 sm:py-20">
-      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10">
+      <div className="mx-auto max-w-300">
         <div className="text-center">
           <p className="text-sm font-medium leading-7.5 tracking-[0.01em] text-[#1A1A1A] sm:text-xl">
             {t("challenge.eyebrow")}
@@ -65,12 +65,12 @@ export default function WorkforceChallenge() {
             {t("challenge.titleLine1")}{" "}
             <span className="text-[#008DD2]">{t("challenge.titleLine2")}</span>
           </h2>
-          <p className="mx-auto mt-4 max-w-6xl text-sm leading-6.5 tracking-[0.01em] text-[#4A4A4A] sm:text-sm">
+          <p className="mx-auto mt-4 max-w-6xl text-base font-normal leading-6.5 tracking-[0.01em] text-[#4A4A4A]">
             {t("challenge.subtitle")}
           </p>
         </div>
 
-        <div className="mt-10 border border-[#008DD233] rounded-2xl bg-[#EEF3FF] p-6 sm:p-10">
+        <div className="mt-8 border border-[#008DD233] rounded-2xl bg-[#EEF3FF] p-6 sm:p-10">
           <p className="text-center text-xl font-medium leading-none tracking-[0.01em] text-[#4A4A4A]">
             {t("challenge.journeyTitle")}
           </p>
@@ -112,20 +112,20 @@ export default function WorkforceChallenge() {
                         <ChevronRightIcon className="size-4 text-[#4A4A4A]" />
                       </div>
                     )}
-                    <div className="relative z-10 flex flex-col items-center gap-3 text-center lg:w-24 lg:shrink-0">
-                      <span className="flex size-14 items-center justify-center overflow-hidden rounded-full bg-white text-jz-blue-500 shadow-sm">
+                    <div className="relative z-10 flex flex-col items-center gap-5 text-center lg:w-32 lg:shrink-0">
+                      <span className="flex size-20 items-center justify-center overflow-hidden rounded-full bg-white text-jz-blue-500 shadow-[0_4px_8px_rgba(0,0,0,0.1)]">
                         {image ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={image}
                             alt=""
-                            className="size-8 object-contain"
+                            className="size-9 object-contain"
                           />
                         ) : (
-                          <Icon className="size-6" />
+                          <Icon className="size-8" />
                         )}
                       </span>
-                      <span className="text-xs font-medium leading-tight text-[#4A4A4A]">
+                      <span className="text-sm font-medium uppercase leading-5 tracking-[0.01em] text-[#4A4A4A]">
                         {step}
                       </span>
                     </div>
@@ -136,14 +136,14 @@ export default function WorkforceChallenge() {
           </div>
         </div>
 
-        <div className="mx-auto mt-6 grid max-w-4xl gap-8 sm:grid-cols-3 lg:gap-10">
+        <div className="mx-auto mt-8 grid max-w-[1147px] gap-9 sm:grid-cols-3">
           {metrics.map((m, i) => {
             const Icon = METRIC_ICONS[i] ?? CalendarIcon;
             const image = METRIC_IMAGES[i];
             return (
               <div
                 key={m.unit}
-                className="flex items-start gap-4 rounded-2xl bg-white p-4 shadow-sm"
+                className="flex items-start gap-6 rounded-2xl bg-white pb-11.5 pl-5 pr-11.75 pt-5 shadow-[0_4px_8px_rgba(0,0,0,0.1)]"
               >
                 <span className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#E5F7FF] text-jz-blue-500">
                   {image ? (
@@ -154,18 +154,22 @@ export default function WorkforceChallenge() {
                   )}
                 </span>
                 <div>
-                  <p className="text-2xl font-bold text-[#1A1A1A]">{m.value}</p>
-                  <p className="text-sm font-semibold text-[#1A1A1A]">
+                  <p className="text-3xl font-semibold leading-11.5 tracking-[0.01em] text-[#4A4A4A] sm:text-4xl">
+                    {m.value}
+                  </p>
+                  <p className="text-xl font-semibold leading-none tracking-[0.01em] text-[#1A1A1A]">
                     {m.unit}
                   </p>
-                  <p className="mt-1 text-xs text-[#4A4A4A]">{m.note}</p>
+                  <p className="mt-1 text-base font-normal leading-6.5 tracking-[0.01em] text-[#4A4A4A]">
+                    {m.note}
+                  </p>
                 </div>
               </div>
             );
           })}
         </div>
 
-        <div className="mx-auto mt-8 flex max-w-4xl items-center gap-3">
+        <div className="mx-auto mt-8 flex max-w-[1147px] items-center gap-4">
           <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#008DD2]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

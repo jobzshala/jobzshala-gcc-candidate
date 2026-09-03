@@ -20,7 +20,7 @@ export default function HowItWorks() {
 
   return (
     <section id="how-it-works" className="scroll-mt-24 bg-white py-10 font-poppins">
-      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10">
+      <div className="mx-auto max-w-300 ">
         <div className="text-center">
           <p className="text-lg font-medium leading-7.5 tracking-[0.01em] text-[#1A1A1A] sm:text-2xl">
             {t("howItWorks.eyebrow")}

@@ -24,7 +24,7 @@ export default function Hero() {
             {t("hero.tagline")}
           </div>
 
-          <h1 className="text-3xl font-bold leading-tight tracking-[0.01em] text-jz-white-50 sm:text-4xl lg:text-[52px] lg:leading-[64px]">
+          <h1 className="text-3xl font-bold leading-tight tracking-[0.01em] text-white sm:text-4xl lg:text-[52px] lg:leading-[64px]">
             {titleBefore}
             {titleHighlight && (
               <span className="text-[#FECC00]">{titleHighlight}</span>
