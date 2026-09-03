@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
 import NavDropdown, { type NavDropdownItem } from "./NavDropdown";
-import ThemeToggle from "./ThemeToggle";
+// import ThemeToggle from "./ThemeToggle";
 import Logo from "./ui/Logo";
 import UserMenu from "./UserMenu";
 import { STORAGE_KEY, clearSession, type CandidateSession } from "@/lib/auth/session";
@@ -139,7 +139,7 @@ export default function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 xl:flex">
-          <ThemeToggle />
+          {/* <ThemeToggle /> */}
           <LanguageSwitcher />
           {session ? (
             <UserMenu session={session} onLogout={handleLogout} />
@@ -215,7 +215,7 @@ export default function Header() {
             </div>
           </nav>
           <div className="mt-4 flex items-center gap-3">
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
             <LanguageSwitcher />
           </div>
           <div className="mt-3 flex flex-col gap-2">

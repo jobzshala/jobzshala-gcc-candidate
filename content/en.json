@@ -408,17 +408,19 @@
         "Blog",
         "Careers",
         "Success Stories",
-        "Pricing"
+        "Pricing",
+        "FAQ"
       ]
     },
     "services": {
-      "title": "FAQ Services",
+      "title": "Services",
       "links": [
         "Recruitment Solutions",
         "Workforce Infrastructure",
         "AI Matching",
         "Candidate Verification",
-        "Visa Assistance"
+        "Visa Assistance",
+        "Deployment Support"
       ]
     },
     "legal": {
@@ -427,7 +429,8 @@
         "Privacy Policy",
         "Terms & Conditions",
         "Refund Policy",
-        "Cookie Policy"
+        "Cookie Policy",
+        "Site map"
       ]
     },
     "countries": [
@@ -438,7 +441,7 @@
       "Kuwait",
       "Bahrain"
     ],
-    "copyright": "Jobzshala 2026 | All rights reserved | Powered by Akshaki India Pvt. Ltd.",
+    "copyright": "copyright © 2026 Jobzshala | All rights reserved | Powered by Akshaki India Pvt. Ltd",
     "sitemap": "Sitemap"
   },
   "login": {
