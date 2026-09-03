@@ -24,7 +24,7 @@ export default function BuiltForEmployers() {
       className="scroll-mt-24 bg-white py-10 font-poppins sm:py-20"
     >
       <div className="mx-auto max-w-300">
-        <div className="flex flex-col gap-7 py-8 sm:py-10">
+        <div className="flex flex-col gap-7">
           <div className="mx-auto flex max-w-5xl flex-col items-center gap-4 text-center">
             <p className="text-lg font-medium leading-7.5 tracking-[0.01em] text-[#1A1A1A] sm:text-2xl">
               {t("builtForEmployers.eyebrow")}

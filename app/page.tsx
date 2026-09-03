@@ -53,12 +53,12 @@ export default function Home() {
         <WorkforceCorridor />
         <BuiltForEmployers />
         <BuiltForWorkforce />
-        <ComparisonSection />
+        {/* <ComparisonSection />
         <PlatformFeatures />
-        <IndustriesWePower />
-        <BuiltForAbuDhabi />
+        <IndustriesWePower /> */}
+        {/* <BuiltForAbuDhabi /> */}
         <OurVision />
-        <CtaCards />
+        {/* <CtaCards /> */}
       </main>
       <Footer />
     </div>

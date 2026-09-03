@@ -24,7 +24,7 @@ export default function WorkforceCorridor() {
       className="scroll-mt-24 bg-[#F6F9FA] py-10 font-poppins sm:py-20"
     >
       <div className="mx-auto max-w-300">
-        <div className="flex flex-col gap-8 py-8 sm:py-10">
+        <div className="flex flex-col gap-8">
           <div className="grid items-center gap-8 lg:grid-cols-2">
             {/* Left Content */}
             <div className="flex flex-col gap-5">

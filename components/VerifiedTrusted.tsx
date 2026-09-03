@@ -27,7 +27,7 @@ export default function VerifiedTrusted() {
       className="scroll-mt-24 bg-[#F6F9FA] py-10 font-poppins sm:py-20"
     >
       <div className="mx-auto max-w-300">
-        <div className="flex flex-col gap-8 py-8">
+        <div className="flex flex-col gap-8">
           <div className="grid items-center  lg:grid-cols-2">
             {/* Left Content */}
             <div className="flex flex-col gap-4">

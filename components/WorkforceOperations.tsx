@@ -26,7 +26,7 @@ export default function WorkforceOperations() {
       className="scroll-mt-24 bg-white py-10 font-poppins sm:py-20"
     >
       <div className="mx-auto max-w-300">
-        <div className="flex flex-col gap-8 py-8 sm:py-10">
+        <div className="flex flex-col gap-8">
           <div className="grid items-center gap-8 lg:grid-cols-[467px_1fr] lg:gap-[157px]">
             {/* Left Content */}
             <div className="flex flex-col gap-5">

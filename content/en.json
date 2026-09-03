@@ -310,6 +310,20 @@
       { "label": "Screening", "desc": "Expert screening for the right fit." }
     ]
   },
+  "ourVision": {
+    "eyebrow": "OUR VISION",
+    "heading": "Redefining the Future of Workforce.",
+    "subtitle": "We're not building another job portal. We're not building another recruitment agency. We're building the future of workforce infrastructure.",
+    "imageBody": "Building the AI-Native Cross-Border Workforce Infrastructure Platform that helps governments, employers, recruiters and workforce ecosystems source, verify and deploy trusted talent across borders.",
+    "imageTag": "Built in Abu Dhabi",
+    "imageAlt": "Abu Dhabi skyline",
+    "features": [
+      { "label": "AI-Native", "desc": "Intelligent Future-ready" },
+      { "label": "Cross-Border", "desc": "Connecting talent. Creating impact." },
+      { "label": "Workforce Infrastructure", "desc": "Built to scale. Built to last." },
+      { "label": "Enterprise Ready", "desc": "Secure. Compliant. Always trusted." }
+    ]
+  },
   "comparison": {
     "heading": "Why Jobzshala Is",
     "headingHighlight": "Different",

@@ -30,7 +30,7 @@ export default function BuiltForWorkforce() {
       className="scroll-mt-24 bg-[#F6F9FA] py-10 font-poppins sm:py-20"
     >
       <div className="mx-auto max-w-300">
-        <div className="flex flex-col gap-8 py-8 sm:py-10">
+        <div className="flex flex-col gap-8">
           <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 text-center">
             <p className="text-lg font-medium leading-7.5 tracking-[0.01em] text-[#1A1A1A] sm:text-2xl">
               {t("builtForWorkforce.eyebrow")}
@@ -48,13 +48,21 @@ export default function BuiltForWorkforce() {
           </div>
 
           <div className="rounded-[20px] border border-[#008DD233] bg-[#EEF3FF] px-6 py-8 sm:px-8.5 sm:py-10">
-            <div className="flex flex-col gap-10">
+            <div className="relative flex flex-col gap-10">
+              {/* Right-side connector joining row 1 → row 2 (desktop only). */}
+              <span
+                aria-hidden="true"
+                className="absolute right-[2%] top-10 hidden h-[190px] w-9 rounded-r-[28px] border-2 border-l-0 border-dashed border-[#9AA6B2] lg:block"
+              />
+
               {[steps.slice(0, 5), steps.slice(5, 10)].map((row, rowIdx) => (
-                <div key={rowIdx} className="relative">
+                <div key={rowIdx} className="relative min-h-[150px]">
                   {/* Dashed connector at circle-center height (40px = half of size-20). */}
                   <span
                     aria-hidden="true"
-                    className="absolute inset-x-[10%] top-10 hidden border-t-2 border-dashed border-[#9AA6B2] lg:block"
+                    className={`absolute top-10 hidden border-t-2 border-dashed border-[#9AA6B2] lg:block ${
+                      rowIdx === 0 ? "left-[3%] right-[8%]" : "inset-x-[8%]"
+                    }`}
                   />
                   {rowIdx === 0 && (
                     <span
@@ -82,7 +90,7 @@ export default function BuiltForWorkforce() {
                           </span>
                           <div className="flex flex-col items-center gap-1">
                             <span
-                              className="text-base font-semibold uppercase leading-none tracking-[0.01em]"
+                              className="text-base font-semibold leading-none tracking-[0.01em]"
                               style={{ color }}
                             >
                               {step.label}
