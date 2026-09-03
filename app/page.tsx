@@ -10,6 +10,8 @@ import WorkforceOperations from "@/components/WorkforceOperations";
 import AiHumanRecruitment from "@/components/AiHumanRecruitment";
 import WorkforceAvailability from "@/components/WorkforceAvailability";
 import WorkforceCorridor from "@/components/WorkforceCorridor";
+import BuiltForEmployers from "@/components/BuiltForEmployers";
+import BuiltForWorkforce from "@/components/BuiltForWorkforce";
 import ComparisonSection from "@/components/ComparisonSection";
 import PlatformFeatures from "@/components/PlatformFeatures";
 import IndustriesWePower from "@/components/IndustriesWePower";
@@ -49,6 +51,8 @@ export default function Home() {
         <AiHumanRecruitment />
         {/* <WorkforceAvailability /> */}
         <WorkforceCorridor />
+        <BuiltForEmployers />
+        <BuiltForWorkforce />
         <ComparisonSection />
         <PlatformFeatures />
         <IndustriesWePower />

@@ -280,6 +280,36 @@
       { "label": "Stronger Partnerships", "desc": "Long-term relationships built on trust." }
     ]
   },
+  "builtForEmployers": {
+    "eyebrow": "BUILT FOR GCC EMPLOYERS",
+    "headingLine1": "Real Requirements. Real Conversations.",
+    "headingHighlight": "Real Results.",
+    "subtitle": "Talk directly to employers, understand their exact needs and deliver the right talent — faster.",
+    "features": [
+      { "label": "Direct Employer Access", "desc": "Connect directly with decision makers." },
+      { "label": "Live Requirements", "desc": "Get real-time, verified requirements." },
+      { "label": "Better Matches", "desc": "AI + Human approach for the right fit" },
+      { "label": "Faster Closures", "desc": "Streamlined workflow from start to finish" }
+    ]
+  },
+  "builtForWorkforce": {
+    "eyebrow": "BUILT FOR THE WORKFORCE",
+    "headingLine1": "Every Step. Built for the Journey.",
+    "headingHighlight": "Designed for Results.",
+    "subtitle": "From discovery to deployment and beyond, Jobzshala supports candidates at every stage with AI + Human intelligence.",
+    "steps": [
+      { "label": "Discover Job", "desc": "Find the right opportunity." },
+      { "label": "WhatsApp AI", "desc": "Get guidance instantly" },
+      { "label": "Create Profile", "desc": "Build your profile in minutes" },
+      { "label": "Voice/Resume", "desc": "Share your details easily" },
+      { "label": "Verification", "desc": "Secure & trusted verification" },
+      { "label": "Post-Joining", "desc": "We're with you, always" },
+      { "label": "Visa & Travel", "desc": "Visa support & travel arranged." },
+      { "label": "Offer", "desc": "Receive offer and accept" },
+      { "label": "Employer", "desc": "Reviewed by employers" },
+      { "label": "Screening", "desc": "Expert screening for the right fit." }
+    ]
+  },
   "comparison": {
     "heading": "Why Jobzshala Is",
     "headingHighlight": "Different",
