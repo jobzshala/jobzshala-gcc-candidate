@@ -24,7 +24,7 @@ export default function VerifiedTrusted() {
   return (
     <section
       id="candidate-verification"
-      className="scroll-mt-24 bg-[#F6F9FA] py-10 sm:py-20"
+      className="scroll-mt-24 bg-[#F6F9FA] py-10 font-poppins sm:py-20"
     >
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10">
         <div className="flex flex-col gap-8 px-6 py-8 sm:px-10 sm:py-10">

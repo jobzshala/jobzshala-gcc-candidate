@@ -28,7 +28,7 @@ export default function OurSolution() {
   const features = t("ourSolution.features", { returnObjects: true }) as Feature[];
 
   return (
-    <section id="recruitment-solutions" className="scroll-mt-24 bg-[#F6F9FA] py-10 sm:py-20">
+    <section id="recruitment-solutions" className="scroll-mt-24 bg-[#F6F9FA] py-10 font-poppins sm:py-20">
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10">
         <div className="grid items-center gap-10 lg:grid-cols-[434fr_766fr]">
           <div className="flex flex-col gap-5">

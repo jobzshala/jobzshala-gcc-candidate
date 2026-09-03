@@ -43,9 +43,11 @@ const inter = Inter({
 });
 
 // Landing page runs on Poppins (per Figma); the rest of the app stays on Inter.
-// Applied via the `font-poppins` utility on the landing page's root element.
+// Applied via the `font-poppins` utility on the landing sections. The CSS var is
+// named --font-poppins-family (not --font-poppins) so it doesn't collide with the
+// @theme token of the same name in globals.css, which references it.
 const poppins = Poppins({
-  variable: "--font-poppins",
+  variable: "--font-poppins-family",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });

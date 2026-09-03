@@ -16,16 +16,15 @@ export default function Hero() {
   const [titleBefore, titleHighlight, titleAfter] = splitHighlight(t("hero.title"), t("hero.titleHighlight"));
 
   return (
-
-    <section className="surface-always-dark bg-[url('/images/hero-bg-dubai.webp')] bg-cover bg-bottom bg-no-repeat">
-      <div className="mx-auto max-w-[1219px] px-4 pt-16 pb-16 sm:px-6 lg:px-10 lg:pt-[88px] lg:pb-24">
-        <div className="mx-auto flex max-w-[860px] flex-col items-center text-center">
-          <div className="inline-flex h-8.5 items-center gap-1 rounded border border-white/15 bg-white/5 px-3 py-1 text-xs text-jz-white-50">
+    <section className="surface-always-dark bg-[url('/images/hero-bg-dubai.webp')] bg-cover bg-bottom bg-no-repeat font-poppins">
+      <div className="mx-auto max-w-[1219px] px-4 pt-16 pb-24 sm:px-6 lg:px-10 lg:pt-[120px] lg:pb-32">
+        <div className="mx-auto flex max-w-[953px] flex-col items-center gap-6 text-center">
+          <div className="inline-flex h-8.5 items-center gap-1 rounded bg-white/10 px-3 py-1 text-base font-normal leading-6.5 tracking-[0.01em] text-[#F2F2F2]">
             <SparkleIcon className="size-4 shrink-0 text-jz-yellow-400" />
             {t("hero.tagline")}
           </div>
 
-          <h1 className="mt-6 font-serif text-3xl font-bold leading-tight tracking-[0.01em] text-jz-white-50 sm:text-4xl lg:text-[42px] lg:leading-[1.2]">
+          <h1 className="text-3xl font-bold leading-tight tracking-[0.01em] text-jz-white-50 sm:text-4xl lg:text-[52px] lg:leading-[64px]">
             {titleBefore}
             {titleHighlight && (
               <span className="text-[#FECC00]">{titleHighlight}</span>
@@ -33,11 +32,11 @@ export default function Hero() {
             {titleAfter}
           </h1>
 
-          <p className="mt-5 max-w-2xl text-xs text-jz-white-400 sm:text-sm">
+          <p className="max-w-2xl text-xs text-jz-white-400 sm:text-sm">
             {t("hero.subtitle")}
           </p>
 
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
+          <div className="flex flex-wrap justify-center gap-4">
             <Button
               variant="primary"
               href="/hire/login"
@@ -50,7 +49,7 @@ export default function Hero() {
             </Button>
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-1   max-w-2xl text-xs text-jz-white-400 sm:text-sm">
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 max-w-2xl text-xs text-jz-white-400 sm:text-sm">
             {badges.map((badge, i) => (
               <span key={badge} className="flex items-center gap-1">
                 {i > 0 && (
@@ -80,7 +79,7 @@ export default function Hero() {
                   : ""
               }`}
             >
-              <p className="font-serif text-2xl font-semibold text-jz-white-50 sm:text-3xl md:text-4xl">
+              <p className="text-2xl font-semibold text-jz-white-50 sm:text-3xl md:text-4xl">
                 {stat.value}
               </p>
               <p className="mt-1 text-[11px] text-jz-white-400 sm:text-xs">{stat.label}</p>
