@@ -224,6 +224,28 @@
       { "label": "Multi-Region Control", "desc": "Manage operations across borders" }
     ]
   },
+  "aiHuman": {
+    "eyebrow": "AI + HUMAN RECRUITMENT",
+    "headingLine1": "AI Finds the Signal.",
+    "headingHighlight": "Humans Make the Decision.",
+    "subtitle": "The perfect blend of intelligent technology and human expertise to deliver the right talent for your business.",
+    "aiTitle": "AI",
+    "humansTitle": "Humans",
+    "aiItems": [
+      { "label": "Sources", "desc": "Scans multiple channels to find the best talent" },
+      { "label": "Matches", "desc": "Intelligently matches skills, experience & role fit" },
+      { "label": "Ranks", "desc": "Ranks candidates based on potential & relevance" },
+      { "label": "Recommends", "desc": "Recommends top profiles for your consideration" },
+      { "label": "Predicts", "desc": "Predicts success with data-driven insights" }
+    ],
+    "humansItems": [
+      { "label": "Validates", "desc": "Verifies information & candidate credibility" },
+      { "label": "Calls", "desc": "Engages candidates for deeper clarity" },
+      { "label": "Screens", "desc": "Assesses communication, attitude & role alignment" },
+      { "label": "Understands", "desc": "Understands motivation, goals & cultural fit" },
+      { "label": "Confirms", "desc": "Confirms the right fit before you decide" }
+    ]
+  },
   "workforceAvailability": {
     "heading": "Immediate Workforce Available Across",
     "headingHighlight": "GCC",

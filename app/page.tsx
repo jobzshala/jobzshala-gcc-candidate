@@ -7,6 +7,7 @@ import OurSolution from "@/components/OurSolution";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import VerifiedTrusted from "@/components/VerifiedTrusted";
 import WorkforceOperations from "@/components/WorkforceOperations";
+import AiHumanRecruitment from "@/components/AiHumanRecruitment";
 import WorkforceAvailability from "@/components/WorkforceAvailability";
 import WorkforceCorridor from "@/components/WorkforceCorridor";
 import ComparisonSection from "@/components/ComparisonSection";
@@ -45,6 +46,7 @@ export default function Home() {
         {/* <WhyChooseUs /> */}
         <VerifiedTrusted />
         <WorkforceOperations />
+        <AiHumanRecruitment />
         <WorkforceAvailability />
         <WorkforceCorridor />
         <ComparisonSection />
