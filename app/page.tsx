@@ -47,7 +47,7 @@ export default function Home() {
         <VerifiedTrusted />
         <WorkforceOperations />
         <AiHumanRecruitment />
-        <WorkforceAvailability />
+        {/* <WorkforceAvailability /> */}
         <WorkforceCorridor />
         <ComparisonSection />
         <PlatformFeatures />

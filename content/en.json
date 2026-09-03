@@ -266,6 +266,20 @@
       "subtitle": "Active Deployment"
     }
   },
+  "workforceCorridor": {
+    "eyebrow": "INDIA > GCC WORKFORCE CORRIDOR",
+    "headingLine1": "Bridging Talent.",
+    "headingLine2": "Connecting Opportunities.",
+    "headingHighlight": "Powering GCC Growth.",
+    "body": "Jobzshala creates a seamless workforce corridor between India and GCC — driving business success through the right talent, at the right time.",
+    "imageAlt": "India to GCC workforce corridor",
+    "features": [
+      { "label": "Access to Talent", "desc": "Tap into India's vast and skilled talent pool" },
+      { "label": "Faster Deployment", "desc": "Streamlined processes for quicker hiring" },
+      { "label": "Quality & Compliance", "desc": "Verified, compliant & job-ready talent" },
+      { "label": "Stronger Partnerships", "desc": "Long-term relationships built on trust." }
+    ]
+  },
   "comparison": {
     "heading": "Why Jobzshala Is",
     "headingHighlight": "Different",
