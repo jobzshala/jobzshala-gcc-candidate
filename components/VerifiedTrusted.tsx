@@ -83,13 +83,21 @@ export default function VerifiedTrusted() {
               {t("verifiedTrusted.panelTitle")}
             </p>
 
-            <div className="mt-8 flex flex-col items-stretch gap-6 lg:flex-row lg:items-start lg:gap-12">
+            <div className="relative mt-8 flex flex-col items-stretch gap-6 lg:flex-row lg:items-start lg:gap-6 xl:justify-between xl:gap-0">
+              {/* Dashed connector at circle-center height (40px = half of
+                  size-20). 10%/90% lands inside the first and last circles at
+                  both desktop layouts, so the ends stay hidden behind them. */}
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-[10%] top-10 hidden border-t-2 border-dashed border-[#9AA6B2] lg:block"
+              />
+
               {steps.map((step, i) => {
                 const { img, color } = STEP_META[i] ?? STEP_META[0];
                 return (
                   <div
                     key={step.label}
-                    className="flex flex-col items-center gap-5 text-center lg:flex-1 lg:max-w-40"
+                    className="relative z-10 flex flex-col items-center gap-5 text-center lg:flex-1 xl:flex-none"
                   >
                     <span className="flex size-20 items-center justify-center overflow-hidden rounded-full bg-white shadow-[0_4px_8px_rgba(0,0,0,0.1)]">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -97,12 +105,12 @@ export default function VerifiedTrusted() {
                     </span>
                     <div className="flex flex-col items-center gap-1">
                       <span
-                        className="text-xl font-semibold uppercase leading-none tracking-[0.01em]"
+                        className="text-xl font-semibold leading-none tracking-[0.01em] xl:whitespace-nowrap"
                         style={{ color }}
                       >
                         {step.label}
                       </span>
-                      <span className="text-sm font-medium leading-5 tracking-[0.01em] text-[#4A4A4A]">
+                      <span className="max-w-40 text-sm font-medium leading-5 tracking-[0.01em] text-[#4A4A4A]">
                         {step.desc}
                       </span>
                     </div>
