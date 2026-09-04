@@ -33,7 +33,7 @@ export const metadata = {
 
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col bg-jz-blue-950 font-poppins">
+    <div className="flex flex-1 flex-col bg-[#F6F9FA] font-poppins">
       {/* Describes the actual offering, so search and AI answer engines can
           state what Jobzshala does and where, rather than inferring it. */}
       <JsonLd schema={serviceSchema()} />

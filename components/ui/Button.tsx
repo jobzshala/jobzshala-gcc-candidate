@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { ChevronRightIcon } from "./icons";
+import { cn } from "@/lib/utils";
 
 type ButtonVariant = "primary" | "secondary";
 
@@ -17,12 +18,17 @@ const base =
 const variants: Record<ButtonVariant, string> = {
   primary:
     "bg-gradient-to-b from-[#FECC00] to-jz-yellow-400 text-jz-ink-on-accent font-semibold",
-  secondary:
-    " text-[#00587F] font-normal bg-[#FFFFFF]",
+  secondary: " text-[#00587F] font-normal bg-[#FFFFFF]",
 };
 
-export default function Button({ children, variant = "primary", href, className = "", showIcon = true }: ButtonProps) {
-  const classes = `${base} ${variants[variant]} ${className}`;
+export default function Button({
+  children,
+  variant = "primary",
+  href,
+  className = "",
+  showIcon = true,
+}: ButtonProps) {
+  const classes = cn(base, variants[variant], className);
   const content = (
     <>
       <span>{children}</span>
@@ -38,5 +44,9 @@ export default function Button({ children, variant = "primary", href, className 
     );
   }
 
-  return <button className={classes} type="button">{content}</button>;
+  return (
+    <button className={classes} type="button">
+      {content}
+    </button>
+  );
 }

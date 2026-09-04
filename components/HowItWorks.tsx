@@ -19,7 +19,7 @@ export default function HowItWorks() {
   const steps = t("howItWorks.steps", { returnObjects: true }) as Step[];
 
   return (
-    <section id="how-it-works" className="scroll-mt-24 bg-white py-10 font-poppins">
+    <section id="how-it-works" className="scroll-mt-24 bg-[#F6F9FA] py-10 font-poppins">
       <div className="mx-auto max-w-300 ">
         <div className="text-center">
           <p className="text-lg font-medium leading-7.5 tracking-[0.01em] text-[#1A1A1A] sm:text-2xl">

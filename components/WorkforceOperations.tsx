@@ -23,7 +23,7 @@ export default function WorkforceOperations() {
   return (
     <section
       id="workforce-operations"
-      className="scroll-mt-24 bg-white py-10 font-poppins sm:py-20"
+      className="scroll-mt-24 bg-[#F6F9FA] py-10 font-poppins sm:py-20"
     >
       <div className="mx-auto max-w-300">
         <div className="flex flex-col gap-8">

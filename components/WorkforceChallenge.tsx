@@ -51,31 +51,35 @@ const METRIC_ICONS: IconComponent[] = [CalendarIcon, CreditCardIcon, UserIcon];
 
 export default function WorkforceChallenge() {
   const { t } = useTranslation();
-  const steps = t("challenge.journeySteps", { returnObjects: true }) as string[];
+  const steps = t("challenge.journeySteps", {
+    returnObjects: true,
+  }) as string[];
   const metrics = t("challenge.metrics", { returnObjects: true }) as Metric[];
 
   return (
-    <section className="bg-[#F6F9FA] py-10 sm:py-20">
-      <div className="mx-auto max-w-300">
-        <div className="text-center">
-          <p className="text-sm font-medium leading-7.5 tracking-[0.01em] text-[#1A1A1A] sm:text-xl">
+    <section className="bg-[#F6F9FA] pt-16 pb-10 sm:pt-20 sm:pb-20">
+      <div className="mx-auto max-w-300 px-4 sm:px-0">
+        <div className="text-left sm:text-center">
+          <p className="text-2xl font-medium leading-7.5 tracking-[0.01em] text-[#1A1A1A] sm:text-xl">
             {t("challenge.eyebrow")}
           </p>
-          <h2 className="mx-auto mt-2 max-w-5xl text-2xl font-semibold leading-tight tracking-[0.01em] text-[#1A1A1A] sm:text-3xl md:text-4xl md:leading-11.5">
+          <h2 className="mx-auto mt-2 max-w-5xl text-[36px] font-semibold leading-[46px] tracking-[0.01em] text-[#1A1A1A] sm:text-3xl sm:leading-tight md:text-4xl md:leading-11.5">
             {t("challenge.titleLine1")}
-            <span className="block text-[#008DD2]">{t("challenge.titleLine2")}</span>
+            <span className="block text-[#008DD2]">
+              {t("challenge.titleLine2")}
+            </span>
           </h2>
           <p className="mx-auto mt-4 max-w-none text-base font-normal leading-6.5 tracking-[0.01em] text-[#4A4A4A]">
             {t("challenge.subtitle")}
           </p>
         </div>
 
-        <div className="mt-8 border border-[#008DD233] rounded-2xl bg-[#EEF3FF] p-6 sm:p-10">
-          <p className="text-center text-xl font-medium leading-none tracking-[0.01em] text-[#4A4A4A]">
+        <div className="mt-8 rounded-[20px] border border-[#BEDEF6] bg-[#EEF3FF] px-10 py-8 sm:p-10">
+          <p className="text-left text-xl font-medium leading-[30px] tracking-[0.01em] text-[#4A4A4A] sm:text-center sm:leading-none">
             {t("challenge.journeyTitle")}
           </p>
 
-          <div className="relative mt-8">
+          <div className="relative mt-7 sm:mt-8">
             {/* Wavy dashed connector — desktop only, sits behind the icons. */}
             <svg
               aria-hidden="true"
@@ -94,38 +98,60 @@ export default function WorkforceChallenge() {
               />
             </svg>
 
-            <div className="flex flex-col items-stretch gap-6 lg:flex-row lg:items-start lg:gap-0">
+            <div className="flex flex-col items-stretch lg:flex-row lg:items-start lg:gap-0">
               {steps.map((step, i) => {
                 const Icon = STEP_ICONS[i] ?? SearchIcon;
                 const image = STEP_IMAGES[i];
                 return (
                   <Fragment key={step}>
                     {i > 0 && (
-                      <div
-                        aria-hidden="true"
-                        className={`hidden lg:flex lg:flex-1 lg:items-center lg:justify-center ${
-                          // gap 1,3,5 arc up; gap 2,4,6 arc down — keep the
-                          // chevron sitting on the dashes either way.
-                          i % 2 === 1 ? "lg:mt-3" : "lg:mt-9"
-                        }`}
-                      >
-                        <ChevronRightIcon className="size-4 text-[#4A4A4A]" />
-                      </div>
+                      <>
+                        {/* Mobile: dashed bow joining one circle to the next,
+                            alternating side to side as in the design. */}
+                        <svg
+                          aria-hidden="true"
+                          viewBox="0 0 56 60"
+                          fill="none"
+                          className="h-15 w-14 shrink-0 lg:hidden"
+                        >
+                          <path
+                            d={
+                              i % 2 === 1
+                                ? "M28 0 C 6 18, 6 42, 28 60"
+                                : "M28 0 C 50 18, 50 42, 28 60"
+                            }
+                            stroke="#4A4A4A"
+                            strokeWidth="2"
+                            strokeDasharray="6 6"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                        <div
+                          aria-hidden="true"
+                          className={`hidden lg:flex lg:flex-1 lg:items-center lg:justify-center ${
+                            // gap 1,3,5 arc up; gap 2,4,6 arc down — keep the
+                            // chevron sitting on the dashes either way.
+                            i % 2 === 1 ? "lg:mt-3" : "lg:mt-9"
+                          }`}
+                        >
+                          <ChevronRightIcon className="size-4 text-[#4A4A4A]" />
+                        </div>
+                      </>
                     )}
-                    <div className="relative z-10 flex flex-col items-center gap-5 text-center lg:w-32 lg:shrink-0">
-                      <span className="flex size-20 items-center justify-center overflow-hidden rounded-full bg-white text-jz-blue-500 shadow-[0_4px_8px_rgba(0,0,0,0.1)]">
+                    <div className="relative z-10 flex items-center gap-5 text-left lg:w-32 lg:shrink-0 lg:flex-col lg:text-center">
+                      <span className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white text-jz-blue-500 shadow-[0_4px_8px_rgba(0,0,0,0.1)] lg:size-20">
                         {image ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={image}
                             alt=""
-                            className="size-9 object-contain"
+                            className="size-7 object-contain lg:size-9"
                           />
                         ) : (
-                          <Icon className="size-8" />
+                          <Icon className="size-7 lg:size-8" />
                         )}
                       </span>
-                      <span className="text-sm font-medium uppercase leading-5 tracking-[0.01em] text-[#4A4A4A]">
+                      <span className="w-28 text-sm font-medium leading-5 tracking-[0.01em] text-[#4A4A4A] lg:w-auto lg:uppercase">
                         {step}
                       </span>
                     </div>
@@ -169,7 +195,7 @@ export default function WorkforceChallenge() {
           })}
         </div>
 
-        <div className="mx-auto mt-8 flex max-w-[1147px] items-center gap-4">
+        <div className="mx-auto mt-8 flex max-w-[1147px] items-start gap-4">
           <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#008DD2]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -178,7 +204,7 @@ export default function WorkforceChallenge() {
               className="size-5 object-contain"
             />
           </span>
-          <p className="text-md font-medium leading-none tracking-[0.01em] text-[#4A4A4A]">
+          <p className="text-base font-medium leading-6.5 tracking-[0.01em] text-[#4A4A4A]">
             {t("challenge.callout")}
           </p>
         </div>
