@@ -61,11 +61,11 @@ export default function WorkforceChallenge() {
           <p className="text-sm font-medium leading-7.5 tracking-[0.01em] text-[#1A1A1A] sm:text-xl">
             {t("challenge.eyebrow")}
           </p>
-          <h2 className="mx-auto mt-2 max-w-3xl text-2xl font-semibold leading-tight tracking-[0.01em] text-[#1A1A1A] sm:text-3xl md:text-4xl md:leading-11.5">
-            {t("challenge.titleLine1")}{" "}
-            <span className="text-[#008DD2]">{t("challenge.titleLine2")}</span>
+          <h2 className="mx-auto mt-2 max-w-5xl text-2xl font-semibold leading-tight tracking-[0.01em] text-[#1A1A1A] sm:text-3xl md:text-4xl md:leading-11.5">
+            {t("challenge.titleLine1")}
+            <span className="block text-[#008DD2]">{t("challenge.titleLine2")}</span>
           </h2>
-          <p className="mx-auto mt-4 max-w-6xl text-base font-normal leading-6.5 tracking-[0.01em] text-[#4A4A4A]">
+          <p className="mx-auto mt-4 max-w-none text-base font-normal leading-6.5 tracking-[0.01em] text-[#4A4A4A]">
             {t("challenge.subtitle")}
           </p>
         </div>
@@ -136,7 +136,7 @@ export default function WorkforceChallenge() {
           </div>
         </div>
 
-        <div className="mx-auto mt-8 grid max-w-[1147px] gap-9 sm:grid-cols-3">
+        <div className="mx-auto mt-8 grid max-w-286.75 gap-9 sm:grid-cols-3">
           {metrics.map((m, i) => {
             const Icon = METRIC_ICONS[i] ?? CalendarIcon;
             const image = METRIC_IMAGES[i];
