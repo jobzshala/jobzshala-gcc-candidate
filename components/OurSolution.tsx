@@ -88,7 +88,7 @@ export default function OurSolution() {
                   key={step.label}
                   className="relative z-10 flex items-center gap-4 text-left lg:flex-1 lg:flex-col lg:items-center lg:gap-5 lg:text-center xl:flex-none"
                 >
-                  <span className="relative z-10 flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-[0_4px_8px_rgba(0,0,0,0.1)]">
+                  <span className="relative z-10 flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-[0px_4px_8px_0px_#0000001A]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={img} alt="" className="size-9 object-contain" />
                   </span>
