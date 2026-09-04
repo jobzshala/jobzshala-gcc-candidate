@@ -111,7 +111,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-jz-blue-400 bg-jz-blue-950 shadow-sm">
-      <div className="mx-auto flex max-w-[1440px] items-center gap-7 px-4 py-5 sm:px-6 lg:px-10 xl:justify-between">
+      <div className="mx-auto flex max-w-[1440px] items-center gap-7 px-4 py-5 sm:px-6 lg:px-16 xl:justify-center">
         <Link href="/" className="flex flex-col gap-1">
           <Logo />
           <p className="hidden text-[10px] text-jz-white-100 sm:block">{t("nav.tagline")}</p>
