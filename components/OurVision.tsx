@@ -21,9 +21,9 @@ export default function OurVision() {
       id="our-vision"
       className="scroll-mt-24 bg-[#F6F9FA] py-10 font-poppins sm:py-20"
     >
-      <div className="mx-auto max-w-300">
+      <div className="mx-auto max-w-300 px-4 sm:px-0">
         <div className="flex flex-col gap-8">
-          <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 text-center">
+          <div className="mx-auto flex max-w-3xl flex-col items-start gap-4 text-left sm:items-center sm:text-center">
             <p className="text-lg font-medium leading-7.5 tracking-[0.01em] text-[#1A1A1A] sm:text-2xl">
               {t("ourVision.eyebrow")}
             </p>
@@ -39,14 +39,20 @@ export default function OurVision() {
           <div className="relative overflow-hidden rounded-[20px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
+              src="/images/Vision/Vision_img-mobile.svg"
+              alt={t("ourVision.imageAlt")}
+              className="h-full w-full object-cover sm:hidden"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src="/images/Vision/Vision_img.svg"
               alt={t("ourVision.imageAlt")}
               width={1240}
               height={560}
-              className="h-full w-full object-cover"
+              className="hidden h-full w-full object-cover sm:block"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/25 to-transparent" />
-            <div className="absolute left-0 top-0 flex max-w-[567px] flex-col gap-3 p-6 sm:p-10">
+            <div className="absolute inset-0 hidden bg-gradient-to-b from-black/60 via-black/25 to-transparent sm:block" />
+            <div className="absolute left-0 top-0 hidden max-w-[567px] flex-col gap-3 p-6 sm:flex sm:p-10">
               <p className="text-lg font-medium leading-tight tracking-[0.01em] text-white sm:text-xl">
                 {t("ourVision.imageBody")}
               </p>
@@ -54,6 +60,17 @@ export default function OurVision() {
                 {t("ourVision.imageTag")}
               </p>
             </div>
+          </div>
+
+          {/* Mobile-only caption: plain text below the photo instead of the
+              dark-gradient overlay used on desktop. */}
+          <div className="flex flex-col gap-3 sm:hidden">
+            <p className="text-lg font-medium leading-tight tracking-[0.01em] text-[#1A1A1A]">
+              {t("ourVision.imageBody")}
+            </p>
+            <p className="text-base font-semibold leading-none tracking-[0.01em] text-[#008DD2]">
+              {t("ourVision.imageTag")}
+            </p>
           </div>
 
           {/* Feature panel */}
@@ -64,15 +81,15 @@ export default function OurVision() {
                 return (
                   <div
                     key={feature.label}
-                    className="flex flex-col items-center gap-5 text-center"
+                    className="flex items-center gap-4 text-left sm:flex-col sm:items-center sm:gap-5 sm:text-center"
                   >
-                    <span className="flex size-20 items-center justify-center overflow-hidden rounded-full bg-white shadow-[0_4px_8px_rgba(0,0,0,0.1)]">
+                    <span className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-[0px_4px_8px_0px_#0000001A]">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={img} alt="" className="size-9 object-contain" />
                     </span>
-                    <div className="flex flex-col items-center gap-1">
+                    <div className="flex flex-col gap-1 sm:items-center">
                       <span
-                        className="whitespace-nowrap text-lg font-semibold uppercase leading-none tracking-[0.01em]"
+                        className="text-lg font-semibold leading-none tracking-[0.01em] sm:whitespace-nowrap"
                         style={{ color }}
                       >
                         {feature.label}

@@ -157,8 +157,11 @@
   },
   "howItWorks": {
     "eyebrow": "HOW IT WORKS",
-    "headingLine1": "A Smarter, Seamless Workforce Journey.",
-    "headingLine2": "End-to-End. Fully Connected.",
+    "headingLine1": "A Smarter,",
+    "headingLine2": "Seamless Workforce",
+    "headingLine3": "Journey.",
+    "headingLine4": "End-to-End.",
+    "headingLine5": "Fully Connected.",
     "subtitle": "Jobzshala connects every step of hiring into one transparent and intelligent workflow.",
     "steps": [
       { "label": "Requirement", "desc": "You share your hiring requirement" },

@@ -22,7 +22,7 @@ export default function Hero() {
   return (
     <section className="font-poppins">
       <div className="surface-always-dark min-h-dvh bg-[url('/images/hero-mobile.svg')] bg-cover bg-bottom bg-no-repeat sm:min-h-0 sm:bg-[url('/images/hero-bg-dubai.webp')]">
-        <div className="mx-auto max-w-304.75 px-4 pt-14 pb-4 sm:px-6 sm:pt-16 sm:pb-24 lg:px-10 lg:pt-[120px] lg:pb-32">
+        <div className="mx-auto max-w-304.75 px-4 pt-14 pb-10 sm:px-6 sm:pt-16 sm:pb-24 lg:px-10 lg:pt-[120px] lg:pb-32">
           <div className="mx-auto flex max-w-238.25 flex-col items-start gap-5 text-left sm:items-center sm:gap-6 sm:text-center">
             <div className="flex h-15 w-full items-start gap-1 rounded bg-white/10 px-3 py-1 text-base font-normal leading-6.5 tracking-[0.01em] text-[#F2F2F2] sm:inline-flex sm:h-8.5 sm:w-auto sm:items-center">
               <SparkleIcon className="mt-1.25 size-4 shrink-0 text-jz-yellow-400 sm:mt-0" />
@@ -58,7 +58,7 @@ export default function Hero() {
               </Button>
             </div>
 
-            <div className="flex max-w-2xl flex-wrap items-center gap-x-3 gap-y-0 text-base leading-6.5 tracking-[0.01em] text-[#F2F2F2] sm:justify-center sm:gap-y-1 sm:text-sm sm:leading-normal sm:tracking-normal sm:text-jz-white-400">
+            <div className="flex max-w-2xl flex-wrap items-center gap-x-3 gap-y-1 text-base leading-6.5 tracking-[0.01em] text-[#F2F2F2] sm:justify-center sm:text-sm sm:leading-normal sm:tracking-normal sm:text-jz-white-400">
               {badges.map((badge, i) => (
                 <span key={badge} className="flex items-center gap-1">
                   {badge}
