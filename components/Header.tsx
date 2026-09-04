@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -8,12 +8,8 @@ import NavDropdown, { type NavDropdownItem } from "./NavDropdown";
 // import ThemeToggle from "./ThemeToggle";
 import Logo from "./ui/Logo";
 import UserMenu from "./UserMenu";
-import {
-  clearSession,
-  readStoredSession,
-  subscribeToSession,
-  type CandidateSession,
-} from "@/lib/auth/session";
+import { clearSession } from "@/lib/auth/session";
+import { useClientSession } from "@/lib/auth/useClientSession";
 import { logout } from "@/lib/api/auth";
 import { ROUTES } from "@/lib/routes";
 import {
@@ -95,23 +91,9 @@ const RESOURCES_ITEMS: NavDropdownItem[] = [
 export default function Header() {
   const { t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
-  // Public pages don't run PersistGate (see lib/store/SessionGate.tsx — it's
-  // deliberately scoped to the authenticated (app) area only, so public
-  // pages keep server-rendering real HTML for crawlers instead of an empty
-  // shell). So this header can't read Redux for auth state; it reads the
-  // same raw storage key directly instead, client-side only — the server
-  // snapshot is null so SSR and hydration always render logged-out, then the
-  // client snapshot takes over for a real visitor who's actually signed in.
-  const rawSession = useSyncExternalStore(subscribeToSession, readStoredSession, () => null);
-  const session = useMemo<CandidateSession | null>(() => {
-    if (!rawSession) return null;
-    try {
-      return JSON.parse(rawSession) as CandidateSession;
-    } catch {
-      // Malformed storage — treat as logged out rather than throwing.
-      return null;
-    }
-  }, [rawSession]);
+  // Public pages don't run PersistGate, so this header can't read Redux for
+  // auth state — see useClientSession for how it reads storage instead.
+  const session = useClientSession();
 
   const handleLogout = async () => {
     if (session?.refreshToken) {
