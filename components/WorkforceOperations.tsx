@@ -37,8 +37,8 @@ export default function WorkforceOperations() {
               <h2 className="text-2xl font-semibold leading-snug tracking-[0.01em] text-[#1A1A1A] sm:text-3xl">
                 {t("workforceOps.headingLine1")}
                 <br />
-                {t("workforceOps.headingLine2")}{" "}
-                <span className="text-[#008DD2]">
+                {t("workforceOps.headingLine2")}
+                <span className="block text-[#008DD2]">
                   {t("workforceOps.headingHighlight")}
                 </span>
               </h2>
