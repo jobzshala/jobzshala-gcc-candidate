@@ -52,8 +52,8 @@ export default function NavDropdown({ label, items, className = "" }: NavDropdow
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="menu"
         aria-expanded={open}
-        className={`flex items-center gap-1 rounded-xl px-4 py-2 text-sm transition-colors ${
-          open ? "bg-jz-blue-800 text-jz-yellow-400" : "bg-jz-blue-900 text-jz-white-200 hover:text-jz-yellow-400"
+        className={`flex items-center gap-1 whitespace-nowrap rounded-xl px-3 py-2 text-sm transition-colors ${
+          open ? "text-jz-yellow-400" : "text-jz-white-200 hover:text-jz-yellow-400"
         }`}
       >
         {label}
@@ -62,7 +62,7 @@ export default function NavDropdown({ label, items, className = "" }: NavDropdow
 
       <ul
         role="menu"
-        className={`absolute left-0 z-30 mt-2 w-72 origin-top overflow-hidden rounded-2xl border border-jz-border bg-jz-blue-900 p-2 shadow-2xl shadow-black/50 transition-all duration-150 ease-out rtl:left-auto rtl:right-0 rtl:origin-top ${
+        className={`absolute left-0 z-30 mt-2 w-72 origin-top overflow-hidden rounded-2xl border border-jz-border bg-jz-blue-950 p-2 shadow-xl shadow-black/10 transition-all duration-150 ease-out rtl:left-auto rtl:right-0 rtl:origin-top ${
           open ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-1 opacity-0"
         }`}
       >

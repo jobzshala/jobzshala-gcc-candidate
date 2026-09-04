@@ -8,12 +8,9 @@ import FlagIcon, { type GccCountryCode } from "./ui/FlagIcon";
 // flag emoji as bare region letters ("AE"). See components/ui/FlagIcon.
 const COUNTRY_CODES: GccCountryCode[] = ["AE", "SA", "QA", "OM", "KW", "BH"];
 
-type Stat = { value: string; label: string };
-
 export default function TrustedBy() {
   const { t } = useTranslation();
   const countries = t("trustedBy.countries", { returnObjects: true }) as string[];
-  const stats = t("trustedBy.stats", { returnObjects: true }) as Stat[];
   const badges = t("trustedBy.badges", { returnObjects: true }) as string[];
   const headingHighlight = t("trustedBy.headingHighlight", { defaultValue: "" });
 
@@ -47,20 +44,6 @@ export default function TrustedBy() {
               ))}
             </div>
           </div>
-        </div>
-
-        <div className="mt-4 grid grid-cols-2 divide-y divide-jz-grey-400 overflow-hidden rounded-2xl border border-jz-grey-400 bg-gradient-to-r from-jz-bg-primary to-jz-blue-900 sm:grid-cols-3 sm:divide-y-0 md:grid-cols-5">
-          {stats.map((stat, i) => (
-            <div
-              key={stat.label}
-              className={`flex flex-col items-center justify-center gap-1 px-4 py-7 text-center ${
-                i !== 0 ? "sm:border-l sm:border-jz-grey-400" : ""
-              }`}
-            >
-              <p className="font-serif text-3xl font-semibold text-jz-white-50 sm:text-4xl">{stat.value}</p>
-              <p className="mt-1 text-xs text-jz-white-600">{stat.label}</p>
-            </div>
-          ))}
         </div>
 
         <div className="mt-4 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 rounded-2xl border border-jz-grey-400 bg-jz-bg-primary px-4 py-3">

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
 import NavDropdown, { type NavDropdownItem } from "./NavDropdown";
-import ThemeToggle from "./ThemeToggle";
+// import ThemeToggle from "./ThemeToggle";
 import Logo from "./ui/Logo";
 import UserMenu from "./UserMenu";
 import { STORAGE_KEY, clearSession, type CandidateSession } from "@/lib/auth/session";
@@ -121,8 +121,8 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b-2 border-jz-yellow-400 bg-jz-blue-900">
-      <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-6 px-4 py-3 sm:px-6 lg:px-10">
+    <header className="sticky top-0 z-40 border-b border-jz-blue-400 bg-jz-blue-950 shadow-sm">
+      <div className="mx-auto flex max-w-[1440px] items-center gap-7 px-4 py-5 sm:px-6 lg:px-16 xl:justify-center">
         <Link href="/" className="flex flex-col gap-1">
           <Logo />
           <p className="hidden text-[10px] text-jz-white-100 sm:block">{t("nav.tagline")}</p>
@@ -132,14 +132,14 @@ export default function Header() {
           {!session && <NavDropdown label={t("nav.forEmployers")} items={EMPLOYER_ITEMS} />}
           {!session && <NavDropdown label={t("nav.forCandidates")} items={CANDIDATE_ITEMS} />}
           <NavDropdown label={t("nav.solutions")} items={SOLUTIONS_ITEMS} />
-          <Link href="/about-us" className="rounded px-4 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
+          <Link href="/about-us" className="whitespace-nowrap rounded px-3 py-2 text-sm text-jz-white-200 hover:text-jz-yellow-400">
             {t("nav.aboutUs")}
           </Link>
           <NavDropdown label={t("nav.resources")} items={RESOURCES_ITEMS} />
         </nav>
 
         <div className="hidden items-center gap-3 xl:flex">
-          <ThemeToggle />
+          {/* <ThemeToggle /> */}
           <LanguageSwitcher />
           {session ? (
             <UserMenu session={session} onLogout={handleLogout} />
@@ -150,7 +150,7 @@ export default function Header() {
               </Link>
               <Link
                 href={ROUTES.register}
-                className="rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
+                className="rounded-xl bg-[#FECC00] px-4 py-2.5 text-sm font-semibold text-[#1A1A1A] transition-opacity hover:opacity-90"
               >
                 {t("nav.register")}
               </Link>
@@ -160,7 +160,7 @@ export default function Header() {
 
         <button
           type="button"
-          className="text-jz-white-100 xl:hidden"
+          className="ml-auto text-jz-white-100 xl:hidden"
           onClick={() => setMobileOpen((o) => !o)}
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileOpen}
@@ -170,7 +170,7 @@ export default function Header() {
       </div>
 
       {mobileOpen ? (
-        <div className="max-h-[calc(100vh-64px)] overflow-y-auto border-t border-jz-border bg-jz-blue-900 px-4 py-4 xl:hidden">
+        <div className="max-h-[calc(100vh-64px)] overflow-y-auto border-t border-jz-border bg-jz-blue-950 px-4 py-4 xl:hidden">
           <nav className="flex flex-col gap-4">
             {[
               ...(!session
@@ -215,7 +215,7 @@ export default function Header() {
             </div>
           </nav>
           <div className="mt-4 flex items-center gap-3">
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
             <LanguageSwitcher />
           </div>
           <div className="mt-3 flex flex-col gap-2">
@@ -262,7 +262,7 @@ export default function Header() {
                 </Link>
                 <Link
                   href={ROUTES.register}
-                  className="rounded-xl bg-gradient-to-b from-[#ffe795] to-jz-yellow-400 px-4 py-2.5 text-center text-sm font-semibold text-jz-ink-on-accent transition-opacity hover:opacity-90"
+                  className="rounded-xl bg-[#FECC00] px-4 py-2.5 text-center text-sm font-semibold text-[#1A1A1A] transition-opacity hover:opacity-90"
                 >
                   {t("nav.register")}
                 </Link>

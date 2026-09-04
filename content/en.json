@@ -97,21 +97,77 @@
       "title": "Our Mission",
       "body": "Jobzshala bridges this gap by combining AI, technology and human expertise to create trusted workforce connections across the GCC.",
       "cta": "Full breakdown on About Us page"
-    }
+    },
+    "eyebrow": "THE CHALLENGE",
+    "titleLine1": "The GCC Doesn’t Have a Talent Shortage.",
+    "titleLine2": "It Has a Workforce Infrastructure Problem.",
+    "subtitle": "Employers struggle with fragmented hiring, unreliable data, manual processes and lack of visibility — leading to delays, high costs and dropouts.",
+    "journeyTitle": "The Traditional Hiring Journey is Fragmented",
+    "journeySteps": [
+      "Talent Sourcing",
+      "Recruiters & Agents",
+      "Manual Screening",
+      "Employer Shortlisting",
+      "Documentation & Visa",
+      "Travel & Deployment",
+      "Post Joining & Retention"
+    ],
+    "metrics": [
+      {
+        "value": "45–60",
+        "unit": "Days",
+        "note": "Average time to hire"
+      },
+      {
+        "value": "30–40%",
+        "unit": "Higher Cost",
+        "note": "Due to rework, duplication & delays"
+      },
+      {
+        "value": "25–35%",
+        "unit": "Dropout Rate",
+        "note": "During documentation, travel & onboarding"
+      }
+    ],
+    "callout": "What the GCC needs is not another job portal. It needs an end-to-end, AI-native workforce infrastructure."
+  },
+  "ourSolution": {
+    "eyebrow": "OUR SOLUTION",
+    "headingLine1": "One Workforce.",
+    "headingLine2": "One Infrastructure.",
+    "headingLine3": "AI-Native. End-to-End.",
+    "headingLine4": "Built for the GCC.",
+    "subtitle": "One platform connecting employers, recruiters and workforce from sourcing to deployment",
+    "imageAlt": "GCC map with an AI-native workforce infrastructure connecting sourcing to deployment",
+    "panelTitle": "AI-Native Workforce Infrastructure",
+    "steps": [
+      { "label": "Source", "desc": "AI-powered talent sourcing" },
+      { "label": "Screen", "desc": "Recruiter screening & shortlisting" },
+      { "label": "Verify", "desc": "Document, skill & background verification" },
+      { "label": "Match", "desc": "AI matching with the right opportunities" },
+      { "label": "Deploy", "desc": "Visa, travel & workforce deployment" },
+      { "label": "Track", "desc": "Post-joining support & performance tracking" }
+    ],
+    "features": [
+      { "title": "AI-Powered", "sub": "Smarter Matching" },
+      { "title": "Verified", "sub": "Trusted Workforce" },
+      { "title": "End-to-End", "sub": "Complete Visibility" },
+      { "title": "Cross-Border", "sub": "Built for GCC" }
+    ]
   },
   "howItWorks": {
-    "heading": "How Jobzshala",
-    "headingHighlight": "Works",
+    "eyebrow": "HOW IT WORKS",
+    "headingLine1": "A Smarter, Seamless Workforce Journey.",
+    "headingLine2": "End-to-End. Fully Connected.",
+    "subtitle": "Jobzshala connects every step of hiring into one transparent and intelligent workflow.",
     "steps": [
-      "Employer Raises Requirement",
-      "AI Matching Engine Identifies Suitable Workforce",
-      "Recruiter Screening & Profile Verification",
-      "Employer Shortlisting & Interviews",
-      "Offer Management & Documentation",
-      "Visa, Travel & Workforce Deployment",
-      "Joining Support & Post-Deployment Tracking"
-    ],
-    "footnote": "Every stage is managed through one platform."
+      { "label": "Requirement", "desc": "You share your hiring requirement" },
+      { "label": "AI Sourcing", "desc": "AI finds and ranks the best candidates" },
+      { "label": "Interview", "desc": "Employer interviews and evaluates" },
+      { "label": "Offer", "desc": "Offer released and accepted" },
+      { "label": "Visa & Deployment", "desc": "Visa processed, travel and deployment" },
+      { "label": "Joining & Beyond", "desc": "Joined successfully with post-joining support" }
+    ]
   },
   "whyChooseUs": {
     "heading": "Why GCC Employers Choose",
@@ -133,6 +189,63 @@
     "bodyBold": "Recruiter-Verified · Document-Validated · Skill-Assessed · Interview-Ready",
     "bodySuffix": " before an employer ever sees the profile. Employers deserve verified workforce. Candidates deserve genuine opportunities."
   },
+  "verifiedTrusted": {
+    "eyebrow": "VERIFIED & TRUSTED",
+    "headingLine1": "Verified Candidates.",
+    "headingLine2": "Trusted by Employers.",
+    "headingHighlight": "Every Time",
+    "body": "We deliver job-ready, verified workforce so employers can hire with confidence.",
+    "emphasisMuted": "We don't send resumes.",
+    "emphasisHighlight": "We send verified talent.",
+    "points": ["Real People", "Real Verification", "Real Reliability"],
+    "imageAlt": "Verified and trusted workforce shield",
+    "panelTitle": "Our 5-Step Verification Process",
+    "steps": [
+      { "label": "Identity Verified", "desc": "ID & personal details verified" },
+      { "label": "Documents Validated", "desc": "All documents checked & verified" },
+      { "label": "Experience Reviewed", "desc": "Work experience carefully reviewed" },
+      { "label": "Skills Assessed", "desc": "Skills & qualifications assessed" },
+      { "label": "Employer Ready", "desc": "Job-ready & deployment-ready" }
+    ]
+  },
+  "workforceOps": {
+    "eyebrow": "THE WORKFORCE OPERATIONS CENTER",
+    "headingLine1": "Real-time Visibility.",
+    "headingLine2": "Smarter Decisions.",
+    "headingHighlight": "Better Outcomes.",
+    "body": "Our centralized operations center gives you complete visibility and control across your entire workforce journey.",
+    "imageAlt": "Workforce Operations Center dashboard",
+    "features": [
+      { "label": "Real-time Dashboards", "desc": "Live insights at your fingertips." },
+      { "label": "End-to-End Tracking", "desc": "Track every stage of the workforce journey." },
+      { "label": "Quality Assurance", "desc": "Ensure quality with verified data" },
+      { "label": "Smarter Decisions", "desc": "Data-driven decisions that drive results" },
+      { "label": "Proactive Alerts", "desc": "Stay ahead with smart alerts & notifications" },
+      { "label": "Multi-Region Control", "desc": "Manage operations across borders" }
+    ]
+  },
+  "aiHuman": {
+    "eyebrow": "AI + HUMAN RECRUITMENT",
+    "headingLine1": "AI Finds the Signal.",
+    "headingHighlight": "Humans Make the Decision.",
+    "subtitle": "The perfect blend of intelligent technology and human expertise to deliver the right talent for your business.",
+    "aiTitle": "AI",
+    "humansTitle": "Humans",
+    "aiItems": [
+      { "label": "Sources", "desc": "Scans multiple channels to find the best talent" },
+      { "label": "Matches", "desc": "Intelligently matches skills, experience & role fit" },
+      { "label": "Ranks", "desc": "Ranks candidates based on potential & relevance" },
+      { "label": "Recommends", "desc": "Recommends top profiles for your consideration" },
+      { "label": "Predicts", "desc": "Predicts success with data-driven insights" }
+    ],
+    "humansItems": [
+      { "label": "Validates", "desc": "Verifies information & candidate credibility" },
+      { "label": "Calls", "desc": "Engages candidates for deeper clarity" },
+      { "label": "Screens", "desc": "Assesses communication, attitude & role alignment" },
+      { "label": "Understands", "desc": "Understands motivation, goals & cultural fit" },
+      { "label": "Confirms", "desc": "Confirms the right fit before you decide" }
+    ]
+  },
   "workforceAvailability": {
     "heading": "Immediate Workforce Available Across",
     "headingHighlight": "GCC",
@@ -152,6 +265,64 @@
       "title": "6 GCC Countries",
       "subtitle": "Active Deployment"
     }
+  },
+  "workforceCorridor": {
+    "eyebrow": "INDIA > GCC WORKFORCE CORRIDOR",
+    "headingLine1": "Bridging Talent.",
+    "headingLine2": "Connecting Opportunities.",
+    "headingHighlight": "Powering GCC Growth.",
+    "body": "Jobzshala creates a seamless workforce corridor between India and GCC — driving business success through the right talent, at the right time.",
+    "imageAlt": "India to GCC workforce corridor",
+    "features": [
+      { "label": "Access to Talent", "desc": "Tap into India's vast and skilled talent pool" },
+      { "label": "Faster Deployment", "desc": "Streamlined processes for quicker hiring" },
+      { "label": "Quality & Compliance", "desc": "Verified, compliant & job-ready talent" },
+      { "label": "Stronger Partnerships", "desc": "Long-term relationships built on trust." }
+    ]
+  },
+  "builtForEmployers": {
+    "eyebrow": "BUILT FOR GCC EMPLOYERS",
+    "headingLine1": "Real Requirements. Real Conversations.",
+    "headingHighlight": "Real Results.",
+    "subtitle": "Talk directly to employers, understand their exact needs and deliver the right talent — faster.",
+    "features": [
+      { "label": "Direct Employer Access", "desc": "Connect directly with decision makers." },
+      { "label": "Live Requirements", "desc": "Get real-time, verified requirements." },
+      { "label": "Better Matches", "desc": "AI + Human approach for the right fit" },
+      { "label": "Faster Closures", "desc": "Streamlined workflow from start to finish" }
+    ]
+  },
+  "builtForWorkforce": {
+    "eyebrow": "BUILT FOR THE WORKFORCE",
+    "headingLine1": "Every Step. Built for the Journey.",
+    "headingHighlight": "Designed for Results.",
+    "subtitle": "From discovery to deployment and beyond, Jobzshala supports candidates at every stage with AI + Human intelligence.",
+    "steps": [
+      { "label": "Discover Job", "desc": "Find the right opportunity." },
+      { "label": "WhatsApp AI", "desc": "Get guidance instantly" },
+      { "label": "Create Profile", "desc": "Build your profile in minutes" },
+      { "label": "Voice/Resume", "desc": "Share your details easily" },
+      { "label": "Verification", "desc": "Secure & trusted verification" },
+      { "label": "Post-Joining", "desc": "We're with you, always" },
+      { "label": "Visa & Travel", "desc": "Visa support & travel arranged." },
+      { "label": "Offer", "desc": "Receive offer and accept" },
+      { "label": "Employer", "desc": "Reviewed by employers" },
+      { "label": "Screening", "desc": "Expert screening for the right fit." }
+    ]
+  },
+  "ourVision": {
+    "eyebrow": "OUR VISION",
+    "heading": "Redefining the Future of Workforce.",
+    "subtitle": "We're not building another job portal. We're not building another recruitment agency. We're building the future of workforce infrastructure.",
+    "imageBody": "Building the AI-Native Cross-Border Workforce Infrastructure Platform that helps governments, employers, recruiters and workforce ecosystems source, verify and deploy trusted talent across borders.",
+    "imageTag": "Built in Abu Dhabi",
+    "imageAlt": "Abu Dhabi skyline",
+    "features": [
+      { "label": "AI-Native", "desc": "Intelligent Future-ready" },
+      { "label": "Cross-Border", "desc": "Connecting talent. Creating impact." },
+      { "label": "Workforce Infrastructure", "desc": "Built to scale. Built to last." },
+      { "label": "Enterprise Ready", "desc": "Secure. Compliant. Always trusted." }
+    ]
   },
   "comparison": {
     "heading": "Why Jobzshala Is",
@@ -237,17 +408,19 @@
         "Blog",
         "Careers",
         "Success Stories",
-        "Pricing"
+        "Pricing",
+        "FAQ"
       ]
     },
     "services": {
-      "title": "FAQ Services",
+      "title": "Services",
       "links": [
         "Recruitment Solutions",
         "Workforce Infrastructure",
         "AI Matching",
         "Candidate Verification",
-        "Visa Assistance"
+        "Visa Assistance",
+        "Deployment Support"
       ]
     },
     "legal": {
@@ -256,7 +429,8 @@
         "Privacy Policy",
         "Terms & Conditions",
         "Refund Policy",
-        "Cookie Policy"
+        "Cookie Policy",
+        "Site map"
       ]
     },
     "countries": [
@@ -267,7 +441,7 @@
       "Kuwait",
       "Bahrain"
     ],
-    "copyright": "Jobzshala 2026 | All rights reserved | Powered by Akshaki India Pvt. Ltd.",
+    "copyright": "copyright © 2026 Jobzshala | All rights reserved | Powered by Akshaki India Pvt. Ltd",
     "sitemap": "Sitemap"
   },
   "login": {
