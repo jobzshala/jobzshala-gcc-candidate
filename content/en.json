@@ -889,7 +889,12 @@
       "editTranscript": "‹ Edit transcript",
       "fullName": "Full name",
       "location": "City",
-      "expectedSalary": "Expected salary"
+      "expectedSalary": "Expected salary",
+      "trade": "Trade / profession",
+      "totalExperience": "Total experience",
+      "gulfExperience": "Gulf experience",
+      "certificates": "Certificates & licenses",
+      "preferredCountry": "Preferred country"
     },
     "done": {
       "title": "Your resume is ready! 🎉",
