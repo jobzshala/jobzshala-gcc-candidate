@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   CheckIcon,
@@ -260,24 +260,29 @@ function EmptyMatchesState({ notVerified }: { notVerified: boolean }) {
 export default function MatchesPage() {
   const [data, setData] = useState<MatchesPage | null>(null);
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  const load = useCallback(async (targetPage: number) => {
-    setLoading(true);
-    setError("");
-    try {
-      setData(await getMatches({ page: targetPage, limit: PAGE_SIZE }));
-    } catch {
-      setError("We couldn't load your matches. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  // Which page the most recent request settled on, and how. `loading` and
+  // `error` are derived from it against the page currently wanted, so a page
+  // change is "loading" the moment it happens without the effect having to
+  // set any state synchronously.
+  const [settled, setSettled] = useState<{ page: number; error: string } | null>(null);
+  const loading = settled?.page !== page;
+  const error = settled?.page === page ? settled.error : "";
 
   useEffect(() => {
-    void load(page);
-  }, [load, page]);
+    let cancelled = false;
+    getMatches({ page, limit: PAGE_SIZE })
+      .then((result) => {
+        if (cancelled) return;
+        setData(result);
+        setSettled({ page, error: "" });
+      })
+      .catch(() => {
+        if (!cancelled) setSettled({ page, error: "We couldn't load your matches. Please try again." });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [page]);
 
   return (
     <div className="mx-auto max-w-[1200px] px-4 py-10 sm:px-6 lg:px-10 space-y-6">

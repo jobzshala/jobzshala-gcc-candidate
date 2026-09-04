@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { CheckIcon, SparkleIcon } from "@/components/ui/icons";
 import { ApiError } from "@/lib/api/client";
@@ -29,30 +29,33 @@ export default function CustomOfferView({ token }: { token: string }) {
   const [paying, setPaying] = useState(false);
   const [paid, setPaid] = useState(false);
 
-  const load = useCallback(async () => {
+  useEffect(() => {
     if (!session.accessToken) {
       window.location.href = `/login?next=${encodeURIComponent(`/subscribe/${token}`)}`;
       return;
     }
 
-    setLoading(true);
-    try {
-      setOffer(await resolveOffer(token));
-    } catch (err) {
-      // The server answers 404 for every failure mode — unknown, expired,
-      // revoked, or belonging to a different candidate — so that this page
-      // cannot be used to discover whether a token exists. One message covers
-      // all of them, deliberately.
-      if (err instanceof ApiError && err.status === 404) setNotFound(true);
-      else setError("We couldn't load this offer. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    let cancelled = false;
+    resolveOffer(token)
+      .then((resolved) => {
+        if (!cancelled) setOffer(resolved);
+      })
+      .catch((err: unknown) => {
+        if (cancelled) return;
+        // The server answers 404 for every failure mode — unknown, expired,
+        // revoked, or belonging to a different candidate — so that this page
+        // cannot be used to discover whether a token exists. One message covers
+        // all of them, deliberately.
+        if (err instanceof ApiError && err.status === 404) setNotFound(true);
+        else setError("We couldn't load this offer. Please try again.");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [token, session.accessToken]);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
 
   const accept = async () => {
     setError("");

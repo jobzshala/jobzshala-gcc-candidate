@@ -1,9 +1,10 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import FormInput from "@/components/ui/FormInput";
 import FormTextarea from "@/components/ui/FormTextarea";
 import { ContactFormError, submitContactLead } from "@/lib/api/contact";
+import { type CandidateSession } from "@/lib/auth/session";
 import { useClientSession } from "@/lib/auth/useClientSession";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -21,18 +22,21 @@ export default function ContactForm() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  // Session resolves a moment after mount (see useClientSession). Fill the
-  // identity fields once, from whatever the candidate already told us at
-  // registration — never overwrite something they've since typed themselves.
-  useEffect(() => {
-    if (!session) return;
+  // Session resolves client-side (see useClientSession). Fill the identity
+  // fields once per resolved session, from whatever the candidate already
+  // told us at registration — never overwrite something they've since typed
+  // themselves. Done during render (not in an effect) so the prefilled form
+  // is what gets painted.
+  const [prefilledFrom, setPrefilledFrom] = useState<CandidateSession | null>(null);
+  if (session && session !== prefilledFrom) {
+    setPrefilledFrom(session);
     setForm((prev) => ({
       ...prev,
       name: prev.name || session.candidate.full_name,
       email: prev.email || session.candidate.email,
       phone: prev.phone || session.candidate.mobile_number,
     }));
-  }, [session]);
+  }
 
   const handleChange = (field: keyof typeof form) => (e: { target: { value: string } }) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));

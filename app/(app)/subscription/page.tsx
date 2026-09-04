@@ -63,22 +63,25 @@ export default function SubscriptionPage() {
   const [notice, setNotice] = useState("");
   const [startingPlanId, setStartingPlanId] = useState<number | null>(null);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const [currentEntitlement, availablePlans] = await Promise.all([
-        getMySubscription(),
-        getCandidatePlans(),
-      ]);
-      setEntitlement(currentEntitlement);
-      setPlans(availablePlans);
-    } catch {
-      setError("We couldn't load your subscription. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  // Only touches state once the requests settle, so it is safe to call from
+  // the mount effect below as well as after a successful payment. `loading`
+  // starts true and the payment handler sets it back before re-calling this.
+  const load = useCallback(
+    () =>
+      Promise.all([getMySubscription(), getCandidatePlans()])
+        .then(([currentEntitlement, availablePlans]) => {
+          setEntitlement(currentEntitlement);
+          setPlans(availablePlans);
+          setError("");
+        })
+        .catch(() => {
+          setError("We couldn't load your subscription. Please try again.");
+        })
+        .finally(() => {
+          setLoading(false);
+        }),
+    []
+  );
 
   useEffect(() => {
     void load();
@@ -108,6 +111,7 @@ export default function SubscriptionPage() {
               const result = await verifyRazorpayPayment(response);
               if (result.payment_status === "PAID") {
                 setNotice("Payment received — your subscription is active.");
+                setLoading(true);
                 await load();
               } else {
                 setError("That payment did not go through. Nothing has been charged.");

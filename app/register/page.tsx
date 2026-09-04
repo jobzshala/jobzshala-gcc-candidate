@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import Logo from "@/components/ui/Logo";
@@ -32,6 +32,11 @@ const formatFileSize = (bytes: number): string => {
 
 type Step = "select" | "form" | "otp" | "done";
 
+// The ?role= query string never changes while this page is mounted, so the
+// store has nothing to subscribe to — the snapshot is read once per render.
+const subscribeNever = () => () => {};
+const readRoleParam = () => new URLSearchParams(window.location.search).get("role");
+
 export default function RegisterPage() {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -42,12 +47,15 @@ export default function RegisterPage() {
   // etc.) shouldn't dump the visitor back onto the audience-picker they just
   // answered — /register?role=candidate skips straight to the form. Read via
   // window.location instead of useSearchParams() so this page doesn't need a
-  // Suspense boundary just for this deep link.
-  useEffect(() => {
-    if (new URLSearchParams(window.location.search).get("role") === "candidate") {
-      setStep("form");
-    }
-  }, []);
+  // Suspense boundary just for this deep link. The server snapshot is null so
+  // SSR and hydration both render the picker; the client then applies the
+  // deep link once, on the first render that can see the URL.
+  const roleParam = useSyncExternalStore(subscribeNever, readRoleParam, () => null);
+  const [deepLinkApplied, setDeepLinkApplied] = useState(false);
+  if (roleParam === "candidate" && !deepLinkApplied) {
+    setDeepLinkApplied(true);
+    setStep("form");
+  }
   const [form, setForm] = useState({
     full_name: "",
     age: "",
