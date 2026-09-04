@@ -1,11 +1,8 @@
 name: CI
 
 # Runs on every PR into main and on every push to main.
-# - Type-check and Build are required (blocking) checks.
-# - Lint is advisory for now: main currently has 7 pre-existing ESLint
-#   errors, so the step reports a warning annotation instead of failing.
-#   Once `pnpm lint` is clean on main, drop the `|| ...` fallback below to
-#   make it blocking.
+# Type-check, Lint and Build are all required (blocking) checks — a PR
+# cannot merge while any of them is red.
 
 on:
   pull_request:
@@ -65,7 +62,7 @@ jobs:
       - run: pnpm build
 
   lint:
-    name: Lint (advisory)
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -77,12 +74,4 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: ESLint
-        run: |
-          if pnpm lint; then
-            echo "### ESLint: clean ✅" >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "::warning title=ESLint::ESLint reported problems. This check is advisory until main is lint-clean — see the job log."
-            echo "### ESLint: problems found ⚠️ (advisory, not blocking)" >> "$GITHUB_STEP_SUMMARY"
-            echo "See the ESLint step log for file/line details." >> "$GITHUB_STEP_SUMMARY"
-          fi
+      - run: pnpm lint

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -8,7 +8,12 @@ import NavDropdown, { type NavDropdownItem } from "./NavDropdown";
 // import ThemeToggle from "./ThemeToggle";
 import Logo from "./ui/Logo";
 import UserMenu from "./UserMenu";
-import { STORAGE_KEY, clearSession, type CandidateSession } from "@/lib/auth/session";
+import {
+  clearSession,
+  readStoredSession,
+  subscribeToSession,
+  type CandidateSession,
+} from "@/lib/auth/session";
 import { logout } from "@/lib/api/auth";
 import { ROUTES } from "@/lib/routes";
 import {
@@ -94,19 +99,19 @@ export default function Header() {
   // deliberately scoped to the authenticated (app) area only, so public
   // pages keep server-rendering real HTML for crawlers instead of an empty
   // shell). So this header can't read Redux for auth state; it reads the
-  // same raw storage key directly instead, client-side only after mount —
-  // SSR and the first paint always render logged-out, then this corrects
-  // itself a moment later for a real visitor who's actually signed in.
-  const [session, setSession] = useState<CandidateSession | null>(null);
-
-  useEffect(() => {
+  // same raw storage key directly instead, client-side only — the server
+  // snapshot is null so SSR and hydration always render logged-out, then the
+  // client snapshot takes over for a real visitor who's actually signed in.
+  const rawSession = useSyncExternalStore(subscribeToSession, readStoredSession, () => null);
+  const session = useMemo<CandidateSession | null>(() => {
+    if (!rawSession) return null;
     try {
-      const raw = window.localStorage.getItem(STORAGE_KEY) || window.sessionStorage.getItem(STORAGE_KEY);
-      if (raw) setSession(JSON.parse(raw));
+      return JSON.parse(rawSession) as CandidateSession;
     } catch {
       // Malformed storage — treat as logged out rather than throwing.
+      return null;
     }
-  }, []);
+  }, [rawSession]);
 
   const handleLogout = async () => {
     if (session?.refreshToken) {
@@ -116,8 +121,9 @@ export default function Header() {
         // Best-effort — the session is being cleared locally either way.
       }
     }
+    // clearSession() notifies the store subscription above, which drops
+    // `session` to null on the next render.
     clearSession();
-    setSession(null);
   };
 
   return (

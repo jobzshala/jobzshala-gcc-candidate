@@ -90,9 +90,14 @@ export default function PersonalDetailsStep({ profile, onSaved, saveLabel, compa
   const [saveError, setSaveError] = useState("");
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
+  // Re-seed the form when the parent hands down a fresh profile (after a
+  // save, or the tabs shell refetching) — done during render rather than in
+  // an effect so the stale form never gets painted first.
+  const [seededFrom, setSeededFrom] = useState(profile);
+  if (profile !== seededFrom) {
+    setSeededFrom(profile);
     setForm(formFromProfile(profile));
-  }, [profile]);
+  }
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
