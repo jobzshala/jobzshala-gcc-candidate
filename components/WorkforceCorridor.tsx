@@ -49,7 +49,7 @@ export default function WorkforceCorridor() {
 
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/images/Corridor/corridor.svg"
+              src="/images/Corridor/corridor.webp"
               alt={t("workforceCorridor.imageAlt")}
               width={586}
               height={355}
