@@ -14,6 +14,7 @@ import { logout } from "@/lib/api/auth";
 import { ROUTES } from "@/lib/routes";
 import {
   BriefcaseIcon,
+  ChevronRightIcon,
   CloseIcon,
   DocumentIcon,
   GlobeIcon,
@@ -110,7 +111,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-jz-blue-400 bg-jz-blue-950 shadow-sm">
-      <div className="mx-auto flex max-w-[1440px] items-center gap-7 px-4 py-5 sm:px-6 lg:px-16 xl:justify-center">
+      <div className="mx-auto flex max-w-[1440px] items-center gap-7 px-4 py-5 sm:px-6 lg:px-10 xl:justify-between">
         <Link href="/" className="flex flex-col gap-1">
           <Logo />
           <p className="hidden text-[10px] text-jz-white-100 sm:block">{t("nav.tagline")}</p>
@@ -137,10 +138,11 @@ export default function Header() {
                 {t("nav.login")}
               </Link>
               <Link
-                href={ROUTES.register}
-                className="rounded-xl bg-[#FECC00] px-4 py-2.5 text-sm font-semibold text-[#1A1A1A] transition-opacity hover:opacity-90"
+                href={ROUTES.employerLogin}
+                className="flex items-center gap-1.5 rounded-lg bg-[#FECC00] px-4 py-2.5 text-sm font-semibold text-[#1A1A1A] transition-opacity hover:opacity-90"
               >
                 {t("nav.register")}
+                <ChevronRightIcon className="size-4" />
               </Link>
             </>
           )}
@@ -249,10 +251,11 @@ export default function Header() {
                   {t("nav.login")}
                 </Link>
                 <Link
-                  href={ROUTES.register}
-                  className="rounded-xl bg-[#FECC00] px-4 py-2.5 text-center text-sm font-semibold text-[#1A1A1A] transition-opacity hover:opacity-90"
+                  href={ROUTES.employerLogin}
+                  className="flex items-center justify-center gap-1.5 rounded-lg bg-[#FECC00] px-4 py-2.5 text-center text-sm font-semibold text-[#1A1A1A] transition-opacity hover:opacity-90"
                 >
                   {t("nav.register")}
+                  <ChevronRightIcon className="size-4" />
                 </Link>
               </>
             )}

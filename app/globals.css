@@ -68,8 +68,12 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter);
-  --font-serif: var(--font-fraunces);
+  /* Poppins is the app-wide font now (was Inter body + Fraunces headings) —
+     the landing page set the direction and the rest of the repo follows.
+     --font-serif intentionally points at Poppins too so dashboard headings
+     (font-family: var(--font-serif)) switch without touching that CSS. */
+  --font-sans: var(--font-poppins-family), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-poppins-family), ui-sans-serif, system-ui, sans-serif;
   --font-poppins: var(--font-poppins-family), ui-sans-serif, system-ui, sans-serif;
 
   --color-jz-blue-950: var(--jz-blue-950);

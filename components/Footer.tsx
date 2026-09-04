@@ -19,13 +19,12 @@ const LEGAL_LINK_HREFS = [
   "/sitemap",
 ];
 
-// Index-matched to footer.company.links (About Us, Contact Us, Blog, Careers,
+// Index-matched to footer.company.links (About Us, Contact Us, Blog,
 // Success Stories, Pricing, FAQ).
 const COMPANY_LINK_HREFS = [
   "/about-us",
   "/contact-us",
   "/blog",
-  undefined,
   "/success-stories",
   "/pricing",
   undefined,
