@@ -3,7 +3,7 @@
 /**
  * Voice Resume Builder — wired to the real v3 backend.
  *
- * Flow: language select → mic permission → 6 spoken questions (real
+ * Flow: language select → mic permission → 7 spoken questions (real
  * MediaRecorder capture) → per-answer upload (the backend transcribes with
  * Whisper and extracts structured data synchronously in the same request)
  * → transcript review/edit (edits re-run extraction) → extraction preview →
@@ -436,9 +436,23 @@ export default function VoiceResumePage() {
           })),
         };
       case "SKILLS":
-        return { skills: data.skills ?? [] };
+        return { skills: data.skills ?? [], certificates: data.certificates ?? [] };
       case "FULL_NAME":
         return { fields: [{ label: t("voiceResume.extract.fullName"), value: data.full_name ?? null }] };
+      case "TRADE_EXPERIENCE":
+        return {
+          fields: [
+            { label: t("voiceResume.extract.trade"), value: data.trade ?? null },
+            {
+              label: t("voiceResume.extract.totalExperience"),
+              value: data.total_experience_years != null ? `${data.total_experience_years} yrs` : null,
+            },
+            {
+              label: t("voiceResume.extract.gulfExperience"),
+              value: data.gulf_experience_years != null ? `${data.gulf_experience_years} yrs` : null,
+            },
+          ],
+        };
       case "LOCATION":
         return { fields: [{ label: t("voiceResume.extract.location"), value: data.location ?? null }] };
       case "EXPECTED_SALARY":
@@ -448,6 +462,7 @@ export default function VoiceResumePage() {
               label: t("voiceResume.extract.expectedSalary"),
               value: data.expected_salary != null ? String(data.expected_salary) : null,
             },
+            { label: t("voiceResume.extract.preferredCountry"), value: data.preferred_country ?? null },
           ],
         };
       default:
@@ -675,6 +690,7 @@ export default function VoiceResumePage() {
                 <div className="vr-v">
                   {job.role ?? "—"}
                   {job.duration_years != null ? ` · ${job.duration_years} yrs` : ""}
+                  {job.country ? ` · ${job.country}` : ""}
                 </div>
               </div>
             ))}
@@ -683,6 +699,16 @@ export default function VoiceResumePage() {
                 <div className="vr-k" style={{ marginBottom: 8 }}>{t("voiceResume.extract.skills")}</div>
                 <div className="vr-chips">
                   {extractedView.skills.map((s) => <span key={s} className="vr-chip">{s}</span>)}
+                </div>
+              </>
+            )}
+            {extractedView?.certificates && extractedView.certificates.length > 0 && (
+              <>
+                <div className="vr-k" style={{ marginTop: 12, marginBottom: 8 }}>
+                  {t("voiceResume.extract.certificates")}
+                </div>
+                <div className="vr-chips">
+                  {extractedView.certificates.map((c) => <span key={c} className="vr-chip">{c}</span>)}
                 </div>
               </>
             )}

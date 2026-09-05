@@ -7,7 +7,7 @@
     "resources": "Resources",
     "tagline": "Building Careers. Powering GCC",
     "login": "Login",
-    "register": "Register"
+    "register": "Request Workforce"
   },
   "hero": {
     "title": "The AI-Native Workforce Infrastructure Platform for the GCC",
@@ -409,7 +409,6 @@
         "About Us",
         "Contact Us",
         "Blog",
-        "Careers",
         "Success Stories",
         "Pricing",
         "FAQ"
@@ -1066,7 +1065,12 @@
       "editTranscript": "‹ Edit transcript",
       "fullName": "Full name",
       "location": "City",
-      "expectedSalary": "Expected salary"
+      "expectedSalary": "Expected salary",
+      "trade": "Trade / profession",
+      "totalExperience": "Total experience",
+      "gulfExperience": "Gulf experience",
+      "certificates": "Certificates & licenses",
+      "preferredCountry": "Preferred country"
     },
     "done": {
       "title": "Your resume is ready! 🎉",

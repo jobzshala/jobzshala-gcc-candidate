@@ -42,10 +42,12 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-// Landing page runs on Poppins (per Figma); the rest of the app stays on Inter.
-// Applied via the `font-poppins` utility on the landing sections. The CSS var is
-// named --font-poppins-family (not --font-poppins) so it doesn't collide with the
-// @theme token of the same name in globals.css, which references it.
+// Poppins is the app-wide font (globals.css points --font-sans AND
+// --font-serif at it) — the landing page set the direction and the rest of
+// the repo follows. Inter/Fraunces stay loaded only so their CSS vars keep
+// resolving if anything still references them directly. The CSS var is
+// named --font-poppins-family (not --font-poppins) so it doesn't collide with
+// the @theme token of the same name in globals.css, which references it.
 const poppins = Poppins({
   variable: "--font-poppins-family",
   subsets: ["latin"],

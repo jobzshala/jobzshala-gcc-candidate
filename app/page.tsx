@@ -1,23 +1,15 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import TrustedBy from "@/components/TrustedBy";
 import WorkforceChallenge from "@/components/WorkforceChallenge";
 import HowItWorks from "@/components/HowItWorks";
 import OurSolution from "@/components/OurSolution";
-import WhyChooseUs from "@/components/WhyChooseUs";
 import VerifiedTrusted from "@/components/VerifiedTrusted";
 import WorkforceOperations from "@/components/WorkforceOperations";
 import AiHumanRecruitment from "@/components/AiHumanRecruitment";
-import WorkforceAvailability from "@/components/WorkforceAvailability";
 import WorkforceCorridor from "@/components/WorkforceCorridor";
 import BuiltForEmployers from "@/components/BuiltForEmployers";
 import BuiltForWorkforce from "@/components/BuiltForWorkforce";
-import ComparisonSection from "@/components/ComparisonSection";
-import PlatformFeatures from "@/components/PlatformFeatures";
-import IndustriesWePower from "@/components/IndustriesWePower";
-import BuiltForAbuDhabi from "@/components/BuiltForAbuDhabi";
 import OurVision from "@/components/OurVision";
-import CtaCards from "@/components/CtaCards";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import HashScrollFix from "@/components/HashScrollFix";
@@ -41,24 +33,16 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <Hero />
-        {/* <TrustedBy /> */}
         <WorkforceChallenge />
         <OurSolution />
         <HowItWorks />
-        {/* <WhyChooseUs /> */}
         <VerifiedTrusted />
         <WorkforceOperations />
         <AiHumanRecruitment />
-        {/* <WorkforceAvailability /> */}
         <WorkforceCorridor />
         <BuiltForEmployers />
         <BuiltForWorkforce />
-        {/* <ComparisonSection />
-        <PlatformFeatures />
-        <IndustriesWePower /> */}
-        {/* <BuiltForAbuDhabi /> */}
         <OurVision />
-        {/* <CtaCards /> */}
       </main>
       <Footer />
     </div>

@@ -45,7 +45,7 @@ export default function OurVision() {
             />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/images/Vision/Vision_img.svg"
+              src="/images/Vision/Vision_img.webp"
               alt={t("ourVision.imageAlt")}
               width={1240}
               height={560}

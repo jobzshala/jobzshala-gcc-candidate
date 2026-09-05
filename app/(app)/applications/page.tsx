@@ -40,15 +40,21 @@ export default function ApplicationsPage() {
   const [interests, setInterests] = useState<JobInterest[] | null>(null);
   const [error, setError] = useState("");
 
-  const load = useCallback(async () => {
-    setError("");
-    try {
-      const page = await getMyInterests({ limit: 50 });
-      setInterests(page.data);
-    } catch {
-      setError("We couldn't load your applications. Please try again.");
-    }
-  }, []);
+  // Sets state only once the request settles, so the mount effect below can
+  // call it without a synchronous setState. The retry button clears the
+  // error itself before re-calling it.
+  const load = useCallback(
+    () =>
+      getMyInterests({ limit: 50 })
+        .then((page) => {
+          setInterests(page.data);
+          setError("");
+        })
+        .catch(() => {
+          setError("We couldn't load your applications. Please try again.");
+        }),
+    []
+  );
 
   useEffect(() => {
     void load();
@@ -90,7 +96,13 @@ export default function ApplicationsPage() {
         {error && (
           <div className="card" style={{ padding: 20, textAlign: "center", background: "var(--paper-soft)" }}>
             <p className="card-note" style={{ color: "var(--red, #e5484d)" }}>{error}</p>
-            <button type="button" onClick={load} className="btn-outline" style={{ marginTop: 10 }}>
+            <button
+              type="button"
+              onClick={() => {
+                setError("");
+                void load();
+              }}
+              className="btn-outline" style={{ marginTop: 10 }}>
               Retry
             </button>
           </div>

@@ -51,13 +51,13 @@ export default function OurSolution() {
 
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/images/works/workforce-solution-mobile.svg"
+            src="/images/works/workforce-solution-mobile.webp"
             alt={t("ourSolution.imageAlt")}
             className="w-full rounded-[20px] border border-[#DFE6EA] bg-[#E8EBF5] object-contain sm:hidden"
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/images/works/workforce-solution.svg"
+            src="/images/works/workforce-solution.webp"
             alt={t("ourSolution.imageAlt")}
             className="hidden h-86 w-full rounded-[20px] border border-[#DFE6EA] bg-[#E8EBF5] object-cover sm:block"
           />

@@ -70,7 +70,7 @@ export default function VerifiedTrusted() {
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/images/Verified/Verified_Trusted.svg"
+              src="/images/Verified/Verified_Trusted.webp"
               alt={t("verifiedTrusted.imageAlt")}
               width={586}
               height={442}

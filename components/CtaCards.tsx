@@ -25,7 +25,7 @@ export default function CtaCards() {
               stacked card doesn't leave the figure floating. */}
           <div className="pointer-events-none absolute inset-y-0 right-0 w-[30%] sm:-right-[3%] sm:bottom-auto sm:h-[134%] sm:w-[36%]">
             <Image
-              src="/images/businessman-tablet.jpg"
+              src="/images/businessman-tablet.webp"
               alt=""
               fill
               loading="lazy"
@@ -51,7 +51,7 @@ export default function CtaCards() {
               card on mobile, where the stacked card is too narrow for it. */}
           <div className="pointer-events-none absolute inset-y-0 right-0 w-[34%] sm:-right-[13%] sm:w-[56%]">
             <Image
-              src="/images/gcc-worker-portrait.png"
+              src="/images/gcc-worker-portrait.webp"
               alt=""
               fill
               loading="lazy"

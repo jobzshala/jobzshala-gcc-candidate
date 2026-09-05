@@ -8,6 +8,7 @@ import { authFetch, authFetchEnvelope } from "./client";
 
 export type VoiceResumeQuestionKey =
   | "FULL_NAME"
+  | "TRADE_EXPERIENCE"
   | "LOCATION"
   | "EMPLOYMENT"
   | "EDUCATION"
@@ -32,6 +33,7 @@ export interface ExtractedEmployment {
   company_name: string | null;
   role: string | null;
   duration_years: number | null;
+  country?: string | null;
 }
 export interface ExtractedEducation {
   qualification: string | null;
@@ -39,11 +41,16 @@ export interface ExtractedEducation {
 }
 export type ExtractedJson = {
   full_name?: string | null;
+  trade?: string | null;
+  total_experience_years?: number | null;
+  gulf_experience_years?: number | null;
   location?: string | null;
   employment?: ExtractedEmployment[];
   education?: ExtractedEducation[];
   skills?: string[];
+  certificates?: string[];
   expected_salary?: number | null;
+  preferred_country?: string | null;
 } | null;
 
 export interface VoiceResumeAnswer {
@@ -87,7 +94,7 @@ export function createOrResumeSession(uiLanguage: VoiceResumeLanguageCode): Prom
   });
 }
 
-// The six questions translated to any language, independent of any session.
+// The seven questions translated to any language, independent of any session.
 export async function getQuestions(language: VoiceResumeLanguageCode): Promise<VoiceResumeQuestion[]> {
   const result = await authFetch<{ questions: VoiceResumeQuestion[] }>(
     `/candidate/voice-resume/questions?language=${language}`

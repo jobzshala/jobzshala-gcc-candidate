@@ -141,7 +141,7 @@ export default function SupportPage() {
         </div>
         <div className="mt-4">
           <label htmlFor="description" className="mb-1.5 block text-sm text-jz-white-200">
-            Tell us what's going on
+            Tell us what&apos;s going on
           </label>
           <textarea
             id="description"
