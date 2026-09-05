@@ -1,0 +1,7 @@
+# Code owners are automatically requested as reviewers on every pull request
+# that touches the matched paths. One rule for the whole repo: every PR gets
+# a review request to the repo owner.
+#
+# Pair this with branch protection on main ("Require review from Code Owners")
+# once you want that review to be mandatory before merge.
+* @jobzshala
