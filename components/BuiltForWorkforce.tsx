@@ -29,9 +29,9 @@ export default function BuiltForWorkforce() {
       id="built-for-workforce"
       className="scroll-mt-24 bg-[#F6F9FA] py-10 font-poppins sm:py-20"
     >
-      <div className="mx-auto max-w-300">
+      <div className="mx-auto max-w-300 px-4 sm:px-0">
         <div className="flex flex-col gap-8">
-          <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 text-center">
+          <div className="mx-auto flex max-w-3xl flex-col items-start gap-4 text-left sm:items-center sm:text-center">
             <p className="text-lg font-medium leading-7.5 tracking-[0.01em] text-[#1A1A1A] sm:text-2xl">
               {t("builtForWorkforce.eyebrow")}
             </p>
@@ -71,16 +71,20 @@ export default function BuiltForWorkforce() {
                     />
                   )}
 
-                  <div className="relative grid gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-5">
+                  <div
+                    className={`relative flex flex-col gap-10 sm:grid sm:gap-x-6 sm:gap-y-10 sm:grid-cols-3 lg:grid-cols-5 ${
+                      rowIdx === 1 ? "flex-col-reverse" : ""
+                    }`}
+                  >
                     {row.map((step, i) => {
                       const { img, color } =
                         STEP_META[rowIdx * 5 + i] ?? STEP_META[0];
                       return (
                         <div
                           key={step.label}
-                          className="mx-auto flex max-w-40 flex-col items-center gap-4 text-center"
+                          className="flex items-center gap-4 text-left sm:mx-auto sm:max-w-40 sm:flex-col sm:items-center sm:text-center"
                         >
-                          <span className="flex size-20 items-center justify-center overflow-hidden rounded-full bg-white shadow-[0_4px_8px_rgba(0,0,0,0.1)]">
+                          <span className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-[0px_4px_8px_0px_#0000001A]">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src={img}
@@ -88,14 +92,14 @@ export default function BuiltForWorkforce() {
                               className="size-9 object-contain"
                             />
                           </span>
-                          <div className="flex flex-col items-center gap-1">
+                          <div className="flex flex-col gap-1 sm:items-center">
                             <span
                               className="text-base font-semibold leading-none tracking-[0.01em]"
                               style={{ color }}
                             >
                               {step.label}
                             </span>
-                            <span className="text-sm font-medium leading-5 tracking-[0.01em] text-[#4A4A4A]">
+                            <span className="max-w-44 text-sm font-medium leading-5 tracking-[0.01em] text-[#4A4A4A] sm:max-w-40">
                               {step.desc}
                             </span>
                           </div>

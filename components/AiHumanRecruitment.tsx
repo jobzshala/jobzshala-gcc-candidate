@@ -43,7 +43,7 @@ function Column({
 }) {
   return (
     <div
-      className={`flex flex-col gap-10 rounded-[20px] border border-[#DFE6EA] py-8 ${
+      className={`flex flex-col gap-10 rounded-[20px] border border-[#DFE6EA] bg-[#FFFFFF1A] py-8 max-sm:px-8 max-sm:py-5 ${
         side === "left" ? "pl-8 pr-6 sm:pr-16" : "pr-8 pl-6 sm:pl-16"
       }`}
     >
@@ -100,16 +100,23 @@ export default function AiHumanRecruitment() {
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
+        src="/images/Recuiter/AI + Human-mobile.webp"
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 size-full object-cover opacity-50 sm:hidden"
+      />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
         src="/images/Recuiter/AI + Human BG.webp"
         alt=""
         aria-hidden="true"
         width={1440}
         height={1064}
-        className="pointer-events-none absolute inset-0 size-full object-cover opacity-50"
+        className="pointer-events-none absolute inset-0 hidden size-full object-cover opacity-50 sm:block"
       />
 
-      <div className="relative mx-auto flex max-w-235.25 flex-col gap-8">
-        <div className="mx-auto flex max-w-218.5 flex-col items-center gap-5 text-center">
+      <div className="relative mx-auto flex max-w-235.25 flex-col gap-8 px-4 sm:px-0">
+        <div className="mx-auto flex max-w-218.5 flex-col items-start gap-5 text-left sm:items-center sm:text-center">
           <p className="text-lg font-medium leading-7.5 tracking-[0.01em] text-[#1A1A1A] sm:text-2xl">
             {t("aiHuman.eyebrow")}
           </p>

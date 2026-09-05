@@ -59,7 +59,7 @@ export default function Footer() {
         <div className="grid gap-10 lg:grid-cols-[1.4fr_2fr]">
           <div>
             <Logo />
-            <p className="mt-2 text-xs text-jz-white-600">
+            <p className="mt-2 text-xs text-white">
               {t("footer.brandTagline")}
             </p>
             <p className="mt-4 max-w-sm text-sm leading-6.5 text-jz-white-400">
@@ -67,7 +67,7 @@ export default function Footer() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
             {groups.map((group) => {
               const hrefs =
                 group === legal
@@ -107,9 +107,9 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6">
-          <p className="text-xs text-jz-white-600">{t("footer.copyright")}</p>
-          <div className="flex flex-wrap gap-3">
+        <div className="flex flex-col gap-4 border-t border-white/10 pt-6 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+          <p className="text-xs text-white">{t("footer.copyright")}</p>
+          <div className="grid grid-cols-2 gap-x-6 gap-y-3 sm:flex sm:flex-wrap sm:gap-3">
             {countries.map((country, i) => (
               <span
                 key={country}

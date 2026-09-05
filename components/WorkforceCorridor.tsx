@@ -23,7 +23,7 @@ export default function WorkforceCorridor() {
       id="workforce-infrastructure"
       className="scroll-mt-24 bg-[#F6F9FA] py-10 font-poppins sm:py-20"
     >
-      <div className="mx-auto max-w-300">
+      <div className="mx-auto max-w-300 px-4 sm:px-0">
         <div className="flex flex-col gap-8">
           <div className="grid items-center gap-8 lg:grid-cols-2">
             {/* Left Content */}
@@ -49,11 +49,17 @@ export default function WorkforceCorridor() {
 
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
+              src="/images/Corridor/corridor-mobile.webp"
+              alt={t("workforceCorridor.imageAlt")}
+              className="w-full object-contain sm:hidden"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src="/images/Corridor/corridor.webp"
               alt={t("workforceCorridor.imageAlt")}
               width={586}
               height={355}
-              className="w-full object-contain lg:h-[355px]"
+              className="hidden w-full object-contain sm:block lg:h-88.75"
             />
           </div>
 
@@ -64,15 +70,15 @@ export default function WorkforceCorridor() {
                 return (
                   <div
                     key={feature.label}
-                    className="flex flex-col items-center gap-5 text-center"
+                    className="flex items-center gap-4 text-left sm:flex-col sm:items-center sm:gap-5 sm:text-center"
                   >
-                    <span className="flex size-20 items-center justify-center overflow-hidden rounded-full bg-white shadow-[0_4px_8px_rgba(0,0,0,0.1)]">
+                    <span className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-[0px_4px_8px_0px_#0000001A]">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={img} alt="" className="size-9 object-contain" />
                     </span>
-                    <div className="flex flex-col items-center gap-1">
+                    <div className="flex flex-col gap-1 sm:items-center">
                       <span
-                        className="text-xl font-semibold uppercase leading-none tracking-[0.01em]"
+                        className="text-xl font-semibold leading-none tracking-[0.01em]"
                         style={{ color }}
                       >
                         {feature.label}

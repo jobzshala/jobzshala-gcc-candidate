@@ -23,9 +23,9 @@ export default function WorkforceOperations() {
   return (
     <section
       id="workforce-operations"
-      className="scroll-mt-24 bg-[#F6F9FA] py-10 font-poppins sm:py-20"
+      className="scroll-mt-24 bg-white py-10 font-poppins sm:py-20"
     >
-      <div className="mx-auto max-w-300">
+      <div className="mx-auto max-w-300 px-4 sm:px-0">
         <div className="flex flex-col gap-8">
           <div className="grid items-center gap-8 lg:grid-cols-[467px_1fr] lg:gap-[157px]">
             {/* Left Content */}
@@ -43,7 +43,7 @@ export default function WorkforceOperations() {
                 </span>
               </h2>
 
-              <p className="leading-6.5 tracking-[0.01em] text-[#4A4A4A]">
+              <p className="text-base font-normal leading-6.5 tracking-[0.01em] text-[#4A4A4A]">
                 {t("workforceOps.body")}
               </p>
             </div>
@@ -59,26 +59,26 @@ export default function WorkforceOperations() {
           </div>
 
           <div className="rounded-[20px] border border-[#008DD233] bg-[#EEF3FF] px-6 py-8 sm:px-8.5 sm:py-10">
-            <div className="flex flex-col items-stretch gap-6 lg:flex-row lg:items-start lg:gap-12">
+            <div className="flex flex-col items-stretch gap-10 lg:flex-row lg:items-start lg:gap-12">
               {features.map((feature, i) => {
                 const { img, color } = FEATURE_META[i] ?? FEATURE_META[0];
                 return (
                   <div
                     key={feature.label}
-                    className="flex flex-col items-center gap-5 text-center lg:flex-1 lg:max-w-40"
+                    className="flex items-center gap-4 text-left lg:max-w-40 lg:flex-1 lg:flex-col lg:items-center lg:gap-5 lg:text-center"
                   >
-                    <span className="flex size-20 items-center justify-center overflow-hidden rounded-full bg-white shadow-[0_4px_8px_rgba(0,0,0,0.1)]">
+                    <span className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-[0px_4px_8px_0px_#0000001A]">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={img} alt="" className="size-9 object-contain" />
                     </span>
-                    <div className="flex flex-col items-center gap-1">
+                    <div className="flex flex-col gap-1 lg:items-center">
                       <span
-                        className="text-xl font-semibold uppercase leading-none tracking-[0.01em]"
+                        className="max-lg:whitespace-nowrap text-base font-semibold leading-none tracking-[0.01em] lg:text-xl"
                         style={{ color }}
                       >
                         {feature.label}
                       </span>
-                      <span className="text-sm font-medium leading-5 tracking-[0.01em] text-[#4A4A4A]">
+                      <span className="max-w-44 text-sm font-medium leading-5 tracking-[0.01em] text-[#4A4A4A] lg:max-w-40">
                         {feature.desc}
                       </span>
                     </div>

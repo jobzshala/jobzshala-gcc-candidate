@@ -26,7 +26,7 @@ export default function VerifiedTrusted() {
       id="candidate-verification"
       className="scroll-mt-24 bg-[#F6F9FA] py-10 font-poppins sm:py-20"
     >
-      <div className="mx-auto max-w-300">
+      <div className="mx-auto max-w-300 px-4 sm:px-0">
         <div className="flex flex-col gap-8">
           <div className="grid items-center  lg:grid-cols-2">
             {/* Left Content */}
@@ -39,7 +39,7 @@ export default function VerifiedTrusted() {
                 {t("verifiedTrusted.headingLine1")}
                 <br />
                 {t("verifiedTrusted.headingLine2")}{" "}
-                <span className="text-[#008DD2]">
+                <span className="whitespace-nowrap text-[#008DD2]">
                   {t("verifiedTrusted.headingHighlight")}
                 </span>
               </h2>
@@ -83,13 +83,18 @@ export default function VerifiedTrusted() {
               {t("verifiedTrusted.panelTitle")}
             </p>
 
-            <div className="relative mt-8 flex flex-col items-stretch gap-6 lg:flex-row lg:items-start lg:gap-6 xl:justify-between xl:gap-0">
+            <div className="relative mt-8 flex flex-col items-stretch gap-10 lg:flex-row lg:items-start lg:gap-6 xl:justify-between xl:gap-0">
               {/* Dashed connector at circle-center height (40px = half of
-                  size-20). 10%/90% lands inside the first and last circles at
-                  both desktop layouts, so the ends stay hidden behind them. */}
+                  size-20); the opaque white circles paint over it, leaving
+                  dashes only in the gaps. Horizontal on desktop, vertical on
+                  mobile. */}
               <span
                 aria-hidden="true"
                 className="absolute inset-x-[10%] top-10 hidden border-t-2 border-dashed border-[#9AA6B2] lg:block"
+              />
+              <span
+                aria-hidden="true"
+                className="absolute bottom-10 left-10 top-10 border-l-2 border-dashed border-[#9AA6B2] lg:hidden"
               />
 
               {steps.map((step, i) => {
@@ -97,20 +102,20 @@ export default function VerifiedTrusted() {
                 return (
                   <div
                     key={step.label}
-                    className="relative z-10 flex flex-col items-center gap-5 text-center lg:flex-1 xl:flex-none"
+                    className="relative z-10 flex items-center gap-4 text-left lg:flex-1 lg:flex-col lg:items-center lg:gap-5 lg:text-center xl:flex-none"
                   >
-                    <span className="flex size-20 items-center justify-center overflow-hidden rounded-full bg-white shadow-[0_4px_8px_rgba(0,0,0,0.1)]">
+                    <span className="relative z-10 flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-[0px_4px_8px_0px_#0000001A]">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={img} alt="" className="size-9 object-contain" />
                     </span>
-                    <div className="flex flex-col items-center gap-1">
+                    <div className="flex flex-col gap-1 lg:items-center">
                       <span
-                        className="text-xl font-semibold leading-none tracking-[0.01em] xl:whitespace-nowrap"
+                        className="whitespace-nowrap text-lg font-semibold leading-none tracking-[0.01em] lg:whitespace-normal lg:text-xl xl:whitespace-nowrap"
                         style={{ color }}
                       >
                         {step.label}
                       </span>
-                      <span className="max-w-40 text-sm font-medium leading-5 tracking-[0.01em] text-[#4A4A4A]">
+                      <span className="max-w-44 text-sm font-medium leading-5 tracking-[0.01em] text-[#4A4A4A] lg:max-w-40">
                         {step.desc}
                       </span>
                     </div>
