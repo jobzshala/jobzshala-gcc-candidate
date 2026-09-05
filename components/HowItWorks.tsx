@@ -25,7 +25,7 @@ export default function HowItWorks() {
           <p className="text-lg font-medium leading-7.5 tracking-[0.01em] text-[#1A1A1A] sm:text-2xl">
             {t("howItWorks.eyebrow")}
           </p>
-          <h2 className="mt-2 max-w-3xl text-2xl font-semibold leading-tight tracking-[0.01em] text-[#1A1A1A] sm:mx-auto sm:text-3xl">
+          <h2 className="mt-2 max-w-3xl text-2xl font-semibold leading-tight tracking-[0.01em] text-[#1A1A1A] sm:mx-auto sm:text-3xl md:text-4xl md:leading-11.5">
             {t("howItWorks.headingLine1")}
             <br className="sm:hidden" />{" "}
             {t("howItWorks.headingLine2")}
@@ -58,7 +58,7 @@ export default function HowItWorks() {
                   </span>
                   <div className="flex flex-col gap-1 lg:items-center">
                     <span
-                      className="whitespace-nowrap text-base font-semibold uppercase leading-none tracking-[0.01em] lg:whitespace-normal lg:text-lg xl:whitespace-nowrap"
+                      className="whitespace-nowrap text-base font-semibold leading-none tracking-[0.01em] lg:whitespace-normal lg:text-xl xl:whitespace-nowrap"
                       style={{ color }}
                     >
                       {step.label}

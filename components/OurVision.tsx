@@ -39,7 +39,7 @@ export default function OurVision() {
           <div className="relative overflow-hidden rounded-[20px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/images/Vision/Vision_img-mobile.svg"
+              src="/images/Vision/Vision_img-mobile.webp"
               alt={t("ourVision.imageAlt")}
               className="h-full w-full object-cover sm:hidden"
             />

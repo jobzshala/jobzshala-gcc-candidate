@@ -100,7 +100,7 @@ export default function AiHumanRecruitment() {
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/images/Recuiter/AI + Human-mobile.svg"
+        src="/images/Recuiter/AI + Human-mobile.webp"
         alt=""
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 size-full object-cover opacity-50 sm:hidden"
